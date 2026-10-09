@@ -1,0 +1,15 @@
+#ifndef ELAWORKSPACE_ELAWIDGETTOOLSEXAMPLE_EXAMPLEPAGE_T_UPDATEWIDGET_H_
+#define ELAWORKSPACE_ELAWIDGETTOOLSEXAMPLE_EXAMPLEPAGE_T_UPDATEWIDGET_H_
+
+#include <QWidget>
+
+class T_UpdateWidget : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit T_UpdateWidget(QWidget* parent = nullptr);
+    ~T_UpdateWidget();
+};
+
+#endif // ELAWORKSPACE_ELAWIDGETTOOLSEXAMPLE_EXAMPLEPAGE_T_UPDATEWIDGET_H_
+
