@@ -57,3 +57,7 @@ compile_commands.json
 /.idea
 *.clang-format
 /install
+
+# CMake Presets 本地配置与构建产物
+/CMakeUserPresets.json
+/build/

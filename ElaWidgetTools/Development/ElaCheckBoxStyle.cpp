@@ -81,7 +81,7 @@ void ElaCheckBoxStyle::drawControl(ControlElement element, const QStyleOption* o
                 QFont iconFont = QFont("ElaAwesome");
                 iconFont.setPixelSize(checkRect.height() * 0.75);
                 painter->setFont(iconFont);
-                painter->drawText(checkRect, Qt::AlignCenter, QChar(ElaIconType::Check));
+                painter->drawText(checkRect, Qt::AlignCenter, QChar(static_cast<char16_t>(ElaIconType::Check)));
                 painter->restore();
             }
             else if (bopt->state.testFlag(QStyle::State_NoChange))

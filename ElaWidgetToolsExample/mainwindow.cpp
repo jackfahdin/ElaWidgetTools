@@ -417,7 +417,9 @@ void MainWindow::initEdgeLayout()
 void MainWindow::initContent()
 {
     _homePage = new T_Home(this);
+#ifdef Q_OS_WIN
     _elaScreenPage = new T_ElaScreen(this);
+#endif
     _iconPage = new T_Icon(this);
     _baseComponentsPage = new T_BaseComponents(this);
     _navigationPage = new T_Navigation(this);
@@ -431,10 +433,12 @@ void MainWindow::initContent()
     QString testKey_1;
     QString testKey_2;
     addPageNode("HOME", _homePage, ElaIconType::House);
+#ifdef Q_OS_WIN
     addExpanderNode("ElaDxgi", _elaDxgiKey, ElaIconType::TvMusic);
     QString dxgiCategoryKey;
     addCategoryNode("Windows-DXGI", dxgiCategoryKey, _elaDxgiKey);
     addPageNode("ElaScreen", _elaScreenPage, _elaDxgiKey, 3, ElaIconType::ObjectGroup);
+#endif
     QString controlCategoryKey;
     addCategoryNode("Controls", controlCategoryKey);
     // navigation(elaScreenWidget->property("ElaPageKey").toString());

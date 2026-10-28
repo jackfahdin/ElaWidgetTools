@@ -1,9 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.12)
-
 project(ElaWidgetTools VERSION 2.0.0 LANGUAGES CXX)
-
-add_definitions(-DELAWIDGETTOOLS_LIBRARY)
-option(ELAWIDGETTOOLS_BUILD_STATIC_LIB "Build static library." OFF)
 
 FILE(GLOB Origin CONFIGURE_DEPENDS *.h *.cpp)
 FILE(GLOB private CONFIGURE_DEPENDS private/*.h private/*.cpp)
@@ -32,15 +27,25 @@ add_library(${PROJECT_NAME} ${LIB_TYPE}
     ${PROJECT_SOURCES}
 )
 
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+target_compile_definitions(${PROJECT_NAME} PRIVATE ELAWIDGETTOOLS_LIBRARY)
+if(ELAWIDGETTOOLS_BUILD_STATIC_LIB)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC ELAWIDGETTOOLS_STATIC)
+endif()
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
+endif()
+
 set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_NAME WidgetTools)
 add_library(Ela::WidgetTools ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/private>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Development>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Development/Command>
-    $<INSTALL_INTERFACE:${PROJECT_NAME}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/ElaWidgetTools>
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/private
+    ${CMAKE_CURRENT_SOURCE_DIR}/Development
+    ${CMAKE_CURRENT_SOURCE_DIR}/Development/Command
 )
 
 if (MINGW)
@@ -50,12 +55,12 @@ if (MSVC)
     set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "d")
 endif ()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::WidgetsPrivate
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC Qt6::Widgets
+    PRIVATE Qt6::WidgetsPrivate
 )
 if (WIN32)
-    target_link_libraries(${PROJECT_NAME} PUBLIC
+    target_link_libraries(${PROJECT_NAME} PRIVATE
         D3D11
         DXGI
     )
@@ -65,13 +70,13 @@ endif ()
 install(
     TARGETS ${PROJECT_NAME}
     EXPORT ${PROJECT_NAME}Targets
-    ARCHIVE DESTINATION ${PROJECT_NAME}/lib
-    LIBRARY DESTINATION ${PROJECT_NAME}/lib
-    RUNTIME DESTINATION ${PROJECT_NAME}/bin
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-    DESTINATION ${PROJECT_NAME}/include
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ElaWidgetTools
     FILES_MATCHING
     PATTERN "*.h"
     PATTERN "Font" EXCLUDE
@@ -84,23 +89,22 @@ install(
     EXPORT ${PROJECT_NAME}Targets
     NAMESPACE Ela::
     FILE ${PROJECT_NAME}Targets.cmake
-    DESTINATION ${PROJECT_NAME}/lib/cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ElaWidgetTools
 )
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
     ${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-    VERSION 2.0.0
+    VERSION ${PROJECT_VERSION}
     COMPATIBILITY SameMajorVersion
 )
 
 configure_package_config_file(
     ${PROJECT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in
     ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-    INSTALL_DESTINATION lib/cmake
-    INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ElaWidgetTools
 )
 
 install(
-    FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake ${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION ${PROJECT_NAME}/lib/cmake
+    FILES ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake ${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ElaWidgetTools
 )

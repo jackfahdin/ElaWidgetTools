@@ -121,4 +121,4 @@
 | [弹出交互](../ElaWidgetToolsExample/ExamplePage/T_Popup.cpp) | 菜单、对话框与消息提示 |
 | [表格视图](../ElaWidgetToolsExample/ExamplePage/T_TableView.cpp) | 表格与数据展示 |
 
-示例编译方式将在 Qt 构建迁移完成并验证后补充。
+示例构建与运行方式见[编译指南](build.md)。

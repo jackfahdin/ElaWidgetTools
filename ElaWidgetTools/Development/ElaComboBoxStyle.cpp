@@ -186,7 +186,7 @@ void ElaComboBoxStyle::drawComplexControl(ComplexControl control, const QStyleOp
                 painter->translate(expandIconRect.x() + (qreal)expandIconRect.width() / 2, expandIconRect.y() + (qreal)expandIconRect.height() / 2);
                 painter->rotate(_pExpandIconRotate);
                 painter->translate(-expandIconRect.x() - (qreal)expandIconRect.width() / 2, -expandIconRect.y() - (qreal)expandIconRect.height() / 2);
-                painter->drawText(expandIconRect, Qt::AlignCenter, QChar(ElaIconType::AngleDown));
+                painter->drawText(expandIconRect, Qt::AlignCenter, QChar(static_cast<char16_t>(ElaIconType::AngleDown)));
                 painter->restore();
             }
         }

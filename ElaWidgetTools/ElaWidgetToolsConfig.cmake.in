@@ -1,11 +1,11 @@
 @PACKAGE_INIT@
 
 include(CMakeFindDependencyMacro)
-
-find_dependency(Qt@QT_VERSION_MAJOR@ COMPONENTS Widgets)
-if(NOT TARGET Qt@QT_VERSION_MAJOR@::WidgetsPrivate)
-    find_dependency(Qt@QT_VERSION_MAJOR@ COMPONENTS WidgetsPrivate)
+# 消费项目同样要求 Qt 6.12.0 及以上，不锁定到 6.12 系列。
+find_dependency(Qt6 6.12.0 COMPONENTS Widgets)
+# 静态库的链接接口需要传递私有依赖；动态库消费者无需 Qt 私有头文件。
+if(@ELAWIDGETTOOLS_BUILD_STATIC_LIB@)
+    find_dependency(Qt6 6.12.0 COMPONENTS WidgetsPrivate)
 endif()
-include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
-
-check_required_components(@PROJECT_NAME@)
+include("${CMAKE_CURRENT_LIST_DIR}/ElaWidgetToolsTargets.cmake")
+check_required_components(ElaWidgetTools)

@@ -9,7 +9,7 @@
 ![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C?style=flat-square)
 [![许可证：MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
 
-[组件目录](docs/components.md) · [维护与路线图](docs/roadmap.md) · [参与贡献](docs/contributing.md) · [示例源码](ElaWidgetToolsExample/)
+[编译指南](docs/build.md) · [组件目录](docs/components.md) · [维护与路线图](docs/roadmap.md) · [参与贡献](docs/contributing.md) · [示例源码](ElaWidgetToolsExample/)
 
 </div>
 
@@ -21,7 +21,7 @@ ElaWidgetTools 是基于 **C++ / Qt Widgets** 的桌面界面组件库，提供 
 
 本仓库基于 [Liniyous/ElaWidgetTools](https://github.com/Liniyous/ElaWidgetTools) 开始独立维护，后续功能、版本策略与发布节奏由本仓库单独推进。
 
-> **维护方向**：后续仅维护 **Qt 6.12.0 及以上版本**，并计划适配 **macOS**。当前仍处于从上游代码建立独立维护基线的阶段，构建配置尚未迁移，以上目标不代表已经完成兼容验证。详见[维护与路线图](docs/roadmap.md)。
+> **维护方向**：后续仅维护 **Qt 6.12.0 及以上版本**，并计划适配 **macOS**。已完成本机 Linux / Qt 6.12.0 的构建与基础运行验证，其他平台及后续 Qt 版本按实际验证逐步更新。详见[编译指南](docs/build.md)与[维护路线图](docs/roadmap.md)。
 
 ## 能力一览
 
@@ -52,17 +52,18 @@ ElaWidgetTools 是基于 **C++ / Qt Widgets** 的桌面界面组件库，提供 
 
 | 项目 | 维护方向 | 当前状态 |
 | --- | --- | --- |
-| Qt | 仅维护 Qt 6.12.0 及以上版本 | 迁移计划中，现有构建仍有旧版本限制 |
-| Windows | 继续维护 | 已有上游实现，待建立本分支验证基线 |
-| Linux | 继续维护 | 已有上游实现，待建立本分支验证基线 |
+| Qt | 仅维护 Qt 6.12.0 及以上版本 | 已迁移，当前验证版本为 6.12.0 |
+| Windows | 继续维护 | 已有上游实现，待验证 Qt 6.12 构建 |
+| Linux | 继续维护 | 已验证 Qt 6.12.0 构建、安装与基础运行 |
 | macOS | 计划支持 | 尚未完成适配与验证 |
 
-Qt 5 和 Qt 6.12.0 以下版本不纳入后续维护范围。构建迁移、平台验证与编译指南将在后续阶段推进。
+Qt 5 和 Qt 6.12.0 以下版本不纳入后续维护范围。使用 CMake Presets 构建，具体步骤见[编译指南](docs/build.md)。
 
 ## 文档导航
 
 | 文档 | 内容 |
 | --- | --- |
+| [编译指南](docs/build.md) | CMake Presets、环境配置、静态库与安装集成 |
 | [组件目录](docs/components.md) | 按功能分类浏览当前组件，直达头文件 |
 | [维护与路线图](docs/roadmap.md) | 分支定位、Qt 版本策略、平台计划与构建迁移事项 |
 | [参与贡献](docs/contributing.md) | 问题反馈、功能建议与代码贡献 |
