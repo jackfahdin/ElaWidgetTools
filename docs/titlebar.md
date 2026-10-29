@@ -31,6 +31,10 @@ setCustomWidget(ElaAppBarType::LeftArea, customWidget);
 
 Example 的菜单栏已经放入 `LeftArea`，搜索框仍属于内容区，工具栏仍是标题栏下面的独立一行。
 
+菜单区按内容宽度自适应，不再固定宽度：空间足够时完整显示，窗口缩窄、可用空间不足时自动收缩，多出的菜单项收进右侧的 `>` 按钮；窗口变宽后自动恢复显示。剩余空间用于居中显示标题。
+
+自定义控件的宽度由 Qt 布局结合 `sizeHint()`、`minimumSizeHint()` 和 `sizePolicy()` 分配。需要类似的自适应行为时，可使用水平 `QSizePolicy::Preferred`，避免设置固定宽度；普通控件如何收缩或折叠仍由控件自身决定。
+
 ## 原有自定义接口
 
 为保留现有调用，`LeftArea`、`MiddleArea`、`RightArea` 的枚举值及方法签名不变，但三个入口现在依次排列在同一个自定义区中，均位于图标之后、窗口标题之前。新代码通常只使用 `LeftArea`，多个控件可先放入自己的布局容器。
