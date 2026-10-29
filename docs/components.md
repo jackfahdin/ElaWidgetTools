@@ -16,7 +16,7 @@
 | [ElaWindow](../ElaWidgetTools/ElaWindow.h) | 带导航栏的无边框主窗口 |
 | [ElaWidget](../ElaWidgetTools/ElaWidget.h) | 无边框窗口 |
 | [ElaDialog](../ElaWidgetTools/ElaDialog.h) | 对话框窗口 |
-| [ElaAppBar](../ElaWidgetTools/ElaAppBar.h) | 自定义窗口标题栏 |
+| [ElaAppBar](../ElaWidgetTools/ElaAppBar.h) | 自定义窗口标题栏，见[布局与用法](titlebar.md) |
 | [ElaDockWidget](../ElaWidgetTools/ElaDockWidget.h) | 停靠面板 |
 
 ## 按钮与输入

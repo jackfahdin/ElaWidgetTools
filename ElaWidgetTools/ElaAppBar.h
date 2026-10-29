@@ -70,6 +70,7 @@ public:
     void setRibbonHeight(int height);
     Q_REQUIRED_RESULT int getRibbonHeight() const;
 
+    // 自定义入口按 Left / Middle / Right 顺序排列在图标之后、居中标题之前。
     void setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* customWidget, QObject* hitTestObject = nullptr,
                          const QString& hitTestFunctionName = "");
     QWidget* getCustomWidget(ElaAppBarType::CustomArea customArea) const;

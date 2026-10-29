@@ -122,6 +122,10 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
     d->_titleLabel = new ElaText(this);
     d->_titleLabel->setIsWrapAnywhere(false);
     d->_titleLabel->setTextPixelSize(13);
+    d->_titleLabel->setTextFormat(Qt::PlainText);
+    d->_titleLabel->setAlignment(Qt::AlignCenter);
+    d->_titleLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+    d->_titleLabel->setMinimumWidth(0);
     d->_titleLabelLayout = d->_createVLayout(d->_titleLabel);
     if (parent->windowTitle().isEmpty())
     {
@@ -130,12 +134,15 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
     else
     {
         d->_titleLabel->setText(parent->windowTitle());
-        d->_titleLabelLayout->setContentsMargins(10, 0, 0, 0);
+        d->_titleLabel->setToolTip(parent->windowTitle());
+        d->_titleLabelLayout->setContentsMargins(10, 0, 10, 0);
     }
     connect(parent, &QWidget::windowTitleChanged, this, [=](const QString& title) {
         d->_titleLabel->setText(title);
+        d->_titleLabel->setToolTip(title);
         d->_titleLabel->setVisible(!title.isEmpty());
-        d->_titleLabelLayout->setContentsMargins(title.isEmpty() ? 0 : 10, 0, 0, 0);
+        const int margin = title.isEmpty() ? 0 : 10;
+        d->_titleLabelLayout->setContentsMargins(margin, 0, margin, 0);
     });
 
     // 主题变更
@@ -177,7 +184,6 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
     leftLayout->addLayout(d->_createVLayout(d->_routeForwardButton));
     leftLayout->addLayout(d->_createVLayout(d->_navigationButton));
     leftLayout->addLayout(d->_iconLabelLayout);
-    leftLayout->addLayout(d->_titleLabelLayout);
     d->_mainLayout->addLayout(leftLayout);
 
     auto leftAreaWidget = new QWidget(this);
@@ -189,11 +195,12 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
     d->_customAreaWidgetList[0] = leftAreaWidget;
     d->_customAreaWidgetList[1] = middleAreaWidget;
     d->_customAreaWidgetList[2] = rightAreaWidget;
+    // 保留原有三个入口，统一放在图标后、标题前的自定义区。
     d->_mainLayout->addWidget(leftAreaWidget);
-    d->_mainLayout->addStretch();
     d->_mainLayout->addWidget(middleAreaWidget);
-    d->_mainLayout->addStretch();
     d->_mainLayout->addWidget(rightAreaWidget);
+    // 标题占据剩余空间并在其中居中，左右内容宽度变化时由布局自动更新。
+    d->_mainLayout->addLayout(d->_titleLabelLayout, 1);
 
     QHBoxLayout* rightLayout = new QHBoxLayout();
     rightLayout->setSpacing(0);
@@ -253,6 +260,10 @@ void ElaAppBar::setAppBarHeight(int height)
     Q_D(ElaAppBar);
     d->_pAppBarHeight = height;
     setFixedHeight(d->_pAppBarHeight);
+    for (QWidget* customWidget : d->_customAreaWidgetList)
+    {
+        customWidget->setMaximumHeight(height);
+    }
     window()->setContentsMargins(0, d->_pAppBarHeight + d->_pRibbonHeight, 0, 0);
     Q_EMIT pAppBarHeightChanged();
 }
@@ -281,26 +292,42 @@ void ElaAppBar::setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* w
                                 const QString& hitTestFunctionName)
 {
     Q_D(ElaAppBar);
-    if (!widget || widget == this)
+    const int customAreaIndex = static_cast<int>(customArea);
+    if (customAreaIndex < 0 || customAreaIndex >= d->_customAreaWidgetList.size() || !widget || widget == this ||
+        widget->isAncestorOf(this))
+    {
+        return;
+    }
+    const int existingIndex = d->_customAreaWidgetList.indexOf(widget);
+    if (existingIndex >= 0 && existingIndex != customAreaIndex)
     {
         return;
     }
     widget->setMinimumHeight(0);
     widget->setMaximumHeight(height());
-    widget->setParent(this);
-    int customAreaIndex = static_cast<int>(customArea);
-    d->_mainLayout->removeWidget(d->_customAreaWidgetList[customAreaIndex]);
-    d->_mainLayout->insertWidget(2 * customAreaIndex + 1, widget);
+    QWidget* oldWidget = d->_customAreaWidgetList[customAreaIndex];
+    if (oldWidget != widget)
+    {
+        d->_mainLayout->removeWidget(oldWidget);
+        oldWidget->hide();
+        widget->setParent(this);
+        d->_mainLayout->insertWidget(customAreaIndex + 1, widget);
+    }
     d->_customAreaWidgetList[customAreaIndex] = widget;
     d->_customAreaHitTestObjectList[customAreaIndex] = hitTestObject;
     d->_customAreaHitTestFunctionNameList[customAreaIndex] = hitTestFunctionName;
+    widget->show();
     Q_EMIT customWidgetChanged();
 }
 
 QWidget* ElaAppBar::getCustomWidget(ElaAppBarType::CustomArea customArea) const
 {
     Q_D(const ElaAppBar);
-    int customAreaIndex = (int)customArea - 1;
+    const int customAreaIndex = static_cast<int>(customArea);
+    if (customAreaIndex < 0 || customAreaIndex >= d->_customAreaWidgetList.size())
+    {
+        return nullptr;
+    }
     return d->_customAreaWidgetList[customAreaIndex];
 }
 

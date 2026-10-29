@@ -247,33 +247,8 @@ void ElaAppBarPrivate::_onThemeModeChange(ElaThemeType::ThemeMode themeMode)
 int ElaAppBarPrivate::_calculateMinimumWidth()
 {
     Q_Q(ElaAppBar);
-    int appBarWidth = 0;
-    if (_titleLabel->isVisible())
-    {
-        appBarWidth += _titleLabel->width();
-        appBarWidth += 10;
-    }
-    if (_iconLabel->isVisible())
-    {
-        appBarWidth += _iconLabel->width();
-        appBarWidth += 10;
-    }
-    for (int i = 0; i < _customAreaWidgetList.count(); i++)
-    {
-        auto customAreaWidget = _customAreaWidgetList[i];
-        if (customAreaWidget->isVisible())
-        {
-            appBarWidth += customAreaWidget->minimumWidth();
-        }
-    }
-    QList<QAbstractButton*> buttonList = q->findChildren<QAbstractButton*>();
-    for (const auto clientWidget : _clientWidgetList)
-    {
-        if (clientWidget->isVisible())
-        {
-            appBarWidth += clientWidget->minimumWidth();
-        }
-    }
+    // 标题可收缩，不能把它当前占据的弹性宽度当成窗口最小宽度。
+    const int appBarWidth = _mainLayout->minimumSize().width();
     auto windowMinWidth = q->parentWidget()->minimumWidth() + 20;
     return qMax(appBarWidth, windowMinWidth);
 }

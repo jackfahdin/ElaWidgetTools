@@ -119,6 +119,7 @@ Q_DECLARE_FLAGS(ButtonFlags, ButtonType)
 
 enum CustomArea
 {
+    // 保留枚举值；三个入口现在均位于窗口标题左侧的自定义区。
     LeftArea = 0x0000,
     MiddleArea = 0x0001,
     RightArea = 0x0002,

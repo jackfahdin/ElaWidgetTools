@@ -305,7 +305,7 @@ void MainWindow::initEdgeLayout()
     customLayout->addWidget(menuBar);
     customLayout->addStretch();
     // this->setMenuBar(menuBar);
-    this->setCustomWidget(ElaAppBarType::MiddleArea, customWidget);
+    this->setCustomWidget(ElaAppBarType::LeftArea, customWidget);
 
     menuBar->addElaIconAction(ElaIconType::AtomSimple, "动作菜单");
     ElaMenu* iconMenu = menuBar->addMenu(ElaIconType::Aperture, "图标菜单");
