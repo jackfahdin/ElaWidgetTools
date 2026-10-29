@@ -17,13 +17,13 @@ ElaStatusBarStyle::~ElaStatusBarStyle()
 {
 }
 
-void ElaStatusBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaStatusBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                      const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::PE_PanelStatusBar:
-    {
-        //背景绘制
+    case QStyle::PE_PanelStatusBar: {
+        // 背景绘制
         QRect statusBarRect = option->rect;
         painter->save();
         painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
@@ -33,9 +33,8 @@ void ElaStatusBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOpti
         painter->restore();
         return;
     }
-    case QStyle::PE_FrameStatusBarItem:
-    {
-        //间隔符绘制
+    case QStyle::PE_FrameStatusBarItem: {
+        // 间隔符绘制
         const QStatusBar* statusBar = dynamic_cast<const QStatusBar*>(widget->parentWidget());
         if (statusBar && statusBar->isSizeGripEnabled())
         {
@@ -44,29 +43,30 @@ void ElaStatusBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOpti
             painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
             painter->setPen(Qt::NoPen);
             painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-            painter->drawRoundedRect(QRectF(statusBarItemRect.right() - 3, statusBarItemRect.y() + statusBarItemRect.height() * 0.1, 3, statusBarItemRect.height() - statusBarItemRect.height() * 0.2), 2, 2);
+            painter->drawRoundedRect(QRectF(statusBarItemRect.right() - 3,
+                                            statusBarItemRect.y() + statusBarItemRect.height() * 0.1, 3,
+                                            statusBarItemRect.height() - statusBarItemRect.height() * 0.2),
+                                     2, 2);
             painter->restore();
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
-void ElaStatusBarStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaStatusBarStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                    const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::CE_SizeGrip:
-    {
+    case QStyle::CE_SizeGrip: {
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -74,9 +74,10 @@ void ElaStatusBarStyle::drawControl(ControlElement element, const QStyleOption* 
     QProxyStyle::drawControl(element, option, painter, widget);
 }
 
-QSize ElaStatusBarStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const
+QSize ElaStatusBarStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                                          const QWidget* widget) const
 {
-    //qDebug() << type << QProxyStyle::sizeFromContents(type, option, size, widget);
+    // qDebug() << type << QProxyStyle::sizeFromContents(type, option, size, widget);
     return QProxyStyle::sizeFromContents(type, option, size, widget);
 }
 

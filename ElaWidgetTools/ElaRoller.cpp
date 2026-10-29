@@ -12,8 +12,7 @@
 ELA_PROPERTY_Q_CPP(ElaRoller, int, BorderRadius)
 ELA_PROPERTY_Q_CPP(ElaRoller, bool, IsContainer)
 ELA_PROPERTY_Q_CPP(ElaRoller, bool, IsEnableLoop)
-ElaRoller::ElaRoller(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaRollerPrivate())
+ElaRoller::ElaRoller(QWidget* parent) : QWidget{parent}, d_ptr(new ElaRollerPrivate())
 {
     Q_D(ElaRoller);
     d->q_ptr = this;
@@ -265,11 +264,13 @@ void ElaRoller::paintEvent(QPaintEvent* event)
     painter.save();
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     // 背景绘制
-    QRect foregroundRect(d->_penBorderWidth, d->_penBorderWidth, width() - 2 * d->_penBorderWidth, height() - 2 * d->_penBorderWidth - 1);
+    QRect foregroundRect(d->_penBorderWidth, d->_penBorderWidth, width() - 2 * d->_penBorderWidth,
+                         height() - 2 * d->_penBorderWidth - 1);
     if (!d->_pIsContainer)
     {
         painter.setPen(QPen(ElaThemeColor(d->_themeMode, BasicBorder), d->_penBorderWidth));
-        painter.setBrush(isEnabled() ? ElaThemeColor(d->_themeMode, BasicBase) : ElaThemeColor(d->_themeMode, BasicDisable));
+        painter.setBrush(isEnabled() ? ElaThemeColor(d->_themeMode, BasicBase)
+                                     : ElaThemeColor(d->_themeMode, BasicDisable));
         painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
     }
     painter.setClipRect(foregroundRect);
@@ -279,11 +280,16 @@ void ElaRoller::paintEvent(QPaintEvent* event)
     bool isEven = d->_pMaxVisibleItems % 2 == 0;
     if (isEven)
     {
-        painter.drawRoundedRect(QRect(d->_indicatorMargin, d->_pItemHeight * d->_pMaxVisibleItems / 2 + d->_indicatorMargin, width() - 2 * d->_indicatorMargin, d->_pItemHeight - 2 * d->_indicatorMargin), d->_pBorderRadius, d->_pBorderRadius);
+        painter.drawRoundedRect(QRect(d->_indicatorMargin,
+                                      d->_pItemHeight * d->_pMaxVisibleItems / 2 + d->_indicatorMargin,
+                                      width() - 2 * d->_indicatorMargin, d->_pItemHeight - 2 * d->_indicatorMargin),
+                                d->_pBorderRadius, d->_pBorderRadius);
     }
     else
     {
-        painter.drawRoundedRect(QRect(d->_indicatorMargin, (height() - d->_pItemHeight) / 2 + d->_indicatorMargin, width() - 2 * d->_indicatorMargin, d->_pItemHeight - 2 * d->_indicatorMargin), d->_pBorderRadius, d->_pBorderRadius);
+        painter.drawRoundedRect(QRect(d->_indicatorMargin, (height() - d->_pItemHeight) / 2 + d->_indicatorMargin,
+                                      width() - 2 * d->_indicatorMargin, d->_pItemHeight - 2 * d->_indicatorMargin),
+                                d->_pBorderRadius, d->_pBorderRadius);
     }
 
     int yStart = -d->_pItemHeight;
@@ -325,12 +331,16 @@ void ElaRoller::paintEvent(QPaintEvent* event)
                     if (itemRect.contains(d->_mousePoint))
                     {
                         painter.setBrush(ElaThemeColor(d->_themeMode, BasicHover));
-                        painter.drawRoundedRect(QRect(d->_indicatorMargin, d->_indicatorMargin, width() - 2 * d->_indicatorMargin, d->_pItemHeight - 2 * d->_indicatorMargin), d->_pBorderRadius, d->_pBorderRadius);
+                        painter.drawRoundedRect(QRect(d->_indicatorMargin, d->_indicatorMargin,
+                                                      width() - 2 * d->_indicatorMargin,
+                                                      d->_pItemHeight - 2 * d->_indicatorMargin),
+                                                d->_pBorderRadius, d->_pBorderRadius);
                     }
                 }
                 painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
             }
-            painter.drawText(QRect(0, 0, width(), d->_pItemHeight), Qt::AlignCenter | Qt::TextSingleLine, d->_pItemList[i]);
+            painter.drawText(QRect(0, 0, width(), d->_pItemHeight), Qt::AlignCenter | Qt::TextSingleLine,
+                             d->_pItemList[i]);
             painter.restore();
         }
     }
@@ -341,7 +351,8 @@ void ElaRoller::paintEvent(QPaintEvent* event)
         painter.setBrush(ElaThemeColor(d->_themeMode, PopupBase));
         // 覆盖文字
         d->_upArrowRect = QRect(foregroundRect.x(), foregroundRect.y(), foregroundRect.width(), d->_pItemHeight);
-        d->_downArrowRect = QRect(foregroundRect.x(), foregroundRect.bottom() - d->_pItemHeight + 2, foregroundRect.width(), d->_pItemHeight);
+        d->_downArrowRect = QRect(foregroundRect.x(), foregroundRect.bottom() - d->_pItemHeight + 2,
+                                  foregroundRect.width(), d->_pItemHeight);
         painter.drawRect(d->_upArrowRect);
         painter.drawRect(d->_downArrowRect);
         painter.setBrush(ElaThemeColor(d->_themeMode, BasicText));
@@ -350,8 +361,10 @@ void ElaRoller::paintEvent(QPaintEvent* event)
         qreal upAdjacentEdge = upArrowWidth * qCos(30 * M_PI / 180.0);
         QPainterPath upArrowPath;
         upArrowPath.moveTo(d->_upArrowRect.center().x(), d->_upArrowRect.center().y() - upAdjacentEdge / 2);
-        upArrowPath.lineTo(d->_upArrowRect.center().x() + upArrowWidth / 2, d->_upArrowRect.center().y() + upAdjacentEdge / 2);
-        upArrowPath.lineTo(d->_upArrowRect.center().x() - upArrowWidth / 2, d->_upArrowRect.center().y() + upAdjacentEdge / 2);
+        upArrowPath.lineTo(d->_upArrowRect.center().x() + upArrowWidth / 2,
+                           d->_upArrowRect.center().y() + upAdjacentEdge / 2);
+        upArrowPath.lineTo(d->_upArrowRect.center().x() - upArrowWidth / 2,
+                           d->_upArrowRect.center().y() + upAdjacentEdge / 2);
         upArrowPath.closeSubpath();
         painter.drawPath(upArrowPath);
         // 下箭头
@@ -359,8 +372,10 @@ void ElaRoller::paintEvent(QPaintEvent* event)
         qreal downAdjacentEdge = downArrowWidth * qCos(30 * M_PI / 180.0);
         QPainterPath downArrowPath;
         downArrowPath.moveTo(d->_downArrowRect.center().x(), d->_downArrowRect.center().y() + downAdjacentEdge / 2);
-        downArrowPath.lineTo(d->_downArrowRect.center().x() + downArrowWidth / 2, d->_downArrowRect.center().y() - downAdjacentEdge / 2);
-        downArrowPath.lineTo(d->_downArrowRect.center().x() - downArrowWidth / 2, d->_downArrowRect.center().y() - downAdjacentEdge / 2);
+        downArrowPath.lineTo(d->_downArrowRect.center().x() + downArrowWidth / 2,
+                             d->_downArrowRect.center().y() - downAdjacentEdge / 2);
+        downArrowPath.lineTo(d->_downArrowRect.center().x() - downArrowWidth / 2,
+                             d->_downArrowRect.center().y() - downAdjacentEdge / 2);
         downArrowPath.closeSubpath();
         painter.drawPath(downArrowPath);
     }

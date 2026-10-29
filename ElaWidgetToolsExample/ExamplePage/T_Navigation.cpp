@@ -10,8 +10,7 @@
 #include "ElaScrollPageArea.h"
 #include "ElaTabWidget.h"
 #include "ElaText.h"
-T_Navigation::T_Navigation(QWidget* parent)
-    : T_BasePage(parent)
+T_Navigation::T_Navigation(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     setWindowTitle("ElaNavigation");
@@ -19,7 +18,7 @@ T_Navigation::T_Navigation(QWidget* parent)
     // 顶部元素
     createCustomWidget("一些导航组件被放置于此，可在此界面体验其效果并按需添加进项目中");
 
-    //ElaBreadcrumbBar
+    // ElaBreadcrumbBar
     ElaText* breadcrumbBarText = new ElaText("ElaBreadcrumbBar", this);
     breadcrumbBarText->setTextPixelSize(18);
     _breadcrumbBar = new ElaBreadcrumbBar(this);

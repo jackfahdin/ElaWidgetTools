@@ -30,4 +30,4 @@
 
 ## 代码风格与检查
 
-仓库提供 EditorConfig、clang-format、cmake-format 和 clang-tidy 配置。工具版本、安装方法与手动命令见[代码风格与静态分析](code-style.md)。新改动逐步遵循规则，历史代码不要求一次性格式化；格式整理与功能修改分别提交。静态分析目前作为人工审查参考，不接入默认构建。
+仓库提供 EditorConfig、clang-format、cmake-format 和 clang-tidy 配置。工具版本、安装方法与手动命令见[代码风格与静态分析](code-style.md)。现有 C++ 与 CMake 文件已建立统一格式基线，后续检查本次修改的文件；格式整理与功能修改分别提交。静态分析目前作为人工审查参考，不接入默认构建。

@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.25)
 
-project(ElaFramework VERSION 0.1 LANGUAGES CXX)
+project(
+    ElaFramework
+    VERSION 0.1
+    LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -9,7 +12,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(QT_SDK_DIR "" CACHE PATH "Qt 6.12 及以上版本的安装目录")
+set(QT_SDK_DIR
+    ""
+    CACHE PATH "Qt 6.12 及以上版本的安装目录")
 if(QT_SDK_DIR)
     list(PREPEND CMAKE_PREFIX_PATH "${QT_SDK_DIR}")
 endif()

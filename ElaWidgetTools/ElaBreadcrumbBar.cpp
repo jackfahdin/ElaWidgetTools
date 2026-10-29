@@ -9,8 +9,7 @@
 #include "ElaBreadcrumbBarModel.h"
 #include "ElaBreadcrumbBarPrivate.h"
 ELA_PROPERTY_Q_CPP(ElaBreadcrumbBar, bool, IsAutoRemove);
-ElaBreadcrumbBar::ElaBreadcrumbBar(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaBreadcrumbBarPrivate())
+ElaBreadcrumbBar::ElaBreadcrumbBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaBreadcrumbBarPrivate())
 {
     Q_D(ElaBreadcrumbBar);
     d->q_ptr = this;
@@ -33,7 +32,9 @@ ElaBreadcrumbBar::ElaBreadcrumbBar(QWidget* parent)
     connect(d->_listView, &QListView::clicked, this, [=](const QModelIndex& index) {
         if (d->_pIsAutoRemove)
         {
-            if (d->_listModel->getBreadcrumbListCount() != 1 && index.row() != d->_listModel->getBreadcrumbListCount() * 2 - 2 && index.data(Qt::DisplayRole).toString() != ">")
+            if (d->_listModel->getBreadcrumbListCount() != 1 &&
+                index.row() != d->_listModel->getBreadcrumbListCount() * 2 - 2 &&
+                index.data(Qt::DisplayRole).toString() != ">")
             {
                 auto breadcrumb = index.data(Qt::DisplayRole).toString();
                 auto lastBreadcrumbList = d->_listModel->getBreadcrumbList();

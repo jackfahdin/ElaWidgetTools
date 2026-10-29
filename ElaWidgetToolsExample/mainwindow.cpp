@@ -37,16 +37,15 @@
 #include "ExamplePage/T_Navigation.h"
 #include "ExamplePage/T_Popup.h"
 #include "ExamplePage/T_UpdateWidget.h"
-MainWindow::MainWindow(QWidget* parent)
-    : ElaWindow(parent)
+MainWindow::MainWindow(QWidget* parent) : ElaWindow(parent)
 {
     initWindow();
 
     // initRibbon();
-    //额外布局
+    // 额外布局
     initEdgeLayout();
 
-    //中心窗口
+    // 中心窗口
     initContent();
 
     // 拦截默认关闭事件
@@ -61,8 +60,8 @@ MainWindow::MainWindow(QWidget* parent)
         _closeDialog->exec();
     });
 
-    //移动到中心
-    //moveToCenter();
+    // 移动到中心
+    // moveToCenter();
 
     //  如果你的windows版本低于Win11 调用原生Mica、Mica-Alt、Acrylic 会导致窗口绘制失效  Dwm_Blur仍可使用
     //    eTheme->setThemeMode(ElaThemeType::Dark);
@@ -108,7 +107,7 @@ void MainWindow::initWindow()
     setWindowPixmap(ElaThemeType::Dark, QPixmap(":/Resource/Image/WindowBase/WorldTree.jpg"));
     setWindowMoviePath(ElaThemeType::Light, ":/Resource/Image/WindowBase/Miku.gif");
     setWindowMoviePath(ElaThemeType::Dark, ":/Resource/Image/WindowBase/WorldTree.gif");
-    //setWindowPaintMode(ElaWindowType::PaintMode::Pixmap);
+    // setWindowPaintMode(ElaWindowType::PaintMode::Pixmap);
 
     // 自定义AppBar菜单
     ElaMenu* appBarMenu = new ElaMenu(this);
@@ -122,9 +121,10 @@ void MainWindow::initWindow()
     connect(appBarMenu->addAction("更改页面切换特效(Scale)"), &QAction::triggered, this, [=]() {
         setStackSwitchMode(ElaWindowType::StackSwitchMode::Scale);
     });
-    connect(appBarMenu->addElaIconAction(ElaIconType::GearComplex, "自定义主窗口设置"), &QAction::triggered, this, [=]() {
-        navigation(_settingKey);
-    });
+    connect(appBarMenu->addElaIconAction(ElaIconType::GearComplex, "自定义主窗口设置"), &QAction::triggered, this,
+            [=]() {
+                navigation(_settingKey);
+            });
     appBarMenu->addSeparator();
     connect(appBarMenu->addElaIconAction(ElaIconType::MoonStars, "更改项目主题"), &QAction::triggered, this, [=]() {
         eTheme->setThemeMode(eTheme->getThemeMode() == ElaThemeType::Light ? ElaThemeType::Dark : ElaThemeType::Light);
@@ -150,41 +150,39 @@ void MainWindow::initWindow()
     connect(rightButton, &ElaToolButton::clicked, this, [=]() {
         ElaActionCommander::getInstance()->redoCommand("ElaWidgetToolsAction");
     });
-    connect(ElaActionCommander::getInstance(), &ElaActionCommander::commanderStateChanged, this, [=](const QString& domainName, ElaActionCommanderType::CommanderState state) {
-        if (domainName != "ElaWidgetToolsAction")
-        {
-            return;
-        }
-        switch (state)
-        {
-        case ElaActionCommanderType::UndoValid:
-        {
-            leftButton->setEnabled(true);
-            break;
-        }
-        case ElaActionCommanderType::UndoInvalid:
-        {
-            leftButton->setEnabled(false);
-            break;
-        }
-        case ElaActionCommanderType::RedoValid:
-        {
-            rightButton->setEnabled(true);
-            break;
-        }
-        case ElaActionCommanderType::RedoInvalid:
-        {
-            rightButton->setEnabled(false);
-            break;
-        }
-        }
-    });
+    connect(ElaActionCommander::getInstance(), &ElaActionCommander::commanderStateChanged, this,
+            [=](const QString& domainName, ElaActionCommanderType::CommanderState state) {
+                if (domainName != "ElaWidgetToolsAction")
+                {
+                    return;
+                }
+                switch (state)
+                {
+                case ElaActionCommanderType::UndoValid: {
+                    leftButton->setEnabled(true);
+                    break;
+                }
+                case ElaActionCommanderType::UndoInvalid: {
+                    leftButton->setEnabled(false);
+                    break;
+                }
+                case ElaActionCommanderType::RedoValid: {
+                    rightButton->setEnabled(true);
+                    break;
+                }
+                case ElaActionCommanderType::RedoInvalid: {
+                    rightButton->setEnabled(false);
+                    break;
+                }
+                }
+            });
     _windowSuggestBox = new ElaSuggestBox(this);
     _windowSuggestBox->setFixedHeight(32);
     _windowSuggestBox->setPlaceholderText("搜索关键字");
-    connect(_windowSuggestBox, &ElaSuggestBox::suggestionClicked, this, [=](const ElaSuggestBox::SuggestData& suggestData) {
-        navigation(suggestData.getSuggestData().value("ElaPageKey").toString());
-    });
+    connect(_windowSuggestBox, &ElaSuggestBox::suggestionClicked, this,
+            [=](const ElaSuggestBox::SuggestData& suggestData) {
+                navigation(suggestData.getSuggestData().value("ElaPageKey").toString());
+            });
 
     ElaText* progressBusyRingText = new ElaText("系统运行中", this);
     progressBusyRingText->setIsWrapAnywhere(false);
@@ -243,36 +241,33 @@ void MainWindow::initRibbon()
     });
     undoAction->setEnabled(false);
     redoAction->setEnabled(false);
-    connect(ElaActionCommander::getInstance(), &ElaActionCommander::commanderStateChanged, this, [=](const QString& domainName, ElaActionCommanderType::CommanderState state) {
-        if (domainName != "ElaWidgetToolsAction")
-        {
-            return;
-        }
-        switch (state)
-        {
-        case ElaActionCommanderType::UndoValid:
-        {
-            undoAction->setEnabled(true);
-            break;
-        }
-        case ElaActionCommanderType::UndoInvalid:
-        {
-            undoAction->setEnabled(false);
-            break;
-        }
-        case ElaActionCommanderType::RedoValid:
-        {
-            redoAction->setEnabled(true);
-            break;
-        }
-        case ElaActionCommanderType::RedoInvalid:
-        {
-            redoAction->setEnabled(false);
-            break;
-        }
-        }
-        _ribbonBar->update();
-    });
+    connect(ElaActionCommander::getInstance(), &ElaActionCommander::commanderStateChanged, this,
+            [=](const QString& domainName, ElaActionCommanderType::CommanderState state) {
+                if (domainName != "ElaWidgetToolsAction")
+                {
+                    return;
+                }
+                switch (state)
+                {
+                case ElaActionCommanderType::UndoValid: {
+                    undoAction->setEnabled(true);
+                    break;
+                }
+                case ElaActionCommanderType::UndoInvalid: {
+                    undoAction->setEnabled(false);
+                    break;
+                }
+                case ElaActionCommanderType::RedoValid: {
+                    redoAction->setEnabled(true);
+                    break;
+                }
+                case ElaActionCommanderType::RedoInvalid: {
+                    redoAction->setEnabled(false);
+                    break;
+                }
+                }
+                _ribbonBar->update();
+            });
 
     // 形状工具
     auto operationAction = _ribbonBar->addRibbonAction("通用操作", "形状工具", "编辑模式", ElaIconType::PenLine);
@@ -281,9 +276,10 @@ void MainWindow::initRibbon()
     auto circleAction = _ribbonBar->addRibbonAction("通用操作", "形状工具", "圆形", ElaIconType::Circle);
     auto polygonAction = _ribbonBar->addRibbonAction("通用操作", "形状工具", "多边形", ElaIconType::DrawPolygon);
     auto rectAngleAction = _ribbonBar->addRibbonAction("通用操作", "形状工具", "矩形", ElaIconType::Rectangle);
-    connect(_ribbonBar, &ElaRibbonBar::ribbonActionTriggered, this, [=](const QString& pageName, const QString& groupName, QAction* action) {
-        qDebug() << pageName << groupName << action->text();
-    });
+    connect(_ribbonBar, &ElaRibbonBar::ribbonActionTriggered, this,
+            [=](const QString& pageName, const QString& groupName, QAction* action) {
+                qDebug() << pageName << groupName << action->text();
+            });
 
     _ribbonBar->addRibbonAction("记录与回放", "回放控制", "开始", ElaIconType::CirclePlay);
     _ribbonBar->addRibbonAction("记录与回放", "回放控制", "暂停", ElaIconType::CirclePause);
@@ -299,7 +295,7 @@ void MainWindow::initRibbon()
 
 void MainWindow::initEdgeLayout()
 {
-    //菜单栏
+    // 菜单栏
     ElaMenuBar* menuBar = new ElaMenuBar(this);
     menuBar->setFixedHeight(30);
     QWidget* customWidget = new QWidget(this);
@@ -337,7 +333,7 @@ void MainWindow::initEdgeLayout()
     menuBar->addMenu("工具(&F)")->addElaIconAction(ElaIconType::ArrowRotateRight, "工具选项");
     menuBar->addMenu("帮助(&G)")->addElaIconAction(ElaIconType::ArrowRotateRight, "使用说明");
 
-    //工具栏
+    // 工具栏
     ElaToolBar* toolBar = new ElaToolBar("工具栏", this);
     toolBar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
     toolBar->setToolBarSpacing(3);
@@ -395,7 +391,7 @@ void MainWindow::initEdgeLayout()
 
     this->addToolBar(Qt::TopToolBarArea, toolBar);
 
-    //停靠窗口
+    // 停靠窗口
     ElaDockWidget* logDockWidget = new ElaDockWidget("日志信息", this);
     logDockWidget->setWidget(new T_LogWidget(this));
     this->addDockWidget(Qt::RightDockWidgetArea, logDockWidget);
@@ -406,7 +402,7 @@ void MainWindow::initEdgeLayout()
     this->addDockWidget(Qt::RightDockWidgetArea, updateDockWidget);
     resizeDocks({updateDockWidget}, {200}, Qt::Horizontal);
 
-    //状态栏
+    // 状态栏
     ElaStatusBar* statusBar = new ElaStatusBar(this);
     ElaText* statusText = new ElaText("初始化成功！", this);
     statusText->setTextPixelSize(14);
@@ -472,13 +468,14 @@ void MainWindow::initContent()
     _aboutPage = new T_About();
 
     _aboutPage->hide();
-    connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
-        if (_aboutKey == nodeKey)
-        {
-            _aboutPage->moveToCenter();
-            _aboutPage->show();
-        }
-    });
+    connect(this, &ElaWindow::navigationNodeClicked, this,
+            [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
+                if (_aboutKey == nodeKey)
+                {
+                    _aboutPage->moveToCenter();
+                    _aboutPage->show();
+                }
+            });
     addFooterNode("Setting", _settingPage, _settingKey, 0, ElaIconType::GearComplex);
     connect(this, &MainWindow::userInfoCardClicked, this, [=]() {
         this->navigation(_homePage->property("ElaPageKey").toString());
@@ -508,18 +505,15 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event)
     {
         switch (event->button())
         {
-        case Qt::BackButton:
-        {
+        case Qt::BackButton: {
             this->setCurrentStackIndex(0);
             break;
         }
-        case Qt::ForwardButton:
-        {
+        case Qt::ForwardButton: {
             this->setCurrentStackIndex(1);
             break;
         }
-        default:
-        {
+        default: {
             break;
         }
         }

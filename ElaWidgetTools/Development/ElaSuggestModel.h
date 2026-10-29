@@ -18,8 +18,7 @@ public:
     ElaSuggestion* getSearchSuggestion(int row);
 
 private:
-    QVector<ElaSuggestion*> _suggestionVector; //符合搜索的节点
+    QVector<ElaSuggestion*> _suggestionVector; // 符合搜索的节点
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELASUGGESTMODEL_H_
-

@@ -13,8 +13,7 @@
 #include "ElaLog.h"
 Q_GLOBAL_STATIC(QMutex, messageLogMutex)
 Q_GLOBAL_STATIC(QString, logFileNameTime)
-ElaLogPrivate::ElaLogPrivate(QObject* parent)
-    : QObject{parent}
+ElaLogPrivate::ElaLogPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -32,23 +31,22 @@ void ElaLogPrivate::_messageLogHander(QtMsgType type, const QMessageLogContext& 
     QString logTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     switch (type)
     {
-    case QtDebugMsg:
-    {
-        logInfo = QString("[信息-%1](函数: %2 , 行数: %3) -> %4").arg(logTime, ctx.function, QString::number(ctx.line), msg);
+    case QtDebugMsg: {
+        logInfo =
+            QString("[信息-%1](函数: %2 , 行数: %3) -> %4").arg(logTime, ctx.function, QString::number(ctx.line), msg);
         break;
     }
-    case QtWarningMsg:
-    {
-        logInfo = QString("[警告-%1](函数: %2 , 行数: %3) -> %4").arg(logTime, ctx.function, QString::number(ctx.line), msg);
+    case QtWarningMsg: {
+        logInfo =
+            QString("[警告-%1](函数: %2 , 行数: %3) -> %4").arg(logTime, ctx.function, QString::number(ctx.line), msg);
         break;
     }
-    case QtCriticalMsg:
-    {
-        logInfo = QString("[错误-%1](函数: %2 , 行数: %3) -> %4").arg(logTime, ctx.function, QString::number(ctx.line), msg);
+    case QtCriticalMsg: {
+        logInfo =
+            QString("[错误-%1](函数: %2 , 行数: %3) -> %4").arg(logTime, ctx.function, QString::number(ctx.line), msg);
         break;
     }
-    default:
-    {
+    default: {
         qCritical("发生致命错误！");
         break;
     }

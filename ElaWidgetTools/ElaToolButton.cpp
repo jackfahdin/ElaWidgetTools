@@ -10,8 +10,7 @@
 #include "ElaMenu.h"
 #include "ElaToolButtonPrivate.h"
 #include "ElaToolButtonStyle.h"
-ElaToolButton::ElaToolButton(QWidget* parent)
-    : QToolButton(parent), d_ptr(new ElaToolButtonPrivate())
+ElaToolButton::ElaToolButton(QWidget* parent) : QToolButton(parent), d_ptr(new ElaToolButtonPrivate())
 {
     Q_D(ElaToolButton);
     d->q_ptr = this;
@@ -98,9 +97,8 @@ bool ElaToolButton::eventFilter(QObject* watched, QEvent* event)
     {
         switch (event->type())
         {
-        case QEvent::Show:
-        {
-            //指示器动画
+        case QEvent::Show: {
+            // 指示器动画
             QPropertyAnimation* rotateAnimation = new QPropertyAnimation(d->_toolButtonStyle, "pExpandIconRotate");
             connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
                 update();
@@ -112,9 +110,8 @@ bool ElaToolButton::eventFilter(QObject* watched, QEvent* event)
             rotateAnimation->start(QAbstractAnimation::DeleteWhenStopped);
             break;
         }
-        case QEvent::Hide:
-        {
-            //指示器动画
+        case QEvent::Hide: {
+            // 指示器动画
             QPropertyAnimation* rotateAnimation = new QPropertyAnimation(d->_toolButtonStyle, "pExpandIconRotate");
             connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
                 update();
@@ -124,12 +121,12 @@ bool ElaToolButton::eventFilter(QObject* watched, QEvent* event)
             rotateAnimation->setStartValue(d->_toolButtonStyle->getExpandIconRotate());
             rotateAnimation->setEndValue(0);
             rotateAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-            QMouseEvent focusEvent(QEvent::MouseButtonPress, QPoint(-1, -1), QPoint(-1, -1), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+            QMouseEvent focusEvent(QEvent::MouseButtonPress, QPoint(-1, -1), QPoint(-1, -1), Qt::NoButton, Qt::NoButton,
+                                   Qt::NoModifier);
             QApplication::sendEvent(parentWidget(), &focusEvent);
             break;
         }
-        default:
-        {
+        default: {
             break;
         }
         }

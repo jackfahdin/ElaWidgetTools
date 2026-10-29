@@ -18,13 +18,13 @@ ElaCheckBoxStyle::~ElaCheckBoxStyle()
 {
 }
 
-void ElaCheckBoxStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaCheckBoxStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                   const QWidget* widget) const
 {
     // qDebug() << element << option->rect;
     switch (element)
     {
-    case QStyle::CE_CheckBox:
-    {
+    case QStyle::CE_CheckBox: {
         if (const QStyleOptionButton* bopt = qstyleoption_cast<const QStyleOptionButton*>(option))
         {
             bool isEnabled = bopt->state.testFlag(QStyle::State_Enabled);
@@ -32,7 +32,7 @@ void ElaCheckBoxStyle::drawControl(ControlElement element, const QStyleOption* o
             painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
             QRect checkRect = subElementRect(SE_CheckBoxIndicator, bopt, widget);
             checkRect.adjust(1, 1, -1, -1);
-            //复选框绘制
+            // 复选框绘制
             painter->setPen(Qt::NoPen);
             if (bopt->state.testFlag(QStyle::State_On) || bopt->state.testFlag(QStyle::State_NoChange))
             {
@@ -73,7 +73,7 @@ void ElaCheckBoxStyle::drawControl(ControlElement element, const QStyleOption* o
                 }
             }
             painter->drawRoundedRect(checkRect, 2, 2);
-            //图标绘制
+            // 图标绘制
             painter->setPen(ElaThemeColor(ElaThemeType::Dark, BasicText));
             if (bopt->state.testFlag(QStyle::State_On))
             {
@@ -86,19 +86,20 @@ void ElaCheckBoxStyle::drawControl(ControlElement element, const QStyleOption* o
             }
             else if (bopt->state.testFlag(QStyle::State_NoChange))
             {
-                QLine checkLine(checkRect.x() + 3, checkRect.center().y(), checkRect.right() - 3, checkRect.center().y());
+                QLine checkLine(checkRect.x() + 3, checkRect.center().y(), checkRect.right() - 3,
+                                checkRect.center().y());
                 painter->drawLine(checkLine);
             }
-            //文字绘制
-            painter->setPen(isEnabled ? ElaThemeColor(_themeMode, BasicText) : ElaThemeColor(_themeMode, BasicTextDisable));
+            // 文字绘制
+            painter->setPen(isEnabled ? ElaThemeColor(_themeMode, BasicText)
+                                      : ElaThemeColor(_themeMode, BasicTextDisable));
             QRect textRect = subElementRect(SE_CheckBoxContents, bopt, widget);
             painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, bopt->text);
             painter->restore();
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -111,16 +112,13 @@ int ElaCheckBoxStyle::pixelMetric(PixelMetric metric, const QStyleOption* option
     switch (metric)
     {
     case QStyle::PM_IndicatorWidth:
-    case QStyle::PM_IndicatorHeight:
-    {
+    case QStyle::PM_IndicatorHeight: {
         return widget ? widget->fontMetrics().height() : QProxyStyle::pixelMetric(metric, option, widget);
     }
-    case QStyle::PM_CheckBoxLabelSpacing:
-    {
+    case QStyle::PM_CheckBoxLabelSpacing: {
         return _labelSpacing;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

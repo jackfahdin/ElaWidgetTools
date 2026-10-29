@@ -8,8 +8,7 @@ ELA_SINGLETON_CPP(ElaLog)
 ELA_PROPERTY_Q_CPP(ElaLog, QString, LogSavePath)
 ELA_PROPERTY_Q_CPP(ElaLog, QString, LogFileName)
 ELA_PROPERTY_Q_CPP(ElaLog, bool, IsLogFileNameWithTime)
-ElaLog::ElaLog(QObject* parent)
-    : QObject{parent}, d_ptr(new ElaLogPrivate())
+ElaLog::ElaLog(QObject* parent) : QObject{parent}, d_ptr(new ElaLogPrivate())
 {
     Q_D(ElaLog);
     d->q_ptr = this;

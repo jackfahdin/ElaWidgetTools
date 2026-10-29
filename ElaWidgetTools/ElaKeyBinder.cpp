@@ -8,8 +8,7 @@
 #include <QPainter>
 #include <utility>
 ELA_PROPERTY_Q_CPP(ElaKeyBinder, int, BorderRadius)
-ElaKeyBinder::ElaKeyBinder(QWidget* parent)
-    : QLabel(parent), d_ptr(new ElaKeyBinderPrivate())
+ElaKeyBinder::ElaKeyBinder(QWidget* parent) : QLabel(parent), d_ptr(new ElaKeyBinderPrivate())
 {
     Q_D(ElaKeyBinder);
     d->q_ptr = this;
@@ -72,13 +71,11 @@ bool ElaKeyBinder::event(QEvent* event)
     switch (event->type())
     {
     case QEvent::Enter:
-    case QEvent::Leave:
-    {
+    case QEvent::Leave: {
         update();
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

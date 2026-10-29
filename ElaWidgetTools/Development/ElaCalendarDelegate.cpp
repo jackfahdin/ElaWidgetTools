@@ -6,8 +6,7 @@
 #include <QStyleOption>
 
 #include "ElaTheme.h"
-ElaCalendarDelegate::ElaCalendarDelegate(ElaCalendarModel* calendarModel, QObject* parent)
-    : QStyledItemDelegate{parent}
+ElaCalendarDelegate::ElaCalendarDelegate(ElaCalendarModel* calendarModel, QObject* parent) : QStyledItemDelegate{parent}
 {
     _pIsTransparent = false;
     _calendarModel = calendarModel;
@@ -18,7 +17,8 @@ ElaCalendarDelegate::ElaCalendarDelegate(ElaCalendarModel* calendarModel, QObjec
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
         _themeMode = themeMode;
     });
-    connect(_calendarModel, &ElaCalendarModel::displayModeChanged, this, &ElaCalendarDelegate::onCalendarModelDisplayModeChanged);
+    connect(_calendarModel, &ElaCalendarModel::displayModeChanged, this,
+            &ElaCalendarDelegate::onCalendarModelDisplayModeChanged);
 }
 
 ElaCalendarDelegate::~ElaCalendarDelegate()
@@ -30,14 +30,12 @@ void ElaCalendarDelegate::onCalendarModelDisplayModeChanged()
     switch (_calendarModel->getDisplayMode())
     {
     case YearMode:
-    case MonthMode:
-    {
+    case MonthMode: {
         _pItemWidth = 53;
         _pItemHeight = 60;
         break;
     }
-    case DayMode:
-    {
+    case DayMode: {
         _pItemWidth = 42;
         _pItemHeight = 42;
         break;
@@ -57,13 +55,11 @@ void ElaCalendarDelegate::paint(QPainter* painter, const QStyleOptionViewItem& o
     switch (displayModel)
     {
     case YearMode:
-    case MonthMode:
-    {
+    case MonthMode: {
         _drawYearOrMonth(painter, option, index);
         break;
     }
-    case DayMode:
-    {
+    case DayMode: {
         _drawDays(painter, option, index);
         break;
     }
@@ -77,7 +73,8 @@ QSize ElaCalendarDelegate::sizeHint(const QStyleOptionViewItem& option, const QM
     return QSize(_pItemWidth, _pItemHeight);
 }
 
-void ElaCalendarDelegate::_drawYearOrMonth(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void ElaCalendarDelegate::_drawYearOrMonth(QPainter* painter, const QStyleOptionViewItem& option,
+                                           const QModelIndex& index) const
 {
     QRectF itemRect = option.rect;
     bool isNow = false;
@@ -85,10 +82,12 @@ void ElaCalendarDelegate::_drawYearOrMonth(QPainter* painter, const QStyleOption
     qreal baseRadius = _pItemWidth * 0.5;
     // 当前日期绘制
     ElaCalendarType displayMode = _calendarModel->getDisplayMode();
-    if ((displayMode == ElaCalendarType::YearMode && data.year == _nowDate.year()) || (displayMode == ElaCalendarType::MonthMode && data.month == _nowDate.month() && data.year == _nowDate.year()))
+    if ((displayMode == ElaCalendarType::YearMode && data.year == _nowDate.year()) ||
+        (displayMode == ElaCalendarType::MonthMode && data.month == _nowDate.month() && data.year == _nowDate.year()))
     {
         isNow = true;
-        QColor drawColor = option.state.testFlag(QStyle::State_MouseOver) ? ElaThemeColor(_themeMode, PrimaryHover) : ElaThemeColor(_themeMode, PrimaryNormal);
+        QColor drawColor = option.state.testFlag(QStyle::State_MouseOver) ? ElaThemeColor(_themeMode, PrimaryHover)
+                                                                          : ElaThemeColor(_themeMode, PrimaryNormal);
         painter->setPen(Qt::NoPen);
         painter->setBrush(drawColor);
         painter->drawEllipse(itemRect.center(), baseRadius, baseRadius);
@@ -106,7 +105,9 @@ void ElaCalendarDelegate::_drawYearOrMonth(QPainter* painter, const QStyleOption
 
     // 文字绘制
     painter->setPen(isNow ? ElaThemeColor(_themeMode, BasicTextInvert) : ElaThemeColor(_themeMode, BasicText));
-    painter->drawText(itemRect, Qt::AlignCenter, displayMode == ElaCalendarType::YearMode ? QString::number(data.year) : QString::number(data.month));
+    painter->drawText(itemRect, Qt::AlignCenter,
+                      displayMode == ElaCalendarType::YearMode ? QString::number(data.year)
+                                                               : QString::number(data.month));
     QString desText = data.desText;
     if (!desText.isEmpty())
     {
@@ -118,7 +119,8 @@ void ElaCalendarDelegate::_drawYearOrMonth(QPainter* painter, const QStyleOption
     }
 }
 
-void ElaCalendarDelegate::_drawDays(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void ElaCalendarDelegate::_drawDays(QPainter* painter, const QStyleOptionViewItem& option,
+                                    const QModelIndex& index) const
 {
     qreal penWidth = 1.5;
     qreal baseRadius = _pItemWidth * 0.5 - penWidth;
@@ -132,7 +134,9 @@ void ElaCalendarDelegate::_drawDays(QPainter* painter, const QStyleOptionViewIte
         if (data.year == _nowDate.year() && data.month == _nowDate.month() && data.day == _nowDate.day())
         {
             isNow = true;
-            QColor drawColor = option.state.testFlag(QStyle::State_MouseOver) ? ElaThemeColor(_themeMode, PrimaryHover) : ElaThemeColor(_themeMode, PrimaryNormal);
+            QColor drawColor = option.state.testFlag(QStyle::State_MouseOver)
+                                   ? ElaThemeColor(_themeMode, PrimaryHover)
+                                   : ElaThemeColor(_themeMode, PrimaryNormal);
             if (option.state.testFlag(QStyle::State_Selected))
             {
                 painter->setPen(QPen(drawColor, penWidth));
@@ -153,7 +157,10 @@ void ElaCalendarDelegate::_drawDays(QPainter* painter, const QStyleOptionViewIte
             // 覆盖和选中效果绘制
             if (option.state.testFlag(QStyle::State_Selected))
             {
-                painter->setPen(QPen(option.state.testFlag(QStyle::State_MouseOver) ? ElaThemeColor(_themeMode, PrimaryHover) : ElaThemeColor(_themeMode, PrimaryNormal), penWidth));
+                painter->setPen(QPen(option.state.testFlag(QStyle::State_MouseOver)
+                                         ? ElaThemeColor(_themeMode, PrimaryHover)
+                                         : ElaThemeColor(_themeMode, PrimaryNormal),
+                                     penWidth));
                 painter->setBrush(Qt::NoBrush);
                 painter->drawEllipse(itemRect.center(), baseRadius, baseRadius);
             }

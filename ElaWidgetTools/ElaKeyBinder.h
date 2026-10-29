@@ -32,4 +32,4 @@ protected:
     virtual void paintEvent(QPaintEvent* event) override;
 };
 
-#endif //ELAWORKSPACE_ELAWIDGETTOOLS_ELAKEYBINDER_H_
+#endif // ELAWORKSPACE_ELAWIDGETTOOLS_ELAKEYBINDER_H_

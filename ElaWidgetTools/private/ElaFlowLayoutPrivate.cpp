@@ -4,8 +4,7 @@
 #include <QDebug>
 #include <QPropertyAnimation>
 #include <QWidget>
-ElaFlowLayoutPrivate::ElaFlowLayoutPrivate(QObject* parent)
-    : QObject{parent}
+ElaFlowLayoutPrivate::ElaFlowLayoutPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -22,7 +21,7 @@ int ElaFlowLayoutPrivate::_doLayout(const QRect& rect, bool testOnly) const
     int x = effectiveRect.x();
     int y = effectiveRect.y();
     int lineHeight = 0;
-    for (QLayoutItem* item: _itemList)
+    for (QLayoutItem* item : _itemList)
     {
         const QWidget* wid = item->widget();
         int spaceX = q->horizontalSpacing();

@@ -39,4 +39,4 @@ protected:
     virtual void paintEvent(QPaintEvent* event) override;
 };
 
-#endif //ELAWORKSPACE_ELAWIDGETTOOLS_ELAROLLERPICKER_H_
+#endif // ELAWORKSPACE_ELAWIDGETTOOLS_ELAROLLERPICKER_H_

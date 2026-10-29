@@ -9,8 +9,7 @@
 #include <QLineEdit>
 #include <QPainter>
 #include <QPropertyAnimation>
-ElaDoubleSpinBox::ElaDoubleSpinBox(QWidget* parent)
-    : QDoubleSpinBox(parent), d_ptr(new ElaDoubleSpinBoxPrivate())
+ElaDoubleSpinBox::ElaDoubleSpinBox(QWidget* parent) : QDoubleSpinBox(parent), d_ptr(new ElaDoubleSpinBoxPrivate())
 {
     Q_D(ElaDoubleSpinBox);
     d->q_ptr = this;
@@ -40,16 +39,14 @@ void ElaDoubleSpinBox::setButtonMode(ElaSpinBoxType::ButtonMode buttonMode)
     d->_style->setButtonMode(buttonMode);
     switch (buttonMode)
     {
-    case ElaSpinBoxType::Inline:
-    {
+    case ElaSpinBoxType::Inline: {
         lineEdit()->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         lineEdit()->setStyleSheet("background-color:transparent;padding-left:10px;padding-bottom:3px;");
         break;
     }
     case ElaSpinBoxType::Compact:
     case ElaSpinBoxType::Side:
-    case ElaSpinBoxType::PMSide:
-    {
+    case ElaSpinBoxType::PMSide: {
         lineEdit()->setAlignment(Qt::AlignCenter);
         lineEdit()->setStyleSheet("background-color:transparent;padding-bottom:3px;");
         break;
@@ -111,7 +108,8 @@ void ElaDoubleSpinBox::paintEvent(QPaintEvent* event)
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     painter.setPen(Qt::NoPen);
     painter.setBrush(ElaThemeColor(d->_themeMode, PrimaryNormal));
-    painter.drawRoundedRect(QRectF(width() / 2 - d->_pExpandMarkWidth, height() - 2.5, d->_pExpandMarkWidth * 2, 2.5), 2, 2);
+    painter.drawRoundedRect(QRectF(width() / 2 - d->_pExpandMarkWidth, height() - 2.5, d->_pExpandMarkWidth * 2, 2.5),
+                            2, 2);
     painter.restore();
 }
 
@@ -133,8 +131,8 @@ void ElaDoubleSpinBox::contextMenuEvent(QContextMenuEvent* event)
 
     const QAbstractSpinBox* that = this;
     const QPoint pos = (event->reason() == QContextMenuEvent::Mouse)
-        ? event->globalPos()
-        : mapToGlobal(QPoint(event->pos().x(), 0)) + QPoint(width() / 2, height() / 2);
+                           ? event->globalPos()
+                           : mapToGlobal(QPoint(event->pos().x(), 0)) + QPoint(width() / 2, height() / 2);
     const QAction* action = menu->exec(pos);
     delete menu;
     if (that && action)

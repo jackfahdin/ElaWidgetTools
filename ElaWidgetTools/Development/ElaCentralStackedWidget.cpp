@@ -9,8 +9,7 @@
 #include <QPropertyAnimation>
 #include <QTimer>
 #include <cmath>
-ElaCentralStackedWidget::ElaCentralStackedWidget(QWidget* parent)
-    : QWidget(parent)
+ElaCentralStackedWidget::ElaCentralStackedWidget(QWidget* parent) : QWidget(parent)
 {
     _pPopupAnimationYOffset = 0;
     _pScaleAnimationRatio = 1;
@@ -91,7 +90,8 @@ void ElaCentralStackedWidget::setIsHasRadius(bool isHasRadius)
     update();
 }
 
-void ElaCentralStackedWidget::doWindowStackSwitch(ElaWindowType::StackSwitchMode stackSwitchMode, int nodeIndex, bool isRouteBack)
+void ElaCentralStackedWidget::doWindowStackSwitch(ElaWindowType::StackSwitchMode stackSwitchMode, int nodeIndex,
+                                                  bool isRouteBack)
 {
     if (_pLastTargetIndex == nodeIndex)
     {
@@ -101,13 +101,11 @@ void ElaCentralStackedWidget::doWindowStackSwitch(ElaWindowType::StackSwitchMode
     _stackSwitchMode = stackSwitchMode;
     switch (stackSwitchMode)
     {
-    case ElaWindowType::None:
-    {
+    case ElaWindowType::None: {
         _containerStackedWidget->setCurrentIndex(nodeIndex);
         break;
     }
-    case ElaWindowType::Popup:
-    {
+    case ElaWindowType::Popup: {
         QTimer::singleShot(180, this, [=]() {
             QWidget* targetWidget = _containerStackedWidget->widget(nodeIndex);
             _containerStackedWidget->setCurrentIndex(nodeIndex);
@@ -131,8 +129,7 @@ void ElaCentralStackedWidget::doWindowStackSwitch(ElaWindowType::StackSwitchMode
         });
         break;
     }
-    case ElaWindowType::Scale:
-    {
+    case ElaWindowType::Scale: {
         QWidget* targetWidget = _containerStackedWidget->widget(nodeIndex);
         _getCurrentStackPix();
         _containerStackedWidget->setCurrentIndex(nodeIndex);
@@ -199,8 +196,7 @@ void ElaCentralStackedWidget::doWindowStackSwitch(ElaWindowType::StackSwitchMode
         currentPixOpacityAnimation->start(QAbstractAnimation::DeleteWhenStopped);
         break;
     }
-    case ElaWindowType::Flip:
-    {
+    case ElaWindowType::Flip: {
         QWidget* targetWidget = _containerStackedWidget->widget(nodeIndex);
         _getCurrentStackPix();
         _containerStackedWidget->setCurrentIndex(nodeIndex);
@@ -222,8 +218,7 @@ void ElaCentralStackedWidget::doWindowStackSwitch(ElaWindowType::StackSwitchMode
         flipAnimation->start(QAbstractAnimation::DeleteWhenStopped);
         break;
     }
-    case ElaWindowType::Blur:
-    {
+    case ElaWindowType::Blur: {
         _targetStackPix = QPixmap();
         _blurEffect->setEnabled(true);
         QPropertyAnimation* blurAnimation = new QPropertyAnimation(this, "pBlurAnimationRadius");
@@ -269,23 +264,22 @@ void ElaCentralStackedWidget::paintEvent(QPaintEvent* event)
     if (!_targetStackPix.isNull())
     {
         QPoint centralStackPos = _containerStackedWidget->mapToParent(QPoint(0, 0));
-        QRect centralStackRect = QRect(centralStackPos.x(), centralStackPos.y(), _containerStackedWidget->width(), _containerStackedWidget->height());
+        QRect centralStackRect = QRect(centralStackPos.x(), centralStackPos.y(), _containerStackedWidget->width(),
+                                       _containerStackedWidget->height());
         QPainterPath clipPath;
         clipPath.addRoundedRect(centralStackRect, 10, 10);
         painter.setClipPath(clipPath);
         switch (_stackSwitchMode)
         {
-        case ElaWindowType::None:
-        {
+        case ElaWindowType::None: {
             break;
         }
-        case ElaWindowType::Popup:
-        {
-            painter.drawPixmap(QRect(0, _pPopupAnimationYOffset, width(), _containerStackedWidget->height()), _targetStackPix);
+        case ElaWindowType::Popup: {
+            painter.drawPixmap(QRect(0, _pPopupAnimationYOffset, width(), _containerStackedWidget->height()),
+                               _targetStackPix);
             break;
         }
-        case ElaWindowType::Scale:
-        {
+        case ElaWindowType::Scale: {
             painter.setOpacity(_pScaleAnimationPixOpacity);
             painter.translate(_containerStackedWidget->rect().center());
             painter.scale(_pScaleAnimationRatio, _pScaleAnimationRatio);
@@ -293,8 +287,7 @@ void ElaCentralStackedWidget::paintEvent(QPaintEvent* event)
             painter.drawPixmap(centralStackRect, _isDrawNewPix ? _targetStackPix : _currentStackPix);
             break;
         }
-        case ElaWindowType::Flip:
-        {
+        case ElaWindowType::Flip: {
             QTransform transform;
             transform.translate(centralStackRect.center().x(), 0);
             if (abs(_pFlipAnimationRatio) >= 90)
@@ -317,8 +310,7 @@ void ElaCentralStackedWidget::paintEvent(QPaintEvent* event)
             }
             break;
         }
-        case ElaWindowType::Blur:
-        {
+        case ElaWindowType::Blur: {
             break;
         }
         }

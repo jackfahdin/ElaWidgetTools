@@ -6,16 +6,14 @@
 #include "ElaTableViewStyle.h"
 #include "ElaScrollBar.h"
 #include "ElaTableViewPrivate.h"
-ElaTableView::ElaTableView(QWidget* parent)
-    : QTableView(parent), d_ptr(new ElaTableViewPrivate())
+ElaTableView::ElaTableView(QWidget* parent) : QTableView(parent), d_ptr(new ElaTableViewPrivate())
 {
     Q_D(ElaTableView);
     d->q_ptr = this;
     setMouseTracking(true);
     setObjectName("ElaTableView");
-    setStyleSheet(
-        "QTableView{background-color:transparent;}"
-        "QHeaderView{background-color:transparent;border:0px;}");
+    setStyleSheet("QTableView{background-color:transparent;}"
+                  "QHeaderView{background-color:transparent;border:0px;}");
     setShowGrid(false);
     setVerticalScrollBar(new ElaScrollBar(this));
     setHorizontalScrollBar(new ElaScrollBar(this));

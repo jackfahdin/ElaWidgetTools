@@ -8,8 +8,7 @@
 #include <QVBoxLayout>
 
 ELA_PROPERTY_Q_CPP(ElaRollerPicker, int, BorderRadius)
-ElaRollerPicker::ElaRollerPicker(QWidget* parent)
-    : QPushButton{parent}, d_ptr(new ElaRollerPickerPrivate())
+ElaRollerPicker::ElaRollerPicker(QWidget* parent) : QPushButton{parent}, d_ptr(new ElaRollerPickerPrivate())
 {
     Q_D(ElaRollerPicker);
     d->q_ptr = this;
@@ -26,8 +25,10 @@ ElaRollerPicker::ElaRollerPicker(QWidget* parent)
     d->_rollerPickerContainer->resize(90, d->_pickerRollerHeight + d->_rollerPickerContainer->getButtonAreaHeight());
     d->_rollerPickerContainer->hide();
     connect(this, &QPushButton::clicked, d, &ElaRollerPickerPrivate::onRollerPickerClicked);
-    connect(d->_rollerPickerContainer, &ElaRollerPickerContainer::overButtonClicked, d, &ElaRollerPickerPrivate::onOverButtonClicked);
-    connect(d->_rollerPickerContainer, &ElaRollerPickerContainer::cancelButtonClicked, d, &ElaRollerPickerPrivate::onCancelButtonClicked);
+    connect(d->_rollerPickerContainer, &ElaRollerPickerContainer::overButtonClicked, d,
+            &ElaRollerPickerPrivate::onOverButtonClicked);
+    connect(d->_rollerPickerContainer, &ElaRollerPickerContainer::cancelButtonClicked, d,
+            &ElaRollerPickerPrivate::onCancelButtonClicked);
 
     d->_containerLayout = new QHBoxLayout(d->_rollerPickerContainer);
     d->_containerLayout->setSpacing(0);
@@ -140,7 +141,7 @@ QStringList ElaRollerPicker::getCurrentData() const
 {
     Q_D(const ElaRollerPicker);
     QStringList dataList;
-    for (auto roller: d->_rollerPickerContainer->_rollerList)
+    for (auto roller : d->_rollerPickerContainer->_rollerList)
     {
         dataList.append(roller->getCurrentData());
     }
@@ -185,7 +186,7 @@ QList<int> ElaRollerPicker::getCurrentIndex() const
 {
     Q_D(const ElaRollerPicker);
     QList<int> currentIndexList;
-    for (auto roller: d->_rollerPickerContainer->_rollerList)
+    for (auto roller : d->_rollerPickerContainer->_rollerList)
     {
         currentIndexList.append(roller->getCurrentIndex());
     }
@@ -212,7 +213,8 @@ void ElaRollerPicker::paintEvent(QPaintEvent* event)
         auto roller = d->_rollerPickerContainer->_rollerList[i];
         painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
         int rollerWidth = roller->width();
-        painter.drawText(QRect(rollerXOffset, baseRect.y(), rollerWidth, baseRect.height()), Qt::AlignCenter, roller->getCurrentData());
+        painter.drawText(QRect(rollerXOffset, baseRect.y(), rollerWidth, baseRect.height()), Qt::AlignCenter,
+                         roller->getCurrentData());
         rollerXOffset += rollerWidth;
         if (i != d->_rollerPickerContainer->_rollerList.count() - 1)
         {

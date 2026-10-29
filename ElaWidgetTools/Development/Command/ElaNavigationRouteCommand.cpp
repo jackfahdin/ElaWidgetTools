@@ -2,8 +2,7 @@
 
 #include "ElaNavigationBar.h"
 
-ElaNavigationRouteCommand::ElaNavigationRouteCommand(QObject* parent)
-    : ElaActionCommand(parent)
+ElaNavigationRouteCommand::ElaNavigationRouteCommand(QObject* parent) : ElaActionCommand(parent)
 {
 }
 

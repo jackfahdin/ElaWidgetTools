@@ -20,13 +20,13 @@ ElaTableViewStyle::~ElaTableViewStyle()
 {
 }
 
-void ElaTableViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaTableViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                      const QWidget* widget) const
 {
-    //qDebug() << element << option->rect << widget->objectName();
+    // qDebug() << element << option->rect << widget->objectName();
     switch (element)
     {
-    case QStyle::PE_PanelItemViewItem:
-    {
+    case QStyle::PE_PanelItemViewItem: {
         // 行覆盖绘制
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
@@ -60,8 +60,7 @@ void ElaTableViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOpti
         }
         return;
     }
-    case QStyle::PE_PanelItemViewRow:
-    {
+    case QStyle::PE_PanelItemViewRow: {
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
             painter->save();
@@ -88,25 +87,23 @@ void ElaTableViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOpti
         }
         return;
     }
-    case QStyle::PE_Widget:
-    {
+    case QStyle::PE_Widget: {
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
-void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                    const QWidget* widget) const
 {
-    //qDebug() << element << option->rect;
+    // qDebug() << element << option->rect;
     switch (element)
     {
-    case QStyle::CE_ShapedFrame:
-    {
+    case QStyle::CE_ShapedFrame: {
         // viewport视口外的其他区域背景
         QRect frameRect = option->rect;
         frameRect.adjust(1, 1, -1, -1);
@@ -118,14 +115,14 @@ void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* 
         painter->restore();
         return;
     }
-    case QStyle::CE_HeaderLabel:
-    {
+    case QStyle::CE_HeaderLabel: {
         // 表头文字绘制
         if (const QStyleOptionHeader* hopt = qstyleoption_cast<const QStyleOptionHeader*>(option))
         {
             QRect headerRect = option->rect;
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform |
+                                    QPainter::TextAntialiasing);
             if (!hopt->text.isEmpty())
             {
                 painter->setPen(ElaThemeColor(_themeMode, BasicText));
@@ -135,8 +132,7 @@ void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* 
         }
         return;
     }
-    case QStyle::CE_HeaderSection:
-    {
+    case QStyle::CE_HeaderSection: {
         // 表头背景绘制
         painter->save();
         painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
@@ -158,8 +154,7 @@ void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* 
         painter->restore();
         return;
     }
-    case QStyle::CE_HeaderEmptyArea:
-    {
+    case QStyle::CE_HeaderEmptyArea: {
         // 表头未使用区域背景绘制
         QRect frameRect = option->rect;
         painter->save();
@@ -170,8 +165,7 @@ void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* 
         painter->restore();
         return;
     }
-    case QStyle::CE_ItemViewItem:
-    {
+    case QStyle::CE_ItemViewItem: {
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
             // 背景绘制
@@ -185,7 +179,8 @@ void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* 
             // 内容绘制
             QRect itemRect = option->rect;
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform |
+                                    QPainter::TextAntialiasing);
             // QRect checkRect = proxy()->subElementRect(SE_ItemViewItemCheckIndicator, vopt, widget);
             QRect iconRect = proxy()->subElementRect(SE_ItemViewItemDecoration, vopt, widget);
             QRect textRect = proxy()->subElementRect(SE_ItemViewItemText, vopt, widget);
@@ -223,15 +218,16 @@ void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* 
             {
                 if (selectionBehavior == QAbstractItemView::SelectRows && vopt->index.column() == 0)
                 {
-                    painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + heightOffset, 3, itemRect.height() - 2 * heightOffset), 1.5, 1.5);
+                    painter->drawRoundedRect(
+                        QRectF(itemRect.x() + 3, itemRect.y() + heightOffset, 3, itemRect.height() - 2 * heightOffset),
+                        1.5, 1.5);
                 }
             }
             painter->restore();
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -240,15 +236,13 @@ void ElaTableViewStyle::drawControl(ControlElement element, const QStyleOption* 
 
 int ElaTableViewStyle::pixelMetric(PixelMetric metric, const QStyleOption* option, const QWidget* widget) const
 {
-    //qDebug() << metric << QProxyStyle::pixelMetric(metric, option, widget);
+    // qDebug() << metric << QProxyStyle::pixelMetric(metric, option, widget);
     switch (metric)
     {
-    case QStyle::PM_HeaderMargin:
-    {
+    case QStyle::PM_HeaderMargin: {
         return _pHeaderMargin;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

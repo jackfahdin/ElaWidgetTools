@@ -16,8 +16,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 Q_TAKEOVER_NATIVEEVENT_CPP(ElaContentDialog, d_func()->_appBar);
-ElaContentDialog::ElaContentDialog(QWidget* parent)
-    : QDialog{parent}, d_ptr(new ElaContentDialogPrivate())
+ElaContentDialog::ElaContentDialog(QWidget* parent) : QDialog{parent}, d_ptr(new ElaContentDialogPrivate())
 {
     Q_D(ElaContentDialog);
     d->q_ptr = this;
@@ -196,13 +195,11 @@ void ElaContentDialog::keyPressEvent(QKeyEvent* event)
     Q_D(ElaContentDialog);
     switch (event->key())
     {
-    case Qt::Key_Escape:
-    {
+    case Qt::Key_Escape: {
         d->_doCloseAnimation(false);
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

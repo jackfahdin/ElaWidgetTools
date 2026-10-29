@@ -6,8 +6,7 @@
 #include <QDebug>
 #include <QModelIndex>
 #include <QPropertyAnimation>
-ElaPivotPrivate::ElaPivotPrivate(QObject* parent)
-    : QObject{parent}
+ElaPivotPrivate::ElaPivotPrivate(QObject* parent) : QObject{parent}
 {
 }
 

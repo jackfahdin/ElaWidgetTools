@@ -12,8 +12,7 @@
 #include <QApplication>
 #include <QVBoxLayout>
 
-ElaActionCommand::ElaActionCommand(QObject* parent)
-    : QObject(parent)
+ElaActionCommand::ElaActionCommand(QObject* parent) : QObject(parent)
 {
     _pIsShowMessage = true;
     _pMessageMode = ElaMessageBarType::Success;
@@ -29,8 +28,7 @@ ELA_PROPERTY_Q_CPP(ElaActionCommander, int, IsMessageDisplayEnable)
 ELA_PROPERTY_Q_CPP(ElaActionCommander, int, MessageDisplayMesc)
 ELA_PROPERTY_Q_CPP(ElaActionCommander, int, MaxCommandCount)
 ELA_PROPERTY_Q_CPP(ElaActionCommander, bool, IsRunToCommandProcessEventEnable)
-ElaActionCommander::ElaActionCommander(QObject* parent)
-    : QObject{parent}, d_ptr(new ElaActionCommanderPrivate())
+ElaActionCommander::ElaActionCommander(QObject* parent) : QObject{parent}, d_ptr(new ElaActionCommanderPrivate())
 {
     Q_D(ElaActionCommander);
     d->q_ptr = this;
@@ -46,9 +44,10 @@ ElaActionCommander::ElaActionCommander(QObject* parent)
     d->_commanderDesign->resize(400, 1000);
 
     d->_commanderView = new ElaActionCommanderView(d->_commanderDesign);
-    connect(d->_commanderView, &ElaActionCommanderView::runToCommand, this, [=](const QString& domainName, int commandIndex) {
-        runToCommand(domainName, commandIndex);
-    });
+    connect(d->_commanderView, &ElaActionCommanderView::runToCommand, this,
+            [=](const QString& domainName, int commandIndex) {
+                runToCommand(domainName, commandIndex);
+            });
 
     // 配置界面
     auto settingLayout = new QVBoxLayout();
@@ -171,10 +170,12 @@ bool ElaActionCommander::executeCommand(const QString& domainName, ElaActionComm
     if (isInvoke)
     {
         bool result = false;
-        QMetaObject::invokeMethod(this, [&]() {
-            result = d->_executeCommand(domainName, command);
-        },
-                                  Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(
+            this,
+            [&]() {
+                result = d->_executeCommand(domainName, command);
+            },
+            Qt::BlockingQueuedConnection);
         return result;
     }
     return d->_executeCommand(domainName, command);
@@ -186,10 +187,12 @@ bool ElaActionCommander::recordCommand(const QString& domainName, ElaActionComma
     if (isInvoke)
     {
         bool result = false;
-        QMetaObject::invokeMethod(this, [&]() {
-            result = d->_recordCommand(domainName, command, isRedo);
-        },
-                                  Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(
+            this,
+            [&]() {
+                result = d->_recordCommand(domainName, command, isRedo);
+            },
+            Qt::BlockingQueuedConnection);
         return result;
     }
     return d->_recordCommand(domainName, command, isRedo);
@@ -205,7 +208,7 @@ void ElaActionCommander::clearCommand(const QString& domainName)
     auto& commandData = d->_commandDomainMap[domainName];
     auto& commandList = commandData.commandList;
     commandData.currentIndex = -1;
-    for (const auto command: commandList)
+    for (const auto command : commandList)
     {
         delete command;
     }
@@ -222,12 +225,14 @@ void ElaActionCommander::undoCommand(const QString& domainName)
     auto& commandData = d->_commandDomainMap[domainName];
     if (commandData.isBusyMode)
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", d->_pMessageDisplayMesc, nullptr);
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", d->_pMessageDisplayMesc,
+                               nullptr);
         return;
     }
     if (!d->_isCommanderValid)
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "当前不处于可编辑模式，仅支持运行命令!", d->_pMessageDisplayMesc, nullptr);
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "当前不处于可编辑模式，仅支持运行命令!",
+                               d->_pMessageDisplayMesc, nullptr);
         return;
     }
     setCurrentDomain(domainName);
@@ -240,12 +245,14 @@ void ElaActionCommander::redoCommand(const QString& domainName)
     auto& commandData = d->_commandDomainMap[domainName];
     if (commandData.isBusyMode)
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", d->_pMessageDisplayMesc, nullptr);
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", d->_pMessageDisplayMesc,
+                               nullptr);
         return;
     }
     if (!d->_isCommanderValid)
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "当前不处于可编辑模式，仅支持运行命令!", d->_pMessageDisplayMesc, nullptr);
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "当前不处于可编辑模式，仅支持运行命令!",
+                               d->_pMessageDisplayMesc, nullptr);
         return;
     }
     setCurrentDomain(domainName);
@@ -259,7 +266,8 @@ void ElaActionCommander::runToCommand(const QString& domainName, int commandInde
     auto& commandList = commandData.commandList;
     if (commandData.isBusyMode || commandIndex >= commandList.count())
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", d->_pMessageDisplayMesc, nullptr);
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", d->_pMessageDisplayMesc,
+                               nullptr);
         return;
     }
     commandData.isBusyMode = true;
@@ -297,11 +305,13 @@ void ElaActionCommander::runToCommand(const QString& domainName, int commandInde
     }
     if (isRedo)
     {
-        ElaMessageBar::information(ElaMessageBarType::TopRight, "重做", "重做到指定节点完成!", d->_pMessageDisplayMesc, nullptr);
+        ElaMessageBar::information(ElaMessageBarType::TopRight, "重做", "重做到指定节点完成!", d->_pMessageDisplayMesc,
+                                   nullptr);
     }
     else
     {
-        ElaMessageBar::information(ElaMessageBarType::TopRight, "撤销", "撤销到指定节点完成!", d->_pMessageDisplayMesc, nullptr);
+        ElaMessageBar::information(ElaMessageBarType::TopRight, "撤销", "撤销到指定节点完成!", d->_pMessageDisplayMesc,
+                                   nullptr);
     }
     commandData.isBusyMode = false;
 }

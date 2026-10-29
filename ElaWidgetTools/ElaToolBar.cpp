@@ -8,8 +8,7 @@
 #include "ElaTheme.h"
 #include "ElaToolBarPrivate.h"
 #include "ElaToolBarStyle.h"
-ElaToolBar::ElaToolBar(QWidget* parent)
-    : QToolBar(parent), d_ptr(new ElaToolBarPrivate())
+ElaToolBar::ElaToolBar(QWidget* parent) : QToolBar(parent), d_ptr(new ElaToolBarPrivate())
 {
     Q_D(ElaToolBar);
     d->q_ptr = this;
@@ -32,7 +31,8 @@ ElaToolBar::ElaToolBar(QWidget* parent)
     connect(this, &ElaToolBar::topLevelChanged, this, [=](bool topLevel) {
         if (topLevel)
         {
-            layout()->setContentsMargins(d->_shadowBorderWidth + 3, d->_shadowBorderWidth + 3, d->_shadowBorderWidth + 3, d->_shadowBorderWidth + 3);
+            layout()->setContentsMargins(d->_shadowBorderWidth + 3, d->_shadowBorderWidth + 3,
+                                         d->_shadowBorderWidth + 3, d->_shadowBorderWidth + 3);
         }
         else
         {
@@ -41,8 +41,7 @@ ElaToolBar::ElaToolBar(QWidget* parent)
     });
 }
 
-ElaToolBar::ElaToolBar(const QString& title, QWidget* parent)
-    : ElaToolBar(parent)
+ElaToolBar::ElaToolBar(const QString& title, QWidget* parent) : ElaToolBar(parent)
 {
     setWindowTitle(title);
 }
@@ -104,10 +103,11 @@ void ElaToolBar::paintEvent(QPaintEvent* event)
     {
         // 高性能阴影
         eTheme->drawEffectShadow(&painter, rect(), d->_shadowBorderWidth, 6);
-        //背景
+        // 背景
         painter.setPen(ElaThemeColor(d->_themeMode, PopupBorder));
         painter.setBrush(ElaThemeColor(d->_themeMode, DialogBase));
-        QRect foregroundRect(d->_shadowBorderWidth, d->_shadowBorderWidth, width() - 2 * d->_shadowBorderWidth, height() - 2 * d->_shadowBorderWidth);
+        QRect foregroundRect(d->_shadowBorderWidth, d->_shadowBorderWidth, width() - 2 * d->_shadowBorderWidth,
+                             height() - 2 * d->_shadowBorderWidth);
         painter.drawRoundedRect(foregroundRect, 5, 5);
         QStyle* style = this->style();
         QStyleOptionToolBar opt;

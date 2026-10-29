@@ -12,8 +12,7 @@
 #include "ElaPlainTextEditStyle.h"
 #include "ElaScrollBar.h"
 #include "ElaTheme.h"
-ElaPlainTextEdit::ElaPlainTextEdit(QWidget* parent)
-    : QPlainTextEdit(parent), d_ptr(new ElaPlainTextEditPrivate())
+ElaPlainTextEdit::ElaPlainTextEdit(QWidget* parent) : QPlainTextEdit(parent), d_ptr(new ElaPlainTextEditPrivate())
 {
     Q_D(ElaPlainTextEdit);
     d->q_ptr = this;
@@ -33,8 +32,7 @@ ElaPlainTextEdit::ElaPlainTextEdit(QWidget* parent)
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaPlainTextEditPrivate::onThemeChanged);
 }
 
-ElaPlainTextEdit::ElaPlainTextEdit(const QString& text, QWidget* parent)
-    : ElaPlainTextEdit(parent)
+ElaPlainTextEdit::ElaPlainTextEdit(const QString& text, QWidget* parent) : ElaPlainTextEdit(parent)
 {
     setPlainText(text);
 }

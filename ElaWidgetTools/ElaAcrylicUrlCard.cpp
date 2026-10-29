@@ -23,8 +23,7 @@ ELA_PROPERTY_Q_CPP(ElaAcrylicUrlCard, QSize, CardPixmapSize);
 ELA_PROPERTY_Q_CPP(ElaAcrylicUrlCard, int, CardPixmapBorderRadius)
 ELA_PROPERTY_Q_CPP(ElaAcrylicUrlCard, ElaCardPixType::PixMode, CardPixMode);
 ELA_PROPERTY_Q_CPP(ElaAcrylicUrlCard, QString, Url);
-ElaAcrylicUrlCard::ElaAcrylicUrlCard(QWidget* parent)
-    : QPushButton(parent), d_ptr(new ElaAcrylicUrlCardPrivate())
+ElaAcrylicUrlCard::ElaAcrylicUrlCard(QWidget* parent) : QPushButton(parent), d_ptr(new ElaAcrylicUrlCardPrivate())
 {
     Q_D(ElaAcrylicUrlCard);
     d->q_ptr = this;
@@ -42,8 +41,12 @@ ElaAcrylicUrlCard::ElaAcrylicUrlCard(QWidget* parent)
     d->_pCardPixmapBorderRadius = 6;
     d->_pCardPixMode = ElaCardPixType::PixMode::Ellipse;
     d->_themeMode = eTheme->getThemeMode();
-    connect(this, &ElaAcrylicUrlCard::clicked, this, [=]() { QDesktopServices::openUrl(QUrl(d->_pUrl)); });
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) { d->_themeMode = themeMode; });
+    connect(this, &ElaAcrylicUrlCard::clicked, this, [=]() {
+        QDesktopServices::openUrl(QUrl(d->_pUrl));
+    });
+    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
+        d->_themeMode = themeMode;
+    });
 }
 
 ElaAcrylicUrlCard::~ElaAcrylicUrlCard()
@@ -64,7 +67,9 @@ void ElaAcrylicUrlCard::paintEvent(QPaintEvent* event)
     painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing | QPainter::TextAntialiasing);
     // 亚克力绘制
     painter.save();
-    painter.setPen(QPen(underMouse() ? ElaThemeColor(d->_themeMode, BasicBorderHover) : ElaThemeColor(d->_themeMode, BasicBorder), d->_borderWidth));
+    painter.setPen(
+        QPen(underMouse() ? ElaThemeColor(d->_themeMode, BasicBorderHover) : ElaThemeColor(d->_themeMode, BasicBorder),
+             d->_borderWidth));
     QColor brushColor;
     brushColor = underMouse() ? ElaThemeColor(d->_themeMode, BasicHover) : ElaThemeColor(d->_themeMode, BasicBase);
     brushColor.setAlpha(d->_pBrushAlpha);
@@ -79,7 +84,8 @@ void ElaAcrylicUrlCard::paintEvent(QPaintEvent* event)
     painter.restore();
 
     // 图片绘制
-    QRectF pixRect(width / 8.5, height() / 4 - d->_pCardPixmapSize.height() / 2, d->_pCardPixmapSize.width(), d->_pCardPixmapSize.height());
+    QRectF pixRect(width / 8.5, height() / 4 - d->_pCardPixmapSize.height() / 2, d->_pCardPixmapSize.width(),
+                   d->_pCardPixmapSize.height());
     if (!d->_pCardPixmap.isNull())
     {
         painter.save();
@@ -110,13 +116,16 @@ void ElaAcrylicUrlCard::paintEvent(QPaintEvent* event)
     font.setPixelSize(d->_pTitlePixelSize);
     painter.setFont(font);
     painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
-    painter.drawText(QRect(pixRect.x(), pixRect.bottom() + d->_pTitleSpacing, width - width / 7, height() / 3), Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, d->_pTitle);
+    painter.drawText(QRect(pixRect.x(), pixRect.bottom() + d->_pTitleSpacing, width - width / 7, height() / 3),
+                     Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, d->_pTitle);
     font.setWeight(QFont::Normal);
     font.setPixelSize(d->_pSubTitlePixelSize);
     painter.setFont(font);
     painter.setPen(ElaThemeColor(d->_themeMode, BasicDetailsText));
     int titleHeight = painter.fontMetrics().boundingRect(d->_pTitle).height() * 1.1;
-    painter.drawText(QRect(pixRect.x(), d->_pSubTitleSpacing + titleHeight + pixRect.bottom() + d->_pTitleSpacing, width - width / 7, height() / 3), Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, d->_pSubTitle);
+    painter.drawText(QRect(pixRect.x(), d->_pSubTitleSpacing + titleHeight + pixRect.bottom() + d->_pTitleSpacing,
+                           width - width / 7, height() / 3),
+                     Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, d->_pSubTitle);
     painter.restore();
 
     // 图标绘制
@@ -125,6 +134,7 @@ void ElaAcrylicUrlCard::paintEvent(QPaintEvent* event)
     iconFont.setPixelSize(eApp->getFontPixelSize());
     painter.setFont(iconFont);
     painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
-    painter.drawText(width - 1.5 * iconFont.pixelSize(), height() - iconFont.pixelSize(), QChar(static_cast<char16_t>(ElaIconType::UpRightFromSquare)));
+    painter.drawText(width - 1.5 * iconFont.pixelSize(), height() - iconFont.pixelSize(),
+                     QChar(static_cast<char16_t>(ElaIconType::UpRightFromSquare)));
     painter.restore();
 }

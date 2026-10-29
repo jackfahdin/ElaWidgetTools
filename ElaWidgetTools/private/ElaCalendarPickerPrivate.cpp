@@ -6,8 +6,7 @@
 #include "ElaCalendar.h"
 #include "ElaCalendarPicker.h"
 #include "ElaCalendarPickerContainer.h"
-ElaCalendarPickerPrivate::ElaCalendarPickerPrivate(QObject* parent)
-    : QObject{parent}
+ElaCalendarPickerPrivate::ElaCalendarPickerPrivate(QObject* parent) : QObject{parent}
 {
 }
 

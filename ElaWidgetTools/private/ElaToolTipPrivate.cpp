@@ -5,8 +5,7 @@
 #include <QTimer>
 
 #include "ElaToolTip.h"
-ElaToolTipPrivate::ElaToolTipPrivate(QObject* parent)
-    : QObject{parent}
+ElaToolTipPrivate::ElaToolTipPrivate(QObject* parent) : QObject{parent}
 {
     _pOpacity = 1;
 }
@@ -20,8 +19,7 @@ bool ElaToolTipPrivate::eventFilter(QObject* watched, QEvent* event)
     Q_Q(ElaToolTip);
     switch (event->type())
     {
-    case QEvent::Enter:
-    {
+    case QEvent::Enter: {
         QTimer::singleShot(_pShowDelayMsec, this, [=]() {
             _doShowAnimation();
         });
@@ -33,21 +31,18 @@ bool ElaToolTipPrivate::eventFilter(QObject* watched, QEvent* event)
         }
         break;
     }
-    case QEvent::Leave:
-    {
+    case QEvent::Leave: {
         QTimer::singleShot(_pHideDelayMsec, this, [=]() {
             q->hide();
         });
         break;
     }
     case QEvent::HoverMove:
-    case QEvent::MouseMove:
-    {
+    case QEvent::MouseMove: {
         _updatePos();
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

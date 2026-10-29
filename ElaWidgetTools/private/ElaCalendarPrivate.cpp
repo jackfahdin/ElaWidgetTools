@@ -9,8 +9,7 @@
 #include "ElaCalendarDelegate.h"
 #include "ElaCalendarModel.h"
 #include "ElaToolButton.h"
-ElaCalendarPrivate::ElaCalendarPrivate(QObject* parent)
-    : QObject{parent}
+ElaCalendarPrivate::ElaCalendarPrivate(QObject* parent) : QObject{parent}
 {
     _pZoomRatio = 1;
     _pPixOpacity = 1;
@@ -30,21 +29,25 @@ void ElaCalendarPrivate::onSwitchButtonClicked()
     ElaCalendarType displayMode = _calendarModel->getDisplayMode();
     if (displayMode == ElaCalendarType::DayMode)
     {
-        _oldCalendarViewPix = q->grab(QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
+        _oldCalendarViewPix = q->grab(
+            QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
         _calendarModel->setDisplayMode(ElaCalendarType::MonthMode);
         _calendarTitleView->setVisible(false);
         QApplication::processEvents();
         _calendarView->setSpacing(15);
         _scrollToDate(_pSelectedDate.isValid() ? _pSelectedDate : QDate::currentDate());
-        _newCalendarViewPix = q->grab(QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
+        _newCalendarViewPix = q->grab(
+            QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
         _doSwitchAnimation(false);
     }
     else if (displayMode == ElaCalendarType::MonthMode)
     {
-        _oldCalendarViewPix = q->grab(QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
+        _oldCalendarViewPix = q->grab(
+            QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
         _calendarModel->setDisplayMode(ElaCalendarType::YearMode);
         _scrollToDate(_pSelectedDate.isValid() ? _pSelectedDate : QDate::currentDate());
-        _newCalendarViewPix = q->grab(QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
+        _newCalendarViewPix = q->grab(
+            QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
         _doSwitchAnimation(false);
     }
 }
@@ -58,32 +61,34 @@ void ElaCalendarPrivate::onCalendarViewClicked(const QModelIndex& index)
     }
     switch (_calendarModel->getDisplayMode())
     {
-    case YearMode:
-    {
-        _oldCalendarViewPix = q->grab(QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
+    case YearMode: {
+        _oldCalendarViewPix = q->grab(
+            QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
         _lastSelectedYear = _calendarModel->getMinimumDate().year() + index.row();
         _calendarModel->setDisplayMode(ElaCalendarType::MonthMode);
         _scrollToDate(QDate(_lastSelectedYear, _lastSelectedMonth, 15));
-        _newCalendarViewPix = q->grab(QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
+        _newCalendarViewPix = q->grab(
+            QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
         _doSwitchAnimation(true);
         break;
     }
-    case MonthMode:
-    {
-        _oldCalendarViewPix = q->grab(QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
+    case MonthMode: {
+        _oldCalendarViewPix = q->grab(
+            QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
         _lastSelectedMonth = index.row() % 12 + 1;
         _calendarModel->setDisplayMode(ElaCalendarType::DayMode);
         _calendarTitleView->setVisible(true);
         _calendarView->setSpacing(0);
         _scrollToDate(QDate(_lastSelectedYear, _lastSelectedMonth, 15));
-        _calendarView->selectionModel()->setCurrentIndex(_calendarModel->getIndexFromDate(_pSelectedDate), QItemSelectionModel::Select);
-        _newCalendarViewPix = q->grab(QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
+        _calendarView->selectionModel()->setCurrentIndex(_calendarModel->getIndexFromDate(_pSelectedDate),
+                                                         QItemSelectionModel::Select);
+        _newCalendarViewPix = q->grab(
+            QRect(_borderWidth, _borderWidth + 45, q->width() - 2 * _borderWidth, q->height() - 2 * _borderWidth - 45));
         _calendarTitleView->setVisible(false);
         _doSwitchAnimation(true);
         break;
     }
-    case DayMode:
-    {
+    case DayMode: {
         QDate date = _calendarModel->getDateFromIndex(index);
         if (date.isValid())
         {
@@ -124,13 +129,11 @@ void ElaCalendarPrivate::_scrollToDate(QDate date)
     switch (_calendarModel->getDisplayMode())
     {
     case YearMode:
-    case MonthMode:
-    {
+    case MonthMode: {
         _calendarView->scrollTo(_calendarModel->index(index - 4), QAbstractItemView::PositionAtTop);
         break;
     }
-    case DayMode:
-    {
+    case DayMode: {
         _calendarView->scrollTo(_calendarModel->index(index - 14), QAbstractItemView::PositionAtTop);
         break;
     }
@@ -211,7 +214,8 @@ void ElaCalendarPrivate::_doSwitchAnimation(bool isZoomIn)
 
 void ElaCalendarPrivate::_updateSwitchButtonText()
 {
-    QModelIndex modelIndex = _calendarView->indexAt(QPoint(_calendarView->rect().center().x() - 20, _calendarView->rect().center().y()));
+    QModelIndex modelIndex =
+        _calendarView->indexAt(QPoint(_calendarView->rect().center().x() - 20, _calendarView->rect().center().y()));
     if (!modelIndex.isValid())
     {
         return;
@@ -219,18 +223,15 @@ void ElaCalendarPrivate::_updateSwitchButtonText()
     ElaCalendarData data = _calendarModel->data(modelIndex, Qt::UserRole).value<ElaCalendarData>();
     switch (_calendarModel->getDisplayMode())
     {
-    case YearMode:
-    {
+    case YearMode: {
         _modeSwitchButton->setText(QString("%1-%2").arg(data.year - 5).arg(data.year + 10));
         break;
     }
-    case MonthMode:
-    {
+    case MonthMode: {
         _modeSwitchButton->setText(QString("%1年").arg(data.year));
         break;
     }
-    case DayMode:
-    {
+    case DayMode: {
         _modeSwitchButton->setText(QString("%1年%2月").arg(data.year).arg(data.month));
         break;
     }

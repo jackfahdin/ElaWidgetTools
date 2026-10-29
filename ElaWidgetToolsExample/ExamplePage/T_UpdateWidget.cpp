@@ -4,8 +4,7 @@
 
 #include <QVBoxLayout>
 
-T_UpdateWidget::T_UpdateWidget(QWidget* parent)
-    : QWidget{parent}
+T_UpdateWidget::T_UpdateWidget(QWidget* parent) : QWidget{parent}
 {
     setMinimumSize(200, 260);
     QVBoxLayout* mainLayout = new QVBoxLayout(this);

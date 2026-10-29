@@ -32,7 +32,8 @@ public:
 
     void setWindowShadow(quint64 hwnd);
     void setWindowThemeMode(quint64 hwnd, bool isLightMode);
-    void setWindowDisplayMode(QWidget* widget, ElaApplicationType::WindowDisplayMode displayMode, ElaApplicationType::WindowDisplayMode lastDisplayMode);
+    void setWindowDisplayMode(QWidget* widget, ElaApplicationType::WindowDisplayMode displayMode,
+                              ElaApplicationType::WindowDisplayMode lastDisplayMode);
     bool getIsCompositionEnabled() const;
     bool getIsFullScreen(const HWND& hwnd);
     MONITORINFOEXW getMonitorForWindow(const HWND& hwnd);
@@ -111,13 +112,15 @@ private:
         _ACCENT_ENABLE_ACRYLIC = 1,
         _ACCENT_ENABLE_ACRYLIC_WITH_LUMINOSITY = 482
     };
-    struct _ACCENT_POLICY {
+    struct _ACCENT_POLICY
+    {
         DWORD dwAccentState;
         DWORD dwAccentFlags;
         DWORD dwGradientColor;
         DWORD dwAnimationId;
     };
-    struct _WINDOWCOMPOSITIONATTRIBDATA {
+    struct _WINDOWCOMPOSITIONATTRIBDATA
+    {
         _WINDOWCOMPOSITIONATTRIB Attrib;
         PVOID pvData;
         SIZE_T cbData;
@@ -131,7 +134,8 @@ private:
     };
 
     using DwmExtendFrameIntoClientAreaFunc = HRESULT(WINAPI*)(HWND hWnd, const MARGINS* pMarInset);
-    using DwmSetWindowAttributeFunc = HRESULT(WINAPI*)(HWND hwnd, DWORD dwAttribute, LPCVOID pvAttribute, DWORD cbAttribute);
+    using DwmSetWindowAttributeFunc = HRESULT(WINAPI*)(HWND hwnd, DWORD dwAttribute, LPCVOID pvAttribute,
+                                                       DWORD cbAttribute);
     using DwmIsCompositionEnabledFunc = HRESULT(WINAPI*)(BOOL* pfEnabled);
     using RtlGetVersionFunc = NTSTATUS(WINAPI*)(PRTL_OSVERSIONINFOW);
     using DwmEnableBlurBehindWindowFunc = HRESULT(WINAPI*)(HWND hWnd, const DWM_BLURBEHIND* pBlurBehind);
@@ -154,4 +158,3 @@ private:
 
 #endif
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELAWINSHADOWHELPER_H_
-

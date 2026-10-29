@@ -2,8 +2,7 @@
 #include "ElaKeyBinder.h"
 #include "ElaTheme.h"
 #include <QTimer>
-ElaKeyBinderPrivate::ElaKeyBinderPrivate(QObject* parent)
-    : QObject(parent)
+ElaKeyBinderPrivate::ElaKeyBinderPrivate(QObject* parent) : QObject(parent)
 {
 }
 

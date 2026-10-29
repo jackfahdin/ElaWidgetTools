@@ -15,8 +15,7 @@ ElaFlowLayout::ElaFlowLayout(QWidget* parent, int margin, int hSpacing, int vSpa
     setContentsMargins(margin, margin, margin, margin);
 }
 
-ElaFlowLayout::ElaFlowLayout(int margin, int hSpacing, int vSpacing)
-    : d_ptr(new ElaFlowLayoutPrivate())
+ElaFlowLayout::ElaFlowLayout(int margin, int hSpacing, int vSpacing) : d_ptr(new ElaFlowLayoutPrivate())
 {
     Q_D(ElaFlowLayout);
     d->q_ptr = this;
@@ -125,7 +124,7 @@ QSize ElaFlowLayout::minimumSize() const
 {
     Q_D(const ElaFlowLayout);
     QSize size;
-    for (const QLayoutItem* item: d->_itemList)
+    for (const QLayoutItem* item : d->_itemList)
     {
         size = size.expandedTo(item->minimumSize());
     }

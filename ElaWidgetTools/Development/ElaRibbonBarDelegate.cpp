@@ -6,8 +6,7 @@
 #include <QMenu>
 #include <QPainter>
 #include <QStyleOptionViewItem>
-ElaRibbonBarDelegate::ElaRibbonBarDelegate(QObject* parent)
-    : QStyledItemDelegate{parent}
+ElaRibbonBarDelegate::ElaRibbonBarDelegate(QObject* parent) : QStyledItemDelegate{parent}
 {
     _pBottomMargin = 13;
     _themeMode = eTheme->getThemeMode();
@@ -77,11 +76,15 @@ void ElaRibbonBarDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
         // 绘制QIcon
         QIcon icon = ribbonAction->icon();
         int pixWidth = itemRect.width() * 0.4;
-        painter->drawPixmap(QRect(itemRect.x() + (itemRect.width() - pixWidth) / 2, itemRect.y() + 10, pixWidth, pixWidth), icon.pixmap(pixWidth, pixWidth, option.state & QStyle::State_Enabled ? QIcon::Normal : QIcon::Disabled, option.state & QStyle::State_Selected ? QIcon::On : QIcon::Off));
+        painter->drawPixmap(
+            QRect(itemRect.x() + (itemRect.width() - pixWidth) / 2, itemRect.y() + 10, pixWidth, pixWidth),
+            icon.pixmap(pixWidth, pixWidth, option.state & QStyle::State_Enabled ? QIcon::Normal : QIcon::Disabled,
+                        option.state & QStyle::State_Selected ? QIcon::On : QIcon::Off));
         // 绘制文字
         painter->setPen(isEnable ? ElaThemeColor(_themeMode, BasicText) : ElaThemeColor(_themeMode, BasicTextDisable));
         itemRect.adjust(0, 0, 0, -_pBottomMargin / 2);
-        painter->drawText(itemRect, Qt::AlignHCenter | Qt::AlignBottom | Qt::TextWordWrap | Qt::TextWrapAnywhere, ribbonAction->text());
+        painter->drawText(itemRect, Qt::AlignHCenter | Qt::AlignBottom | Qt::TextWordWrap | Qt::TextWrapAnywhere,
+                          ribbonAction->text());
     }
     else
     {
@@ -90,7 +93,8 @@ void ElaRibbonBarDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
         if (elaIcon.isEmpty())
         {
             // 绘制文字
-            painter->drawText(itemRect, Qt::AlignCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, ribbonAction->text());
+            painter->drawText(itemRect, Qt::AlignCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere,
+                              ribbonAction->text());
         }
         else
         {
@@ -101,18 +105,21 @@ void ElaRibbonBarDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
             {
                 iconFont.setPixelSize(fontPixelSize + 15);
                 painter->setFont(iconFont);
-                painter->drawText(QRect(itemRect.x(), itemRect.y() + 10, itemRect.width(), itemRect.height()), Qt::AlignHCenter | Qt::AlignTop, elaIcon);
+                painter->drawText(QRect(itemRect.x(), itemRect.y() + 10, itemRect.width(), itemRect.height()),
+                                  Qt::AlignHCenter | Qt::AlignTop, elaIcon);
             }
             else
             {
                 iconFont.setPixelSize(fontPixelSize + 9);
                 painter->setFont(iconFont);
-                painter->drawText(QRect(itemRect.x(), itemRect.y() + 10, itemRect.width(), itemRect.height()), Qt::AlignHCenter | Qt::AlignTop, elaIcon);
+                painter->drawText(QRect(itemRect.x(), itemRect.y() + 10, itemRect.width(), itemRect.height()),
+                                  Qt::AlignHCenter | Qt::AlignTop, elaIcon);
             }
             painter->restore();
             // 绘制文字
             itemRect.adjust(0, 0, 0, -_pBottomMargin / 2);
-            painter->drawText(itemRect, Qt::AlignHCenter | Qt::AlignBottom | Qt::TextWordWrap | Qt::TextWrapAnywhere, ribbonAction->text());
+            painter->drawText(itemRect, Qt::AlignHCenter | Qt::AlignBottom | Qt::TextWordWrap | Qt::TextWrapAnywhere,
+                              ribbonAction->text());
         }
         // 绘制下拉图标
         if (ribbonAction->menu())
@@ -122,7 +129,8 @@ void ElaRibbonBarDelegate::paint(QPainter* painter, const QStyleOptionViewItem& 
             QFont iconFont = QFont("ElaAwesome");
             iconFont.setPixelSize(fontPixelSize + 4);
             painter->setFont(iconFont);
-            painter->drawText(itemRect.adjusted(0, 0, -6, 0), Qt::AlignVCenter | Qt::AlignRight, QChar(static_cast<char16_t>(ElaIconType::AngleDown)));
+            painter->drawText(itemRect.adjusted(0, 0, -6, 0), Qt::AlignVCenter | Qt::AlignRight,
+                              QChar(static_cast<char16_t>(ElaIconType::AngleDown)));
             painter->restore();
         }
     }

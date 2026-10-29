@@ -14,17 +14,22 @@ class ELA_EXPORT ElaMessageBar : public QWidget
     ELA_PIMPL_Q(ElaMessageBar)
 
 public:
-    static void success(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent = nullptr);
-    static void warning(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent = nullptr);
-    static void information(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent = nullptr);
-    static void error(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent = nullptr);
+    static void success(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec,
+                        QWidget* parent = nullptr);
+    static void warning(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec,
+                        QWidget* parent = nullptr);
+    static void information(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec,
+                            QWidget* parent = nullptr);
+    static void error(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec,
+                      QWidget* parent = nullptr);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
     bool eventFilter(QObject* watched, QEvent* event) override;
 
 private:
-    explicit ElaMessageBar(ElaMessageBarType::PositionPolicy policy, ElaMessageBarType::MessageMode messageMode, QString& title, QString& text, int displayMsec, QWidget* parent = nullptr);
+    explicit ElaMessageBar(ElaMessageBarType::PositionPolicy policy, ElaMessageBarType::MessageMode messageMode,
+                           QString& title, QString& text, int displayMsec, QWidget* parent = nullptr);
     ~ElaMessageBar() override;
 };
 

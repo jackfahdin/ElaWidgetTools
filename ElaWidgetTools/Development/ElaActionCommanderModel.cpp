@@ -4,8 +4,7 @@
 #include "ElaActionCommander.h"
 #include "ElaActionCommanderNode.h"
 #include <QTime>
-ElaActionCommanderModel::ElaActionCommanderModel(QObject* parent)
-    : QAbstractItemModel(parent)
+ElaActionCommanderModel::ElaActionCommanderModel(QObject* parent) : QAbstractItemModel(parent)
 {
     _rootNode = new ElaActionCommanderNode(nullptr);
     _rootNode->setIsRootNode(true);
@@ -97,8 +96,7 @@ QVariant ElaActionCommanderModel::data(const QModelIndex& index, int role) const
     {
         switch (role)
         {
-        case Qt::DisplayRole:
-        {
+        case Qt::DisplayRole: {
             if (const auto node = static_cast<ElaActionCommanderNode*>(index.internalPointer()))
             {
                 // 空出图标位置
@@ -110,16 +108,14 @@ QVariant ElaActionCommanderModel::data(const QModelIndex& index, int role) const
             }
             return {};
         }
-        case Qt::UserRole:
-        {
+        case Qt::UserRole: {
             if (const auto node = static_cast<ElaActionCommanderNode*>(index.internalPointer()))
             {
                 return node->getMessageMode();
             }
             return {};
         }
-        default:
-        {
+        default: {
             break;
         }
         }
@@ -147,7 +143,10 @@ void ElaActionCommanderModel::addCommand(ElaActionCommand* command)
     commandNode->setNodeIndexText(QString("%1").arg(nodeIndex, 3, 10, QChar('0')));
     commandNode->setNodeCreateTime(QTime::currentTime().toString("hh:mm:ss"));
     // 主要行
-    commandNode->setNodeName(QString("%1 [%2] %3").arg(commandNode->getNodeIndexText()).arg(commandNode->getNodeCreateTime()).arg(command->getCommandDesc()));
+    commandNode->setNodeName(QString("%1 [%2] %3")
+                                 .arg(commandNode->getNodeIndexText())
+                                 .arg(commandNode->getNodeCreateTime())
+                                 .arg(command->getCommandDesc()));
     _rootNode->appendChildNode(commandNode);
     endInsertRows();
     // 次要行
@@ -162,18 +161,15 @@ void ElaActionCommanderModel::addCommand(ElaActionCommand* command)
     switch (commandNode->getMessageMode())
     {
     case ElaMessageBarType::Information:
-    case ElaMessageBarType::Success:
-    {
+    case ElaMessageBarType::Success: {
         commandResultNode->setNodeName(QString("执行结果: %1").arg("成功"));
         break;
     }
-    case ElaMessageBarType::Warning:
-    {
+    case ElaMessageBarType::Warning: {
         commandResultNode->setNodeName(QString("执行结果: %1").arg("警告"));
         break;
     }
-    case ElaMessageBarType::Error:
-    {
+    case ElaMessageBarType::Error: {
         commandResultNode->setNodeName(QString("执行结果: %1").arg("错误"));
         break;
     }
@@ -206,7 +202,10 @@ void ElaActionCommanderModel::updateCommand(ElaActionCommand* command, bool isRe
     }
     auto commandNode = _commanderNodeMap[command];
     commandNode->setMessageMode(command->getMessageMode());
-    commandNode->setNodeName(QString("%1 [%2] %3").arg(commandNode->getNodeIndexText()).arg(commandNode->getNodeCreateTime()).arg(command->getCommandDesc()));
+    commandNode->setNodeName(QString("%1 [%2] %3")
+                                 .arg(commandNode->getNodeIndexText())
+                                 .arg(commandNode->getNodeCreateTime())
+                                 .arg(command->getCommandDesc()));
     // 次要行
     auto commandTypeNode = commandNode->getChildNodes()[0];
     commandTypeNode->setNodeName(QString("命令类型: %1").arg(command->metaObject()->className()));
@@ -216,18 +215,15 @@ void ElaActionCommanderModel::updateCommand(ElaActionCommand* command, bool isRe
     switch (commandNode->getMessageMode())
     {
     case ElaMessageBarType::Information:
-    case ElaMessageBarType::Success:
-    {
+    case ElaMessageBarType::Success: {
         commandResultNode->setNodeName(QString("执行结果: %1").arg("成功"));
         break;
     }
-    case ElaMessageBarType::Warning:
-    {
+    case ElaMessageBarType::Warning: {
         commandResultNode->setNodeName(QString("执行结果: %1").arg("警告"));
         break;
     }
-    case ElaMessageBarType::Error:
-    {
+    case ElaMessageBarType::Error: {
         commandResultNode->setNodeName(QString("执行结果: %1").arg("错误"));
         break;
     }
@@ -238,7 +234,7 @@ void ElaActionCommanderModel::clearCommand()
 {
     beginResetModel();
     _rootNode->setChildNodes({});
-    for (const auto node: _commanderNodeMap)
+    for (const auto node : _commanderNodeMap)
     {
         delete node;
     }

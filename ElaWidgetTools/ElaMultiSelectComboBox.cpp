@@ -28,7 +28,7 @@ ElaMultiSelectComboBox::ElaMultiSelectComboBox(QWidget* parent)
     d->_comboBoxStyle = new ElaComboBoxStyle(style());
     setStyle(d->_comboBoxStyle);
 
-    //调用view 让container初始化
+    // 调用view 让container初始化
     d->_comboView = new ElaComboBoxView(this);
     setView(d->_comboView);
     QAbstractItemView* comboBoxView = this->view();
@@ -65,7 +65,8 @@ ElaMultiSelectComboBox::ElaMultiSelectComboBox(QWidget* parent)
     }
     QComboBox::setMaxVisibleItems(5);
     connect(d->_comboView, &ElaComboBoxView::itemPressed, d, &ElaMultiSelectComboBoxPrivate::onItemPressed);
-    connect(this, QOverload<int>::of(&ElaMultiSelectComboBox::currentIndexChanged), d, &ElaMultiSelectComboBoxPrivate::_refreshCurrentIndexs);
+    connect(this, QOverload<int>::of(&ElaMultiSelectComboBox::currentIndexChanged), d,
+            &ElaMultiSelectComboBoxPrivate::_refreshCurrentIndexs);
     d->_itemSelection.resize(32);
     d->_itemSelection.fill(false);
     d->_itemSelection[0] = true;
@@ -135,7 +136,7 @@ void ElaMultiSelectComboBox::setCurrentSelection(const QList<int>& selectionInde
     Q_D(ElaMultiSelectComboBox);
     d->_itemSelection.fill(false);
     d->_comboView->selectionModel()->clearSelection();
-    for (auto index: selectionIndex)
+    for (auto index : selectionIndex)
     {
         if (index >= this->count() || index < 0)
         {
@@ -173,33 +174,43 @@ void ElaMultiSelectComboBox::paintEvent(QPaintEvent* e)
     painter.save();
     painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing | QPainter::TextAntialiasing);
     painter.setPen(ElaThemeColor(d->_themeMode, BasicBorder));
-    painter.setBrush(isEnabled() ? underMouse() ? ElaThemeColor(d->_themeMode, BasicHover) : ElaThemeColor(d->_themeMode, BasicBase) : Qt::transparent);
+    painter.setBrush(isEnabled() ? underMouse() ? ElaThemeColor(d->_themeMode, BasicHover)
+                                                : ElaThemeColor(d->_themeMode, BasicBase)
+                                 : Qt::transparent);
     QRect foregroundRect = rect();
     foregroundRect.adjust(1, 1, -1, -1);
     painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
     // 底边线绘制
     painter.setPen(ElaThemeColor(d->_themeMode, BasicBaseLine));
-    painter.drawLine(foregroundRect.x() + d->_pBorderRadius, foregroundRect.y() + foregroundRect.height(), foregroundRect.x() + foregroundRect.width() - d->_pBorderRadius, foregroundRect.y() + foregroundRect.height());
+    painter.drawLine(foregroundRect.x() + d->_pBorderRadius, foregroundRect.y() + foregroundRect.height(),
+                     foregroundRect.x() + foregroundRect.width() - d->_pBorderRadius,
+                     foregroundRect.y() + foregroundRect.height());
 
-    //文字绘制
-    painter.setPen(isEnabled() ? ElaThemeColor(d->_themeMode, BasicText) : ElaThemeColor(d->_themeMode, BasicTextDisable));
-    QString currentText = painter.fontMetrics().elidedText(d->_currentText, Qt::ElideRight, foregroundRect.width() - 27 - width() * 0.05);
+    // 文字绘制
+    painter.setPen(isEnabled() ? ElaThemeColor(d->_themeMode, BasicText)
+                               : ElaThemeColor(d->_themeMode, BasicTextDisable));
+    QString currentText =
+        painter.fontMetrics().elidedText(d->_currentText, Qt::ElideRight, foregroundRect.width() - 27 - width() * 0.05);
     painter.drawText(15, height() / 2 + painter.fontMetrics().ascent() / 2 - 1, currentText);
-    //展开指示器绘制
+    // 展开指示器绘制
     painter.setPen(Qt::NoPen);
     painter.setBrush(d->_themeMode == ElaThemeType::Light ? QColor(0x0E, 0x6F, 0xC3) : QColor(0x4C, 0xA0, 0xE0));
-    painter.drawRoundedRect(QRectF(width() / 2 - d->_pExpandMarkWidth, height() - 3, d->_pExpandMarkWidth * 2, 3), 2, 2);
+    painter.drawRoundedRect(QRectF(width() / 2 - d->_pExpandMarkWidth, height() - 3, d->_pExpandMarkWidth * 2, 3), 2,
+                            2);
     // 展开图标绘制
     if (count() > 0)
     {
         QFont iconFont = QFont("ElaAwesome");
         iconFont.setPixelSize(eApp->getFontPixelSize() + 4);
         painter.setFont(iconFont);
-        painter.setPen(isEnabled() ? ElaThemeColor(d->_themeMode, BasicText) : ElaThemeColor(d->_themeMode, BasicTextDisable));
+        painter.setPen(isEnabled() ? ElaThemeColor(d->_themeMode, BasicText)
+                                   : ElaThemeColor(d->_themeMode, BasicTextDisable));
         QRectF expandIconRect(width() - 25, 0, 20, height());
-        painter.translate(expandIconRect.x() + (qreal)expandIconRect.width() / 2 - 2, expandIconRect.y() + (qreal)expandIconRect.height() / 2);
+        painter.translate(expandIconRect.x() + (qreal)expandIconRect.width() / 2 - 2,
+                          expandIconRect.y() + (qreal)expandIconRect.height() / 2);
         painter.rotate(d->_pExpandIconRotate);
-        painter.translate(-expandIconRect.x() - (qreal)expandIconRect.width() / 2 + 2, -expandIconRect.y() - (qreal)expandIconRect.height() / 2);
+        painter.translate(-expandIconRect.x() - (qreal)expandIconRect.width() / 2 + 2,
+                          -expandIconRect.y() - (qreal)expandIconRect.height() / 2);
         painter.drawText(expandIconRect, Qt::AlignVCenter, QChar(static_cast<char16_t>(ElaIconType::AngleDown)));
         painter.restore();
     }
@@ -260,7 +271,7 @@ void ElaMultiSelectComboBox::showPopup()
             viewPosAnimation->setDuration(400);
             viewPosAnimation->start(QAbstractAnimation::DeleteWhenStopped);
         }
-        //指示器动画
+        // 指示器动画
         QPropertyAnimation* rotateAnimation = new QPropertyAnimation(d, "pExpandIconRotate");
         connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
             update();
@@ -309,7 +320,8 @@ void ElaMultiSelectComboBox::hidePopup()
                 QPropertyAnimation* viewPosAnimation = new QPropertyAnimation(view(), "pos");
                 connect(viewPosAnimation, &QPropertyAnimation::finished, this, [=]() {
                     layout->addWidget(view());
-                    QMouseEvent focusEvent(QEvent::MouseButtonPress, QPoint(-1, -1), QPoint(-1, -1), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+                    QMouseEvent focusEvent(QEvent::MouseButtonPress, QPoint(-1, -1), QPoint(-1, -1), Qt::NoButton,
+                                           Qt::NoButton, Qt::NoModifier);
                     QApplication::sendEvent(parentWidget(), &focusEvent);
                     QComboBox::hidePopup();
                     container->setFixedHeight(containerHeight);
@@ -333,7 +345,7 @@ void ElaMultiSelectComboBox::hidePopup()
                 fixedSizeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
                 d->_isAllowHidePopup = false;
             }
-            //指示器动画
+            // 指示器动画
             QPropertyAnimation* rotateAnimation = new QPropertyAnimation(d, "pExpandIconRotate");
             connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
                 update();

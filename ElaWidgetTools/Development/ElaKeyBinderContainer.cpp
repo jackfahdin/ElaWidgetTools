@@ -6,8 +6,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtMath>
-ElaKeyBinderContainer::ElaKeyBinderContainer(QWidget* parent)
-    : QWidget(parent)
+ElaKeyBinderContainer::ElaKeyBinderContainer(QWidget* parent) : QWidget(parent)
 {
     _keyBinder = dynamic_cast<ElaKeyBinder*>(parent);
     setStyleSheet("#ElaKeyBinderContainer{background-color:transparent;}");
@@ -62,35 +61,29 @@ bool ElaKeyBinderContainer::event(QEvent* event)
 {
     switch (event->type())
     {
-    case QEvent::KeyPress:
-    {
+    case QEvent::KeyPress: {
         QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
         if (!keyEvent->isAutoRepeat())
         {
             switch (keyEvent->key())
             {
-            case Qt::Key_Shift:
-            {
+            case Qt::Key_Shift: {
                 _pBinderKeyText = "Shift";
                 break;
             }
-            case Qt::Key_Control:
-            {
+            case Qt::Key_Control: {
                 _pBinderKeyText = "Ctrl";
                 break;
             }
-            case Qt::Key_Alt:
-            {
+            case Qt::Key_Alt: {
                 _pBinderKeyText = "Alt";
                 break;
             }
-            case Qt::Key_Meta:
-            {
+            case Qt::Key_Meta: {
                 _pBinderKeyText = "Win";
                 break;
             }
-            default:
-            {
+            default: {
                 _pBinderKeyText = QKeySequence(keyEvent->key()).toString();
                 break;
             }
@@ -101,8 +94,7 @@ bool ElaKeyBinderContainer::event(QEvent* event)
         event->accept();
         return true;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -113,38 +105,32 @@ void ElaKeyBinderContainer::mousePressEvent(QMouseEvent* event)
 {
     switch (event->button())
     {
-    case Qt::LeftButton:
-    {
+    case Qt::LeftButton: {
         _pBinderKeyText = "Mouse1";
         _pNativeVirtualBinderKey = 0x01;
         break;
     }
-    case Qt::RightButton:
-    {
+    case Qt::RightButton: {
         _pBinderKeyText = "Mouse2";
         _pNativeVirtualBinderKey = 0x02;
         break;
     }
-    case Qt::MiddleButton:
-    {
+    case Qt::MiddleButton: {
         _pBinderKeyText = "Middle";
         _pNativeVirtualBinderKey = 0x04;
         break;
     }
-    case Qt::BackButton:
-    {
+    case Qt::BackButton: {
         _pBinderKeyText = "Back";
         _pNativeVirtualBinderKey = 0x05;
         break;
     }
-    case Qt::ForwardButton:
-    {
+    case Qt::ForwardButton: {
         _pBinderKeyText = "Forward";
         _pNativeVirtualBinderKey = 0x06;
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -181,6 +167,7 @@ void ElaKeyBinderContainer::paintEvent(QPaintEvent* event)
     painter.drawRoundedRect(QRectF((width() - textWidth) / 2.0, rect().center().y() + 10, textWidth, textHeight), 5, 5);
     // 文字绘制
     painter.setPen(ElaThemeColor(_themeMode, BasicTextInvert));
-    painter.drawText(QRectF((width() - textWidth) / 2.0, rect().center().y() + 10, textWidth, textHeight), Qt::AlignCenter, _pBinderKeyText);
+    painter.drawText(QRectF((width() - textWidth) / 2.0, rect().center().y() + 10, textWidth, textHeight),
+                     Qt::AlignCenter, _pBinderKeyText);
     painter.restore();
 }

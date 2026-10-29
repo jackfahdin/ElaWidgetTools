@@ -1,7 +1,6 @@
 #include "ElaColorDisplayModel.h"
 
-ElaColorDisplayModel::ElaColorDisplayModel(QObject* parent)
-    : QAbstractListModel{parent}
+ElaColorDisplayModel::ElaColorDisplayModel(QObject* parent) : QAbstractListModel{parent}
 {
 }
 

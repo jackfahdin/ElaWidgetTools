@@ -10,23 +10,24 @@
 ElaWindowStyle::ElaWindowStyle(QStyle* style)
 {
     _themeMode = eTheme->getThemeMode();
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) { _themeMode = themeMode; });
+    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
+        _themeMode = themeMode;
+    });
 }
 
 ElaWindowStyle::~ElaWindowStyle()
 {
 }
 
-void ElaWindowStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaWindowStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                   const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::PE_FrameTabBarBase:
-    {
+    case QStyle::PE_FrameTabBarBase: {
         return;
     }
-    case QStyle::PE_PanelButtonTool:
-    {
+    case QStyle::PE_PanelButtonTool: {
         if (option->state.testFlag(QStyle::State_Enabled))
         {
             painter->save();
@@ -49,48 +50,50 @@ void ElaWindowStyle::drawPrimitive(PrimitiveElement element, const QStyleOption*
         }
         return;
     }
-    case QStyle::PE_IndicatorArrowLeft:
-    {
+    case QStyle::PE_IndicatorArrowLeft: {
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
         painter->setPen(Qt::NoPen);
-        painter->setBrush(option->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicText) : ElaThemeColor(_themeMode, BasicTextDisable));
+        painter->setBrush(option->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicText)
+                                                                        : ElaThemeColor(_themeMode, BasicTextDisable));
         // 左三角
         int sideLength = 10;
         QRect indicatorRect = option->rect;
         QPainterPath path;
         path.moveTo(indicatorRect.center().x() - qCos(30 * M_PI / 180.0) * sideLength / 2, indicatorRect.center().y());
-        path.lineTo(indicatorRect.center().x() + qCos(30 * M_PI / 180.0) * sideLength / 2, indicatorRect.center().y() - sideLength / 2);
-        path.lineTo(indicatorRect.center().x() + qCos(30 * M_PI / 180.0) * sideLength / 2, indicatorRect.center().y() + sideLength / 2);
+        path.lineTo(indicatorRect.center().x() + qCos(30 * M_PI / 180.0) * sideLength / 2,
+                    indicatorRect.center().y() - sideLength / 2);
+        path.lineTo(indicatorRect.center().x() + qCos(30 * M_PI / 180.0) * sideLength / 2,
+                    indicatorRect.center().y() + sideLength / 2);
         path.closeSubpath();
         painter->drawPath(path);
         painter->restore();
         return;
     }
-    case QStyle::PE_IndicatorArrowRight:
-    {
+    case QStyle::PE_IndicatorArrowRight: {
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
         painter->setPen(Qt::NoPen);
-        painter->setBrush(option->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicText) : ElaThemeColor(_themeMode, BasicTextDisable));
+        painter->setBrush(option->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicText)
+                                                                        : ElaThemeColor(_themeMode, BasicTextDisable));
         // 右三角
         int sideLength = 10;
         QRect indicatorRect = option->rect;
         QPainterPath path;
-        path.moveTo(indicatorRect.center().x() - qCos(30 * M_PI / 180.0) * sideLength / 2, indicatorRect.center().y() - sideLength / 2);
+        path.moveTo(indicatorRect.center().x() - qCos(30 * M_PI / 180.0) * sideLength / 2,
+                    indicatorRect.center().y() - sideLength / 2);
         path.lineTo(indicatorRect.center().x() + qCos(30 * M_PI / 180.0) * sideLength / 2, indicatorRect.center().y());
-        path.lineTo(indicatorRect.center().x() - qCos(30 * M_PI / 180.0) * sideLength / 2, indicatorRect.center().y() + sideLength / 2);
+        path.lineTo(indicatorRect.center().x() - qCos(30 * M_PI / 180.0) * sideLength / 2,
+                    indicatorRect.center().y() + sideLength / 2);
         path.closeSubpath();
         painter->drawPath(path);
         painter->restore();
         return;
     }
-    case QStyle::PE_IndicatorTabTear:
-    {
+    case QStyle::PE_IndicatorTabTear: {
         return;
     }
-    case QStyle::PE_IndicatorDockWidgetResizeHandle:
-    {
+    case QStyle::PE_IndicatorDockWidgetResizeHandle: {
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
         painter->setPen(QPen(ElaThemeColor(_themeMode, BasicBaseLine), 2));
@@ -106,21 +109,20 @@ void ElaWindowStyle::drawPrimitive(PrimitiveElement element, const QStyleOption*
         painter->restore();
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
-void ElaWindowStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaWindowStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                 const QWidget* widget) const
 {
     // qDebug() << element << option->rect;
     switch (element)
     {
-    case QStyle::CE_RubberBand:
-    {
+    case QStyle::CE_RubberBand: {
         // 预览颜色
         QRect rubberBandRect = option->rect;
         painter->save();
@@ -131,8 +133,7 @@ void ElaWindowStyle::drawControl(ControlElement element, const QStyleOption* opt
         painter->restore();
         return;
     }
-    case QStyle::CE_TabBarTabShape:
-    {
+    case QStyle::CE_TabBarTabShape: {
         // 背景绘制
         if (const QStyleOptionTab* topt = qstyleoption_cast<const QStyleOptionTab*>(option))
         {
@@ -189,8 +190,7 @@ void ElaWindowStyle::drawControl(ControlElement element, const QStyleOption* opt
         }
         return;
     }
-    case QStyle::CE_TabBarTabLabel:
-    {
+    case QStyle::CE_TabBarTabLabel: {
         // 文字绘制
         if (const QStyleOptionTab* topt = qstyleoption_cast<const QStyleOptionTab*>(option))
         {
@@ -202,8 +202,7 @@ void ElaWindowStyle::drawControl(ControlElement element, const QStyleOption* opt
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

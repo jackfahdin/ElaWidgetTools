@@ -8,40 +8,42 @@
 
 #ifdef Q_OS_WIN
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#define Q_TAKEOVER_NATIVEEVENT_H virtual bool nativeEvent(const QByteArray& eventType, void* message, qintptr* result) override;
+#define Q_TAKEOVER_NATIVEEVENT_H                                                                                       \
+    virtual bool nativeEvent(const QByteArray& eventType, void* message, qintptr* result) override;
 #else
-#define Q_TAKEOVER_NATIVEEVENT_H virtual bool nativeEvent(const QByteArray& eventType, void* message, long* result) override;
+#define Q_TAKEOVER_NATIVEEVENT_H                                                                                       \
+    virtual bool nativeEvent(const QByteArray& eventType, void* message, long* result) override;
 #endif
 #else
 #define Q_TAKEOVER_NATIVEEVENT_H
 #endif
 
 #ifdef Q_OS_WIN
-#define ELAAPPBAR_HANDLE(ElaAppBar)                                           \
-    if (ElaAppBar)                                                            \
-    {                                                                         \
-        int ret = ElaAppBar->takeOverNativeEvent(eventType, message, result); \
-        if (ret == -1)                                                        \
-        {                                                                     \
-            return QWidget::nativeEvent(eventType, message, result);          \
-        }                                                                     \
-        return (bool)ret;                                                     \
-    }                                                                         \
+#define ELAAPPBAR_HANDLE(ElaAppBar)                                                                                    \
+    if (ElaAppBar)                                                                                                     \
+    {                                                                                                                  \
+        int ret = ElaAppBar->takeOverNativeEvent(eventType, message, result);                                          \
+        if (ret == -1)                                                                                                 \
+        {                                                                                                              \
+            return QWidget::nativeEvent(eventType, message, result);                                                   \
+        }                                                                                                              \
+        return (bool)ret;                                                                                              \
+    }                                                                                                                  \
     return QWidget::nativeEvent(eventType, message, result);
 #endif
 
 #ifdef Q_OS_WIN
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#define Q_TAKEOVER_NATIVEEVENT_CPP(CLASS, ElaAppBar)                                     \
-    bool CLASS::nativeEvent(const QByteArray& eventType, void* message, qintptr* result) \
-    {                                                                                    \
-        ELAAPPBAR_HANDLE(ElaAppBar)                                                      \
+#define Q_TAKEOVER_NATIVEEVENT_CPP(CLASS, ElaAppBar)                                                                   \
+    bool CLASS::nativeEvent(const QByteArray& eventType, void* message, qintptr* result)                               \
+    {                                                                                                                  \
+        ELAAPPBAR_HANDLE(ElaAppBar)                                                                                    \
     }
 #else
-#define Q_TAKEOVER_NATIVEEVENT_CPP(CLASS, ElaAppBar)                                  \
-    bool CLASS::nativeEvent(const QByteArray& eventType, void* message, long* result) \
-    {                                                                                 \
-        ELAAPPBAR_HANDLE(ElaAppBar)                                                   \
+#define Q_TAKEOVER_NATIVEEVENT_CPP(CLASS, ElaAppBar)                                                                   \
+    bool CLASS::nativeEvent(const QByteArray& eventType, void* message, long* result)                                  \
+    {                                                                                                                  \
+        ELAAPPBAR_HANDLE(ElaAppBar)                                                                                    \
     }
 #endif
 #else
@@ -68,7 +70,8 @@ public:
     void setRibbonHeight(int height);
     Q_REQUIRED_RESULT int getRibbonHeight() const;
 
-    void setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* customWidget, QObject* hitTestObject = nullptr, const QString& hitTestFunctionName = "");
+    void setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* customWidget, QObject* hitTestObject = nullptr,
+                         const QString& hitTestFunctionName = "");
     QWidget* getCustomWidget(ElaAppBarType::CustomArea customArea) const;
 
     void setCustomMenu(QMenu* customMenu);

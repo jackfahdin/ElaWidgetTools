@@ -7,8 +7,7 @@
 #include <QDebug>
 #include <QScreen>
 #include <QWindow>
-ElaContentDialogPrivate::ElaContentDialogPrivate(QObject* parent)
-    : QObject{parent}
+ElaContentDialogPrivate::ElaContentDialogPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -34,5 +33,6 @@ void ElaContentDialogPrivate::_moveToCenter()
     int width = q->width();
     int height = q->height();
     auto globalPos = _maskWidget->mapToGlobal(QPoint{0, 0});
-    q->setGeometry(globalPos.x() + (_maskWidget->width() - width) / 2, globalPos.y() + (_maskWidget->height() - height) / 2, width, height);
+    q->setGeometry(globalPos.x() + (_maskWidget->width() - width) / 2,
+                   globalPos.y() + (_maskWidget->height() - height) / 2, width, height);
 }

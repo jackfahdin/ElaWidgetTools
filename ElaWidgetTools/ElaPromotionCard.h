@@ -24,7 +24,8 @@ class ELA_EXPORT ElaPromotionCard : public QWidget
     ELA_PROPERTY_Q_H(int, PromotionTitlePixelSize)
     ELA_PROPERTY_Q_H(int, TitlePixelSize)
     ELA_PROPERTY_Q_H(int, SubTitlePixelSize)
-    Q_PROPERTY(qreal pHorizontalCardPixmapRatio READ getHorizontalCardPixmapRatio WRITE setHorizontalCardPixmapRatio NOTIFY pHorizontalCardPixmapRatioChanged)
+    Q_PROPERTY(qreal pHorizontalCardPixmapRatio READ getHorizontalCardPixmapRatio WRITE setHorizontalCardPixmapRatio
+                   NOTIFY pHorizontalCardPixmapRatioChanged)
 public:
     explicit ElaPromotionCard(QWidget* parent = nullptr);
     ~ElaPromotionCard();

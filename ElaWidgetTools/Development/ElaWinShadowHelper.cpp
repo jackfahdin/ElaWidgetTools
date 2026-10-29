@@ -4,8 +4,7 @@
 #include <QDebug>
 #include <QWidget>
 
-ElaWinShadowHelper::ElaWinShadowHelper(QObject* parent)
-    : QObject(parent)
+ElaWinShadowHelper::ElaWinShadowHelper(QObject* parent) : QObject(parent)
 {
     _pIsWinVersionGreater10 = true;
     _pIsWinVersionGreater11 = true;
@@ -32,21 +31,26 @@ bool ElaWinShadowHelper::initWinAPI()
     {
         if (!_dwmExtendFrameIntoClientArea)
         {
-            _dwmExtendFrameIntoClientArea = reinterpret_cast<DwmExtendFrameIntoClientAreaFunc>(GetProcAddress(dwmModule, "DwmExtendFrameIntoClientArea"));
+            _dwmExtendFrameIntoClientArea = reinterpret_cast<DwmExtendFrameIntoClientAreaFunc>(
+                GetProcAddress(dwmModule, "DwmExtendFrameIntoClientArea"));
         }
         if (!_dwmSetWindowAttribute)
         {
-            _dwmSetWindowAttribute = reinterpret_cast<DwmSetWindowAttributeFunc>(GetProcAddress(dwmModule, "DwmSetWindowAttribute"));
+            _dwmSetWindowAttribute =
+                reinterpret_cast<DwmSetWindowAttributeFunc>(GetProcAddress(dwmModule, "DwmSetWindowAttribute"));
         }
         if (!_dwmIsCompositionEnabled)
         {
-            _dwmIsCompositionEnabled = reinterpret_cast<DwmIsCompositionEnabledFunc>(GetProcAddress(dwmModule, "DwmIsCompositionEnabled"));
+            _dwmIsCompositionEnabled =
+                reinterpret_cast<DwmIsCompositionEnabledFunc>(GetProcAddress(dwmModule, "DwmIsCompositionEnabled"));
         }
         if (!_dwmEnableBlurBehindWindow)
         {
-            _dwmEnableBlurBehindWindow = reinterpret_cast<DwmEnableBlurBehindWindowFunc>(GetProcAddress(dwmModule, "DwmEnableBlurBehindWindow"));
+            _dwmEnableBlurBehindWindow =
+                reinterpret_cast<DwmEnableBlurBehindWindowFunc>(GetProcAddress(dwmModule, "DwmEnableBlurBehindWindow"));
         }
-        if (!(_dwmExtendFrameIntoClientArea && _dwmSetWindowAttribute && _dwmIsCompositionEnabled && _dwmEnableBlurBehindWindow))
+        if (!(_dwmExtendFrameIntoClientArea && _dwmSetWindowAttribute && _dwmIsCompositionEnabled &&
+              _dwmEnableBlurBehindWindow))
         {
             qCritical() << "Dwm Func Init Incomplete!";
             return false;
@@ -62,7 +66,8 @@ bool ElaWinShadowHelper::initWinAPI()
     {
         if (!_setWindowCompositionAttribute)
         {
-            _setWindowCompositionAttribute = reinterpret_cast<SetWindowCompositionAttributeFunc>(GetProcAddress(user32Module, "SetWindowCompositionAttribute"));
+            _setWindowCompositionAttribute = reinterpret_cast<SetWindowCompositionAttributeFunc>(
+                GetProcAddress(user32Module, "SetWindowCompositionAttribute"));
         }
         if (!_getDpiForWindow)
         {
@@ -70,7 +75,8 @@ bool ElaWinShadowHelper::initWinAPI()
         }
         if (!_getSystemMetricsForDpi)
         {
-            _getSystemMetricsForDpi = reinterpret_cast<GetSystemMetricsForDpiFunc>(GetProcAddress(user32Module, "GetSystemMetricsForDpi"));
+            _getSystemMetricsForDpi =
+                reinterpret_cast<GetSystemMetricsForDpiFunc>(GetProcAddress(user32Module, "GetSystemMetricsForDpi"));
         }
         if (!(_setWindowCompositionAttribute && _getDpiForWindow && _getSystemMetricsForDpi))
         {
@@ -89,7 +95,8 @@ bool ElaWinShadowHelper::initWinAPI()
     {
         if (!_getDpiForMonitor)
         {
-            _getDpiForMonitor = reinterpret_cast<GetDpiForMonitorFunc>(GetProcAddress(shCoreModule, "GetDpiForMonitor"));
+            _getDpiForMonitor =
+                reinterpret_cast<GetDpiForMonitorFunc>(GetProcAddress(shCoreModule, "GetDpiForMonitor"));
         }
         if (!(_getDpiForMonitor))
         {
@@ -118,17 +125,18 @@ void ElaWinShadowHelper::setWindowThemeMode(quint64 hwnd, bool isLightMode)
         return;
     }
     BOOL bIsLightMode = !isLightMode;
-    _DWMWINDOWATTRIBUTE dwAttritube = compareWindowsVersion(Win10_20H1) ? _DWMWA_USE_IMMERSIVE_DARK_MODE : _DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
+    _DWMWINDOWATTRIBUTE dwAttritube =
+        compareWindowsVersion(Win10_20H1) ? _DWMWA_USE_IMMERSIVE_DARK_MODE : _DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
     _dwmSetWindowAttribute((HWND)hwnd, dwAttritube, &bIsLightMode, sizeof(bIsLightMode));
 }
 
-void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationType::WindowDisplayMode displayMode, ElaApplicationType::WindowDisplayMode lastDisplayMode)
+void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationType::WindowDisplayMode displayMode,
+                                              ElaApplicationType::WindowDisplayMode lastDisplayMode)
 {
     HWND winHwnd = (HWND)widget->winId();
     switch (lastDisplayMode)
     {
-    case ElaApplicationType::Mica:
-    {
+    case ElaApplicationType::Mica: {
         if (!compareWindowsVersion(Win11_Origin))
         {
             break;
@@ -145,8 +153,7 @@ void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationTyp
         }
         break;
     }
-    case ElaApplicationType::MicaAlt:
-    {
+    case ElaApplicationType::MicaAlt: {
         if (!compareWindowsVersion(Win11_22H2))
         {
             break;
@@ -155,8 +162,7 @@ void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationTyp
         _dwmSetWindowAttribute(winHwnd, _DWMWA_SYSTEMBACKDROP_TYPE, &backdropType, sizeof(backdropType));
         break;
     }
-    case ElaApplicationType::Acrylic:
-    {
+    case ElaApplicationType::Acrylic: {
         if (!compareWindowsVersion(Win11_Origin))
         {
             break;
@@ -165,8 +171,7 @@ void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationTyp
         _dwmSetWindowAttribute(winHwnd, _DWMWA_SYSTEMBACKDROP_TYPE, &backdropType, sizeof(backdropType));
         break;
     }
-    case ElaApplicationType::DWMBlur:
-    {
+    case ElaApplicationType::DWMBlur: {
         if (compareWindowsVersion(Win7_Origin))
         {
             _ACCENT_POLICY policy{};
@@ -187,16 +192,14 @@ void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationTyp
         }
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
 
     switch (displayMode)
     {
-    case ElaApplicationType::Mica:
-    {
+    case ElaApplicationType::Mica: {
         if (!compareWindowsVersion(Win11_Origin))
         {
             break;
@@ -214,8 +217,7 @@ void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationTyp
         }
         break;
     }
-    case ElaApplicationType::MicaAlt:
-    {
+    case ElaApplicationType::MicaAlt: {
         if (!compareWindowsVersion(Win11_22H2))
         {
             break;
@@ -225,8 +227,7 @@ void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationTyp
         _dwmSetWindowAttribute(winHwnd, _DWMWA_SYSTEMBACKDROP_TYPE, &backdropType, sizeof(backdropType));
         break;
     }
-    case ElaApplicationType::Acrylic:
-    {
+    case ElaApplicationType::Acrylic: {
         if (!compareWindowsVersion(Win11_Origin))
         {
             break;
@@ -236,8 +237,7 @@ void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationTyp
         _dwmSetWindowAttribute(winHwnd, _DWMWA_SYSTEMBACKDROP_TYPE, &backdropType, sizeof(backdropType));
         break;
     }
-    case ElaApplicationType::DWMBlur:
-    {
+    case ElaApplicationType::DWMBlur: {
         MARGINS windowMargins = {0, 1, 0, 0};
         _dwmExtendFrameIntoClientArea(winHwnd, &windowMargins);
         if (compareWindowsVersion(Win7_Origin))
@@ -260,8 +260,7 @@ void ElaWinShadowHelper::setWindowDisplayMode(QWidget* widget, ElaApplicationTyp
         }
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -282,7 +281,8 @@ bool ElaWinShadowHelper::getIsFullScreen(const HWND& hwnd)
     RECT windowRect{};
     ::GetWindowRect(hwnd, &windowRect);
     RECT rcMonitor = getMonitorForWindow(hwnd).rcMonitor;
-    return windowRect.top == rcMonitor.top && windowRect.left == rcMonitor.left && windowRect.right == rcMonitor.right && windowRect.bottom == rcMonitor.bottom;
+    return windowRect.top == rcMonitor.top && windowRect.left == rcMonitor.left &&
+           windowRect.right == rcMonitor.right && windowRect.bottom == rcMonitor.bottom;
 }
 
 MONITORINFOEXW ElaWinShadowHelper::getMonitorForWindow(const HWND& hwnd)
@@ -345,7 +345,10 @@ bool ElaWinShadowHelper::compareWindowsVersion(const QString& windowsVersion) co
     {
         return false;
     }
-    return (_windowsVersion.dwMajorVersion > versionList[0].toUInt()) || (_windowsVersion.dwMajorVersion == versionList[0].toUInt() && (_windowsVersion.dwMinorVersion > versionList[1].toUInt() || _windowsVersion.dwBuildNumber >= versionList[2].toUInt()));
+    return (_windowsVersion.dwMajorVersion > versionList[0].toUInt()) ||
+           (_windowsVersion.dwMajorVersion == versionList[0].toUInt() &&
+            (_windowsVersion.dwMinorVersion > versionList[1].toUInt() ||
+             _windowsVersion.dwBuildNumber >= versionList[2].toUInt()));
 }
 
 void ElaWinShadowHelper::_externWindowMargins(HWND hwnd)

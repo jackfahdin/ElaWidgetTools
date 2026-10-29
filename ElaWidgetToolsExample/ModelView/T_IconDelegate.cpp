@@ -4,8 +4,7 @@
 
 #include "ElaWidgetToolsDef.h"
 #include "ElaTheme.h"
-T_IconDelegate::T_IconDelegate(QObject* parent)
-    : QStyledItemDelegate{parent}
+T_IconDelegate::T_IconDelegate(QObject* parent) : QStyledItemDelegate{parent}
 {
     _themeMode = eTheme->getThemeMode();
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
@@ -41,7 +40,8 @@ void T_IconDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
     iconFont.setPixelSize(22);
     painter->setFont(iconFont);
     painter->setPen(ElaThemeColor(_themeMode, BasicText));
-    painter->drawText(option.rect.x() + option.rect.width() / 2 - 11, option.rect.y() + option.rect.height() / 2 - 11, iconValue);
+    painter->drawText(option.rect.x() + option.rect.width() / 2 - 11, option.rect.y() + option.rect.height() / 2 - 11,
+                      iconValue);
     painter->restore();
     // 文字绘制
     painter->setPen(ElaThemeColor(_themeMode, BasicText));
@@ -61,12 +61,16 @@ void T_IconDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
                 text = text.replace("…", subTitleText.mid(text.length() - 1, 1));
             }
             subTitleText.remove(0, text.length());
-            painter->drawText(option.rect.x() + option.rect.width() / 2 - painter->fontMetrics().horizontalAdvance(text) / 2, option.rect.y() + option.rect.height() - 10 * (subTitleRow + 1 - i), text);
+            painter->drawText(option.rect.x() + option.rect.width() / 2 -
+                                  painter->fontMetrics().horizontalAdvance(text) / 2,
+                              option.rect.y() + option.rect.height() - 10 * (subTitleRow + 1 - i), text);
         }
     }
     else
     {
-        painter->drawText(option.rect.x() + option.rect.width() / 2 - painter->fontMetrics().horizontalAdvance(iconName) / 2, option.rect.y() + option.rect.height() - 20, iconName);
+        painter->drawText(option.rect.x() + option.rect.width() / 2 -
+                              painter->fontMetrics().horizontalAdvance(iconName) / 2,
+                          option.rect.y() + option.rect.height() - 20, iconName);
     }
     painter->restore();
 }

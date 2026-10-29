@@ -15,8 +15,7 @@
 #include "private/ElaLineEditPrivate.h"
 ELA_PROPERTY_Q_CPP(ElaLineEdit, int, BorderRadius)
 
-ElaLineEdit::ElaLineEdit(QWidget* parent)
-    : QLineEdit(parent), d_ptr(new ElaLineEditPrivate())
+ElaLineEdit::ElaLineEdit(QWidget* parent) : QLineEdit(parent), d_ptr(new ElaLineEditPrivate())
 {
     Q_D(ElaLineEdit);
     d->q_ptr = this;
@@ -120,7 +119,8 @@ void ElaLineEdit::paintEvent(QPaintEvent* event)
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     painter.setPen(Qt::NoPen);
     painter.setBrush(ElaThemeColor(d->_themeMode, PrimaryNormal));
-    painter.drawRoundedRect(QRectF(width() / 2 - d->_pExpandMarkWidth, height() - 2.5, d->_pExpandMarkWidth * 2, 2.5), 2, 2);
+    painter.drawRoundedRect(QRectF(width() / 2 - d->_pExpandMarkWidth, height() - 2.5, d->_pExpandMarkWidth * 2, 2.5),
+                            2, 2);
     painter.restore();
 }
 

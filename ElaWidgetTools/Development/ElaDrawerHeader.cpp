@@ -5,8 +5,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPropertyAnimation>
-ElaDrawerHeader::ElaDrawerHeader(QWidget* parent)
-    : QWidget(parent)
+ElaDrawerHeader::ElaDrawerHeader(QWidget* parent) : QWidget(parent)
 {
     _pBorderRadius = 6;
     _pIsExpand = false;
@@ -63,13 +62,11 @@ bool ElaDrawerHeader::event(QEvent* event)
     switch (event->type())
     {
     case QEvent::Enter:
-    case QEvent::Leave:
-    {
+    case QEvent::Leave: {
         update();
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -94,7 +91,7 @@ void ElaDrawerHeader::mouseReleaseEvent(QMouseEvent* event)
     {
         _isPressed = false;
         _pIsExpand = !_pIsExpand;
-        //指示器动画
+        // 指示器动画
         doExpandOrCollapseAnimation();
         Q_EMIT drawerHeaderClicked(_pIsExpand);
     }
@@ -114,8 +111,9 @@ void ElaDrawerHeader::paintEvent(QPaintEvent* event)
     painter.save();
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(ElaThemeColor(_themeMode, BasicBorder));
-    painter.setBrush(_isPressed ? ElaThemeColor(_themeMode, BasicSelectedAlpha) : isUnderMouse ? ElaThemeColor(_themeMode, BasicPressAlpha)
-                                                                                               : ElaThemeColor(_themeMode, BasicBaseAlpha));
+    painter.setBrush(_isPressed     ? ElaThemeColor(_themeMode, BasicSelectedAlpha)
+                     : isUnderMouse ? ElaThemeColor(_themeMode, BasicPressAlpha)
+                                    : ElaThemeColor(_themeMode, BasicBaseAlpha));
     QRect foregroundRect(1, 1, width() - 2, _pIsExpand ? height() + _pBorderRadius : height() - 2);
     painter.drawRoundedRect(foregroundRect, _pBorderRadius, _pBorderRadius);
     // 底边线绘制
@@ -130,8 +128,11 @@ void ElaDrawerHeader::paintEvent(QPaintEvent* event)
     else
     {
         painter.drawLine(_pBorderRadius, height() - 1, width() - _pBorderRadius, height() - 1);
-        painter.drawArc(QRectF(1, height() - 1 - 2 * _pBorderRadius, 2 * _pBorderRadius, 2 * _pBorderRadius), 240 * 16, 30 * 16);
-        painter.drawArc(QRectF(width() - 2 * _pBorderRadius, height() - 1 - 2 * _pBorderRadius, 2 * _pBorderRadius, 2 * _pBorderRadius), -90 * 16, 30 * 16);
+        painter.drawArc(QRectF(1, height() - 1 - 2 * _pBorderRadius, 2 * _pBorderRadius, 2 * _pBorderRadius), 240 * 16,
+                        30 * 16);
+        painter.drawArc(QRectF(width() - 2 * _pBorderRadius, height() - 1 - 2 * _pBorderRadius, 2 * _pBorderRadius,
+                               2 * _pBorderRadius),
+                        -90 * 16, 30 * 16);
     }
 
     // 展开图标绘制
@@ -140,9 +141,11 @@ void ElaDrawerHeader::paintEvent(QPaintEvent* event)
     painter.setFont(iconFont);
     painter.setPen(isEnabled() ? ElaThemeColor(_themeMode, BasicText) : ElaThemeColor(_themeMode, BasicTextDisable));
     QRectF expandIconRect(width() - 25, 0, 20, height());
-    painter.translate(expandIconRect.x() + (qreal)expandIconRect.width() / 2 - 2, expandIconRect.y() + (qreal)expandIconRect.height() / 2);
+    painter.translate(expandIconRect.x() + (qreal)expandIconRect.width() / 2 - 2,
+                      expandIconRect.y() + (qreal)expandIconRect.height() / 2);
     painter.rotate(_pExpandIconRotate);
-    painter.translate(-expandIconRect.x() - (qreal)expandIconRect.width() / 2 + 2, -expandIconRect.y() - (qreal)expandIconRect.height() / 2);
+    painter.translate(-expandIconRect.x() - (qreal)expandIconRect.width() / 2 + 2,
+                      -expandIconRect.y() - (qreal)expandIconRect.height() / 2);
     painter.drawText(expandIconRect, Qt::AlignVCenter, QChar(static_cast<char16_t>(ElaIconType::AngleDown)));
 
     painter.restore();

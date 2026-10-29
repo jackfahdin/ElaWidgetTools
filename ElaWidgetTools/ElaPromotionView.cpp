@@ -7,8 +7,7 @@
 #include "ElaPromotionCard.h"
 #include "ElaPromotionViewPrivate.h"
 #include "ElaTheme.h"
-ElaPromotionView::ElaPromotionView(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaPromotionViewPrivate())
+ElaPromotionView::ElaPromotionView(QWidget* parent) : QWidget{parent}, d_ptr(new ElaPromotionViewPrivate())
 {
     Q_D(ElaPromotionView);
     d->q_ptr = this;
@@ -30,7 +29,9 @@ ElaPromotionView::ElaPromotionView(QWidget* parent)
     });
 
     d->_themeMode = eTheme->getThemeMode();
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) { d->_themeMode = themeMode; });
+    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
+        d->_themeMode = themeMode;
+    });
 }
 
 ElaPromotionView::~ElaPromotionView()
@@ -149,7 +150,7 @@ void ElaPromotionView::wheelEvent(QWheelEvent* event)
     {
         if (event->angleDelta().y() > 0)
         {
-            //右滑
+            // 右滑
             d->_isAllowSwitch = false;
             QTimer::singleShot(400, this, [=] {
                 d->_isAllowSwitch = true;
@@ -158,7 +159,7 @@ void ElaPromotionView::wheelEvent(QWheelEvent* event)
         }
         else
         {
-            //左滑
+            // 左滑
             d->_isAllowSwitch = false;
             QTimer::singleShot(400, this, [=] {
                 d->_isAllowSwitch = true;
@@ -177,10 +178,14 @@ void ElaPromotionView::paintEvent(QPaintEvent* event)
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
     painter.setPen(Qt::NoPen);
     painter.setBrush(ElaThemeColor(d->_themeMode, BasicIndicator));
-    //页标指示器绘制
+    // 页标指示器绘制
     int promotionCardCount = d->_promotionCardList.count();
     bool isCountOdd = promotionCardCount % 2;
-    QPoint startPoint = isCountOdd ? QPoint(width() / 2 - promotionCardCount / 2 * d->_indicatorSpacing, height() - d->_bottomMargin / 2) : QPoint(width() / 2 - promotionCardCount / 2 * d->_indicatorSpacing - d->_indicatorSpacing / 2, height() - d->_bottomMargin / 2);
+    QPoint startPoint =
+        isCountOdd
+            ? QPoint(width() / 2 - promotionCardCount / 2 * d->_indicatorSpacing, height() - d->_bottomMargin / 2)
+            : QPoint(width() / 2 - promotionCardCount / 2 * d->_indicatorSpacing - d->_indicatorSpacing / 2,
+                     height() - d->_bottomMargin / 2);
     for (int i = 0; i < promotionCardCount; i++)
     {
         if (i == d->_pCurrentIndex)

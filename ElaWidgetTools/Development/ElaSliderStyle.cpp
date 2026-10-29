@@ -9,19 +9,21 @@ ElaSliderStyle::ElaSliderStyle(QStyle* style)
 {
     setProperty("circleRadius", 0.01);
     _themeMode = eTheme->getThemeMode();
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) { _themeMode = themeMode; });
+    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
+        _themeMode = themeMode;
+    });
 }
 
 ElaSliderStyle::~ElaSliderStyle()
 {
 }
 
-void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget) const
+void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter,
+                                        const QWidget* widget) const
 {
     switch (control)
     {
-    case QStyle::CC_Slider:
-    {
+    case QStyle::CC_Slider: {
         const QStyleOptionSlider* sopt = qstyleoption_cast<const QStyleOptionSlider*>(option);
         if (!sopt)
         {
@@ -39,24 +41,37 @@ void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOpti
         if (sopt->orientation == Qt::Horizontal)
         {
             // 未滑过
-            painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.height() / 8, sliderRect.y() + sliderRect.height() * 0.375, sliderRect.width() - sliderRect.height() / 4, sliderRect.height() / 4), sliderRect.height() / 8, sliderRect.height() / 8);
+            painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.height() / 8,
+                                           sliderRect.y() + sliderRect.height() * 0.375,
+                                           sliderRect.width() - sliderRect.height() / 4, sliderRect.height() / 4),
+                                     sliderRect.height() / 8, sliderRect.height() / 8);
             // 已滑过
             painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-            painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.height() / 8, sliderRect.y() + sliderRect.height() * 0.375, sliderHandleRect.x(), sliderRect.height() / 4), sliderRect.height() / 8, sliderRect.height() / 8);
+            painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.height() / 8,
+                                           sliderRect.y() + sliderRect.height() * 0.375, sliderHandleRect.x(),
+                                           sliderRect.height() / 4),
+                                     sliderRect.height() / 8, sliderRect.height() / 8);
         }
         else
         {
             // 未滑过
-            painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.width() * 0.375, sliderRect.y() + sliderRect.width() / 8, sliderRect.width() / 4, sliderRect.height() - sliderRect.width() / 4), sliderRect.width() / 8, sliderRect.width() / 8);
+            painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.width() * 0.375,
+                                           sliderRect.y() + sliderRect.width() / 8, sliderRect.width() / 4,
+                                           sliderRect.height() - sliderRect.width() / 4),
+                                     sliderRect.width() / 8, sliderRect.width() / 8);
             // 已滑过
             painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-            painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.width() * 0.375, sliderHandleRect.y(), sliderRect.width() / 4, sliderRect.height() - sliderRect.width() / 8 - sliderHandleRect.y()), sliderRect.width() / 8, sliderRect.width() / 8);
+            painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.width() * 0.375, sliderHandleRect.y(),
+                                           sliderRect.width() / 4,
+                                           sliderRect.height() - sliderRect.width() / 8 - sliderHandleRect.y()),
+                                     sliderRect.width() / 8, sliderRect.width() / 8);
         }
         // 滑块
         // 外圆形
         painter->setPen(ElaThemeColor(_themeMode, BasicBorder));
         painter->setBrush(ElaThemeColor(_themeMode, BasicBase));
-        painter->drawEllipse(QPointF(sliderHandleRect.center().x() + 1, sliderHandleRect.center().y() + 1), sliderHandleRect.width() / 2, sliderHandleRect.width() / 2);
+        painter->drawEllipse(QPointF(sliderHandleRect.center().x() + 1, sliderHandleRect.center().y() + 1),
+                             sliderHandleRect.width() / 2, sliderHandleRect.width() / 2);
         // 内圆形
         painter->setPen(Qt::NoPen);
         painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
@@ -76,10 +91,12 @@ void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOpti
                 {
                     if (!_lastState.testFlag(QStyle::State_Sunken))
                     {
-                        _startRadiusAnimation(sliderHandleRect.width() / 2.8, sliderHandleRect.width() / 4.5, const_cast<QWidget*>(widget));
+                        _startRadiusAnimation(sliderHandleRect.width() / 2.8, sliderHandleRect.width() / 4.5,
+                                              const_cast<QWidget*>(widget));
                         _lastState = sopt->state;
                     }
-                    painter->drawEllipse(QPointF(sliderHandleRect.center().x() + 1, sliderHandleRect.center().y() + 1), _circleRadius, _circleRadius);
+                    painter->drawEllipse(QPointF(sliderHandleRect.center().x() + 1, sliderHandleRect.center().y() + 1),
+                                         _circleRadius, _circleRadius);
                 }
             }
             else
@@ -88,15 +105,18 @@ void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOpti
                 {
                     if (!_lastState.testFlag(QStyle::State_MouseOver))
                     {
-                        _startRadiusAnimation(_circleRadius, sliderHandleRect.width() / 2.8, const_cast<QWidget*>(widget));
+                        _startRadiusAnimation(_circleRadius, sliderHandleRect.width() / 2.8,
+                                              const_cast<QWidget*>(widget));
                         _lastState = sopt->state;
                     }
                     if (_lastState.testFlag(QStyle::State_Sunken))
                     {
-                        _startRadiusAnimation(_circleRadius, sliderHandleRect.width() / 2.8, const_cast<QWidget*>(widget));
+                        _startRadiusAnimation(_circleRadius, sliderHandleRect.width() / 2.8,
+                                              const_cast<QWidget*>(widget));
                         _lastState = sopt->state;
                     }
-                    painter->drawEllipse(QPointF(sliderHandleRect.center().x() + 1, sliderHandleRect.center().y() + 1), _circleRadius, _circleRadius);
+                    painter->drawEllipse(QPointF(sliderHandleRect.center().x() + 1, sliderHandleRect.center().y() + 1),
+                                         _circleRadius, _circleRadius);
                 }
             }
         }
@@ -108,13 +128,13 @@ void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOpti
                 _lastState &= ~QStyle::State_MouseOver;
                 _lastState &= ~QStyle::State_Sunken;
             }
-            painter->drawEllipse(QPointF(sliderHandleRect.center().x() + 1, sliderHandleRect.center().y() + 1), _circleRadius, _circleRadius);
+            painter->drawEllipse(QPointF(sliderHandleRect.center().x() + 1, sliderHandleRect.center().y() + 1),
+                                 _circleRadius, _circleRadius);
         }
         painter->restore();
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -125,23 +145,21 @@ int ElaSliderStyle::pixelMetric(PixelMetric metric, const QStyleOption* option, 
 {
     switch (metric)
     {
-    case QStyle::PM_SliderLength:
-    {
+    case QStyle::PM_SliderLength: {
         return 20;
     }
-    case QStyle::PM_SliderThickness:
-    {
+    case QStyle::PM_SliderThickness: {
         return 20;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     return QProxyStyle::pixelMetric(metric, option, widget);
 }
 
-int ElaSliderStyle::styleHint(StyleHint hint, const QStyleOption* option, const QWidget* widget, QStyleHintReturn* returnData) const
+int ElaSliderStyle::styleHint(StyleHint hint, const QStyleOption* option, const QWidget* widget,
+                              QStyleHintReturn* returnData) const
 {
     if (hint == QStyle::SH_Slider_AbsoluteSetButtons)
     {
@@ -155,8 +173,9 @@ void ElaSliderStyle::_startRadiusAnimation(qreal startRadius, qreal endRadius, Q
     ElaSliderStyle* style = const_cast<ElaSliderStyle*>(this);
     QPropertyAnimation* circleRadiusAnimation = new QPropertyAnimation(style, "circleRadius");
     connect(circleRadiusAnimation, &QPropertyAnimation::valueChanged, style, [=](const QVariant& value) {
-                this->_circleRadius = value.toReal();
-                widget->update(); });
+        this->_circleRadius = value.toReal();
+        widget->update();
+    });
     circleRadiusAnimation->setEasingCurve(QEasingCurve::InOutSine);
     circleRadiusAnimation->setStartValue(startRadius);
     circleRadiusAnimation->setEndValue(endRadius);

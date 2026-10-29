@@ -8,8 +8,7 @@
 #include <QGuiApplication>
 #include <QLineEdit>
 #include <QTimer>
-ElaDoubleSpinBoxPrivate::ElaDoubleSpinBoxPrivate(QObject* parent)
-    : QObject{parent}
+ElaDoubleSpinBoxPrivate::ElaDoubleSpinBoxPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -56,7 +55,8 @@ ElaMenu* ElaDoubleSpinBoxPrivate::_createStandardContextMenu()
     if (!lineEdit->isReadOnly())
     {
         action = menu->addElaIconAction(ElaIconType::KnifeKitchen, tr("剪切"), QKeySequence::Cut);
-        action->setEnabled(!lineEdit->isReadOnly() && lineEdit->hasSelectedText() && lineEdit->echoMode() == QLineEdit::Normal);
+        action->setEnabled(!lineEdit->isReadOnly() && lineEdit->hasSelectedText() &&
+                           lineEdit->echoMode() == QLineEdit::Normal);
         connect(action, &QAction::triggered, lineEdit, &QLineEdit::cut);
     }
 

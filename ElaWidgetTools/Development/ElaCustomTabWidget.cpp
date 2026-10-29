@@ -11,8 +11,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QVariant>
-ElaCustomTabWidget::ElaCustomTabWidget(QWidget* parent)
-    : ElaCustomWidget(parent)
+ElaCustomTabWidget::ElaCustomTabWidget(QWidget* parent) : ElaCustomWidget(parent)
 {
     _pIsFinished = false;
     resize(700, 500);
@@ -47,9 +46,10 @@ ElaCustomTabWidget::ElaCustomTabWidget(QWidget* parent)
     connect(_customTabBar, &ElaTabBar::tabBarTextChanged, originTabBar, [=](int tabIndex, const QString& tabText) {
         originTabBar->setTabText(tabIndex, tabText);
     });
-    
+
     _customTabWidget->d_ptr->_customTabBar = _customTabBar;
-    connect(_customTabBar, &ElaTabBar::tabDragCreate, _customTabWidget->d_func(), &ElaTabWidgetPrivate::onTabDragCreate);
+    connect(_customTabBar, &ElaTabBar::tabDragCreate, _customTabWidget->d_func(),
+            &ElaTabWidgetPrivate::onTabDragCreate);
     connect(_customTabBar, &ElaTabBar::tabDragDrop, _customTabWidget->d_func(), &ElaTabWidgetPrivate::onTabDragDrop);
     connect(_customTabBar, &ElaTabBar::tabDragEnter, _customTabWidget->d_func(), &ElaTabWidgetPrivate::onTabDragEnter);
     connect(_customTabBar, &ElaTabBar::tabDragLeave, _customTabWidget->d_func(), &ElaTabWidgetPrivate::onTabDragLeave);

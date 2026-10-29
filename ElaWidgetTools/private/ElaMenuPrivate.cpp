@@ -6,8 +6,7 @@
 #include <QPropertyAnimation>
 
 #include "ElaMenu.h"
-ElaMenuPrivate::ElaMenuPrivate(QObject* parent)
-    : QObject{parent}
+ElaMenuPrivate::ElaMenuPrivate(QObject* parent) : QObject{parent}
 {
 }
 

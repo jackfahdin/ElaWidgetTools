@@ -10,8 +10,7 @@
 #include <QTimer>
 
 #include <QVBoxLayout>
-ElaRibbonBar::ElaRibbonBar(QWidget* parent)
-    : QWidget(parent), d_ptr(new ElaRibbonBarPrivate())
+ElaRibbonBar::ElaRibbonBar(QWidget* parent) : QWidget(parent), d_ptr(new ElaRibbonBarPrivate())
 {
     Q_D(ElaRibbonBar);
     d->q_ptr = this;
@@ -173,7 +172,8 @@ QAction* ElaRibbonBar::addRibbonAction(const QString& pageName, const QString& g
     return ribbonAction;
 }
 
-QAction* ElaRibbonBar::addRibbonAction(const QString& pageName, const QString& groupName, const QString& actionName, ElaIconType::IconName icon)
+QAction* ElaRibbonBar::addRibbonAction(const QString& pageName, const QString& groupName, const QString& actionName,
+                                       ElaIconType::IconName icon)
 {
     Q_D(ElaRibbonBar);
     ElaRibbonBarModel* ribbonModel = d->getOrCreateMVDData(pageName);
@@ -182,7 +182,8 @@ QAction* ElaRibbonBar::addRibbonAction(const QString& pageName, const QString& g
     return ribbonAction;
 }
 
-QAction* ElaRibbonBar::addRibbonAction(const QString& pageName, const QString& groupName, const QString& actionName, const QIcon& icon)
+QAction* ElaRibbonBar::addRibbonAction(const QString& pageName, const QString& groupName, const QString& actionName,
+                                       const QIcon& icon)
 {
     Q_D(ElaRibbonBar);
     ElaRibbonBarModel* ribbonModel = d->getOrCreateMVDData(pageName);
@@ -198,7 +199,8 @@ QAction* ElaRibbonBar::addRibbonWidget(const QString& pageName, const QString& g
     auto ribbonAction = ribbonModel->addRibbonAction(groupName, "ElaRibbonWidgetAction");
     ribbonAction->setProperty("ElaRibbonPageName", pageName);
     ribbonAction->setProperty("ElaRibbonWidget", QVariant::fromValue(widget));
-    d->_ribbonDataMap[pageName].ribbonView->setIndexWidget(ribbonModel->getRibbonActionModelIndex(ribbonAction), widget);
+    d->_ribbonDataMap[pageName].ribbonView->setIndexWidget(ribbonModel->getRibbonActionModelIndex(ribbonAction),
+                                                           widget);
     return ribbonAction;
 }
 
@@ -251,7 +253,8 @@ QList<QAction*> ElaRibbonBar::getRibbonActions(const QString& pageName, const QS
     return ribbonModel->getRibbonActions(groupName);
 }
 
-QList<QAction*> ElaRibbonBar::getRibbonActions(const QString& pageName, const QString& groupName, const QString& actionName)
+QList<QAction*> ElaRibbonBar::getRibbonActions(const QString& pageName, const QString& groupName,
+                                               const QString& actionName)
 {
     Q_D(ElaRibbonBar);
     if (!d->_ribbonDataMap.contains(pageName))
@@ -272,8 +275,7 @@ bool ElaRibbonBar::eventFilter(QObject* obj, QEvent* event)
 {
     switch (event->type())
     {
-    case QEvent::Resize:
-    {
+    case QEvent::Resize: {
         QSize size = parentWidget()->size();
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 3) && QT_VERSION <= QT_VERSION_CHECK(6, 6, 1))
         if (::IsZoomed((HWND)d->_currentWinID))
@@ -289,8 +291,7 @@ bool ElaRibbonBar::eventFilter(QObject* obj, QEvent* event)
 #endif
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

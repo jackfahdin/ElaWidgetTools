@@ -13,7 +13,8 @@
 #include <QStackedWidget>
 class ElaBaseListView;
 class ElaRibbonBar;
-struct ElaRibbonMVDData {
+struct ElaRibbonMVDData
+{
     ElaRibbonBarModel* ribbonModel{nullptr};
     ElaRibbonBarView* ribbonView{nullptr};
     ElaRibbonBarDelegate* ribbonDelegate{nullptr};
@@ -46,4 +47,4 @@ private:
     static constexpr int _groupBottomMargin{13};
 };
 
-#endif //ELAWORKSPACE_ELAWIDGETTOOLS_PRIVATE_ELARIBBONBARPRIVATE_H_
+#endif // ELAWORKSPACE_ELAWIDGETTOOLS_PRIVATE_ELARIBBONBARPRIVATE_H_

@@ -22,16 +22,15 @@ ElaToolBarStyle::~ElaToolBarStyle()
 {
 }
 
-void ElaToolBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaToolBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                    const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::PE_PanelButtonTool:
-    {
+    case QStyle::PE_PanelButtonTool: {
         return;
     }
-    case QStyle::PE_FrameMenu:
-    {
+    case QStyle::PE_FrameMenu: {
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
         painter->setPen(ElaThemeColor(_themeMode, PopupBorder));
@@ -40,9 +39,8 @@ void ElaToolBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
         painter->restore();
         return;
     }
-    case QStyle::PE_IndicatorToolBarHandle:
-    {
-        //拖动虚线
+    case QStyle::PE_IndicatorToolBarHandle: {
+        // 拖动虚线
         QRect handleRect = option->rect;
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
@@ -62,9 +60,8 @@ void ElaToolBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
         painter->restore();
         return;
     }
-    case QStyle::PE_IndicatorToolBarSeparator:
-    {
-        //间隔符绘制
+    case QStyle::PE_IndicatorToolBarSeparator: {
+        // 间隔符绘制
         QRect separatorRect = option->rect;
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
@@ -73,30 +70,31 @@ void ElaToolBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
         const ElaToolBar* toolBar = dynamic_cast<const ElaToolBar*>(widget);
         if (toolBar->orientation() == Qt::Vertical)
         {
-            painter->drawRect(QRectF(separatorRect.x() + separatorRect.width() * 0.1, separatorRect.center().y() - 0.9, separatorRect.width() * 0.8, 1.8));
+            painter->drawRect(QRectF(separatorRect.x() + separatorRect.width() * 0.1, separatorRect.center().y() - 0.9,
+                                     separatorRect.width() * 0.8, 1.8));
         }
         else
         {
-            painter->drawRect(QRectF(separatorRect.center().x() - 0.9, separatorRect.y() + separatorRect.height() * 0.1, 1.8, separatorRect.height() * 0.8));
+            painter->drawRect(QRectF(separatorRect.center().x() - 0.9, separatorRect.y() + separatorRect.height() * 0.1,
+                                     1.8, separatorRect.height() * 0.8));
         }
         painter->restore();
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
-void ElaToolBarStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaToolBarStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                  const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::CE_ToolButtonLabel:
-    {
-        //展开按钮
+    case QStyle::CE_ToolButtonLabel: {
+        // 展开按钮
         if (const QStyleOptionToolButton* bopt = qstyleoption_cast<const QStyleOptionToolButton*>(option))
         {
             painter->save();
@@ -109,8 +107,10 @@ void ElaToolBarStyle::drawControl(ControlElement element, const QStyleOption* op
                     painter->setBrush(ElaThemeColor(_themeMode, BasicHoverAlpha));
                     painter->drawRect(bopt->rect);
                 }
-                //展开图标
-                painter->setPen(!bopt->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicTextDisable) : ElaThemeColor(_themeMode, BasicText));
+                // 展开图标
+                painter->setPen(!bopt->state.testFlag(QStyle::State_Enabled)
+                                    ? ElaThemeColor(_themeMode, BasicTextDisable)
+                                    : ElaThemeColor(_themeMode, BasicText));
                 QFont iconFont = QFont("ElaAwesome");
                 iconFont.setPixelSize(eApp->getFontPixelSize() + 5);
                 painter->setFont(iconFont);
@@ -122,7 +122,7 @@ void ElaToolBarStyle::drawControl(ControlElement element, const QStyleOption* op
                 {
                     break;
                 }
-                //背景绘制
+                // 背景绘制
                 if (bopt->state.testFlag(QStyle::State_Enabled))
                 {
                     if (bopt->state.testFlag(QStyle::State_Sunken))
@@ -139,17 +139,17 @@ void ElaToolBarStyle::drawControl(ControlElement element, const QStyleOption* op
                         }
                     }
                 }
-                //指示器绘制
+                // 指示器绘制
                 _drawIndicator(painter, bopt, widget);
 
-                //图标绘制
+                // 图标绘制
                 QRect contentRect = subControlRect(QStyle::CC_ToolButton, bopt, QStyle::SC_ScrollBarAddLine, widget);
                 QRect iconRect = contentRect;
                 int heightOffset = iconRect.height() * 0.1;
                 iconRect.adjust(3, heightOffset, -3, -heightOffset);
                 _drawIcon(painter, iconRect, bopt, widget);
 
-                //文字绘制
+                // 文字绘制
                 contentRect.adjust(0, heightOffset, 0, -heightOffset);
                 _drawText(painter, contentRect, bopt);
             }
@@ -157,12 +157,10 @@ void ElaToolBarStyle::drawControl(ControlElement element, const QStyleOption* op
         }
         return;
     }
-    case QStyle::CE_ToolBar:
-    {
+    case QStyle::CE_ToolBar: {
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -173,30 +171,27 @@ int ElaToolBarStyle::pixelMetric(PixelMetric metric, const QStyleOption* option,
 {
     switch (metric)
     {
-    case QStyle::PM_ToolBarExtensionExtent:
-    {
+    case QStyle::PM_ToolBarExtensionExtent: {
         return 16;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     return QProxyStyle::pixelMetric(metric, option, widget);
 }
 
-QSize ElaToolBarStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const
+QSize ElaToolBarStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                                        const QWidget* widget) const
 {
     if (_pToolButtonSize.isValid())
     {
         switch (type)
         {
-        case QStyle::CT_ToolButton:
-        {
+        case QStyle::CT_ToolButton: {
             return _pToolButtonSize;
         }
-        default:
-        {
+        default: {
             break;
         }
         }
@@ -209,8 +204,9 @@ void ElaToolBarStyle::_drawIndicator(QPainter* painter, const QStyleOptionToolBu
     if (bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
     {
         QRect indicatorRect = subControlRect(QStyle::CC_ToolButton, bopt, QStyle::SC_ScrollBarSubLine, widget);
-        //指示器区域
-        if (bopt->state.testFlag(QStyle::State_Enabled) && bopt->activeSubControls.testFlag(QStyle::SC_ScrollBarSubLine))
+        // 指示器区域
+        if (bopt->state.testFlag(QStyle::State_Enabled) &&
+            bopt->activeSubControls.testFlag(QStyle::SC_ScrollBarSubLine))
         {
             painter->setBrush(ElaThemeColor(_themeMode, BasicIndicator));
             QPainterPath path;
@@ -223,8 +219,9 @@ void ElaToolBarStyle::_drawIndicator(QPainter* painter, const QStyleOptionToolBu
             path.closeSubpath();
             painter->drawPath(path);
         }
-        //指示器
-        painter->setBrush(bopt->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicText) : ElaThemeColor(_themeMode, BasicTextDisable));
+        // 指示器
+        painter->setBrush(bopt->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicText)
+                                                                      : ElaThemeColor(_themeMode, BasicTextDisable));
         QPainterPath indicatorPath;
         qreal indicatorHeight = qCos(30 * M_PI / 180.0) * indicatorRect.width() * 0.85;
         indicatorPath.moveTo(indicatorRect.x() + indicatorRect.width() * 0.15, indicatorRect.center().y());
@@ -235,7 +232,8 @@ void ElaToolBarStyle::_drawIndicator(QPainter* painter, const QStyleOptionToolBu
     }
 }
 
-void ElaToolBarStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QStyleOptionToolButton* bopt, const QWidget* widget) const
+void ElaToolBarStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QStyleOptionToolButton* bopt,
+                                const QWidget* widget) const
 {
     if (bopt->toolButtonStyle != Qt::ToolButtonTextOnly)
     {
@@ -248,35 +246,30 @@ void ElaToolBarStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QStyle
         }
         if (action->property("ElaIconType").toString().isEmpty())
         {
-            //绘制QIcon
+            // 绘制QIcon
             QIcon icon = bopt->icon;
             if (!icon.isNull())
             {
-                QPixmap iconPix = icon.pixmap(iconSize,
-                                              (bopt->state & State_Enabled) ? QIcon::Normal
-                                                                            : QIcon::Disabled,
-                                              (bopt->state & State_Selected) ? QIcon::On
-                                                                             : QIcon::Off);
+                QPixmap iconPix = icon.pixmap(iconSize, (bopt->state & State_Enabled) ? QIcon::Normal : QIcon::Disabled,
+                                              (bopt->state & State_Selected) ? QIcon::On : QIcon::Off);
                 switch (bopt->toolButtonStyle)
                 {
                 case Qt::ToolButtonIconOnly:
-                case Qt::ToolButtonTextBesideIcon:
-                {
-                    painter->drawPixmap(QRect(QPoint(iconRect.x(), iconRect.center().y() - iconSize.height() / 2), iconSize), iconPix);
+                case Qt::ToolButtonTextBesideIcon: {
+                    painter->drawPixmap(
+                        QRect(QPoint(iconRect.x(), iconRect.center().y() - iconSize.height() / 2), iconSize), iconPix);
                     break;
                 }
-                case Qt::ToolButtonTextUnderIcon:
-                {
-                    painter->drawPixmap(QRect(QPoint(iconRect.center().x() - iconSize.width() / 2, iconRect.y()), iconSize), iconPix);
+                case Qt::ToolButtonTextUnderIcon: {
+                    painter->drawPixmap(
+                        QRect(QPoint(iconRect.center().x() - iconSize.width() / 2, iconRect.y()), iconSize), iconPix);
                     break;
                 }
-                case Qt::ToolButtonFollowStyle:
-                {
+                case Qt::ToolButtonFollowStyle: {
                     painter->drawPixmap(iconRect.x(), iconRect.y() - iconSize.height() / 2, iconPix);
                     break;
                 }
-                default:
-                {
+                default: {
                     break;
                 }
                 }
@@ -284,7 +277,7 @@ void ElaToolBarStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QStyle
         }
         else
         {
-            //绘制ElaIcon
+            // 绘制ElaIcon
             painter->save();
             painter->setPen(ElaThemeColor(_themeMode, BasicText));
             QFont iconFont = QFont("ElaAwesome");
@@ -292,24 +285,22 @@ void ElaToolBarStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QStyle
             {
             case Qt::ToolButtonIconOnly:
             case Qt::ToolButtonTextBesideIcon:
-            case Qt::ToolButtonFollowStyle:
-            {
+            case Qt::ToolButtonFollowStyle: {
                 QRect adjustIconRect(iconRect.x(), iconRect.y(), iconSize.width(), iconRect.height());
                 iconFont.setPixelSize(0.8 * std::min(adjustIconRect.width(), adjustIconRect.height()));
                 painter->setFont(iconFont);
                 painter->drawText(adjustIconRect, Qt::AlignCenter, action->property("ElaIconType").toString());
                 break;
             }
-            case Qt::ToolButtonTextUnderIcon:
-            {
-                QRect adjustIconRect(iconRect.center().x() - iconSize.width() / 2, iconRect.y(), iconSize.width(), iconSize.height());
+            case Qt::ToolButtonTextUnderIcon: {
+                QRect adjustIconRect(iconRect.center().x() - iconSize.width() / 2, iconRect.y(), iconSize.width(),
+                                     iconSize.height());
                 iconFont.setPixelSize(0.8 * std::min(iconSize.width(), iconSize.height()));
                 painter->setFont(iconFont);
                 painter->drawText(adjustIconRect, Qt::AlignHCenter, action->property("ElaIconType").toString());
                 break;
             }
-            default:
-            {
+            default: {
                 break;
             }
             }
@@ -332,27 +323,24 @@ void ElaToolBarStyle::_drawText(QPainter* painter, QRect contentRect, const QSty
         }
         switch (bopt->toolButtonStyle)
         {
-        case Qt::ToolButtonTextOnly:
-        {
+        case Qt::ToolButtonTextOnly: {
             painter->drawText(contentRect, Qt::AlignCenter, bopt->text);
             break;
         }
-        case Qt::ToolButtonTextBesideIcon:
-        {
-            painter->drawText(QRect(contentRect.x() + bopt->iconSize.width() + 12, contentRect.y(), contentRect.width() - bopt->iconSize.width(), contentRect.height()), Qt::AlignLeft | Qt::AlignVCenter, bopt->text);
+        case Qt::ToolButtonTextBesideIcon: {
+            painter->drawText(QRect(contentRect.x() + bopt->iconSize.width() + 12, contentRect.y(),
+                                    contentRect.width() - bopt->iconSize.width(), contentRect.height()),
+                              Qt::AlignLeft | Qt::AlignVCenter, bopt->text);
             break;
         }
-        case Qt::ToolButtonTextUnderIcon:
-        {
+        case Qt::ToolButtonTextUnderIcon: {
             painter->drawText(contentRect, Qt::AlignBottom | Qt::AlignHCenter, bopt->text);
             break;
         }
-        case Qt::ToolButtonFollowStyle:
-        {
+        case Qt::ToolButtonFollowStyle: {
             break;
         }
-        default:
-        {
+        default: {
             break;
         }
         }

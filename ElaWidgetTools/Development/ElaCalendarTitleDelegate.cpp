@@ -5,8 +5,7 @@
 #include <QStyleOption>
 
 #include "ElaTheme.h"
-ElaCalendarTitleDelegate::ElaCalendarTitleDelegate(QObject* parent)
-    : QStyledItemDelegate{parent}
+ElaCalendarTitleDelegate::ElaCalendarTitleDelegate(QObject* parent) : QStyledItemDelegate{parent}
 {
     _themeMode = eTheme->getThemeMode();
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
@@ -18,7 +17,8 @@ ElaCalendarTitleDelegate::~ElaCalendarTitleDelegate()
 {
 }
 
-void ElaCalendarTitleDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void ElaCalendarTitleDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
+                                     const QModelIndex& index) const
 {
     painter->save();
     painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);

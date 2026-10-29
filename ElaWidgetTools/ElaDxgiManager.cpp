@@ -14,8 +14,7 @@
 #include "ElaDxgi.h"
 #include "ElaDxgiManagerPrivate.h"
 ELA_SINGLETON_CPP(ElaDxgiManager);
-ElaDxgiManager::ElaDxgiManager(QObject* parent)
-    : QObject{parent}, d_ptr(new ElaDxgiManagerPrivate())
+ElaDxgiManager::ElaDxgiManager(QObject* parent) : QObject{parent}, d_ptr(new ElaDxgiManagerPrivate())
 {
     Q_D(ElaDxgiManager);
     d->q_ptr = this;
@@ -113,7 +112,7 @@ bool ElaDxgiManager::setDxDeviceID(int dxID)
     d->_dxgi->setIsGrabActive(false);
     while (!d->_dxgi->getIsGrabStopped())
     {
-        //等待任务结束
+        // 等待任务结束
         QApplication::processEvents();
     }
     if (d->_dxgi->initialize(dxID, d->_dxgi->getOutputDeviceID()))
@@ -145,7 +144,7 @@ bool ElaDxgiManager::setOutputDeviceID(int deviceID)
     d->_dxgi->setIsGrabActive(false);
     while (!d->_dxgi->getIsGrabStopped())
     {
-        //等待任务结束
+        // 等待任务结束
         QApplication::processEvents();
     }
     if (d->_dxgi->initialize(d->_dxgi->getDxDeviceID(), deviceID))

@@ -2,8 +2,7 @@
 
 #include <QMouseEvent>
 
-ElaComboBoxView::ElaComboBoxView(QWidget* parent)
-    : QListView(parent)
+ElaComboBoxView::ElaComboBoxView(QWidget* parent) : QListView(parent)
 {
 }
 

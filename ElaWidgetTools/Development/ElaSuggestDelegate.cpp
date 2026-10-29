@@ -7,8 +7,7 @@
 #include "ElaTheme.h"
 #include <QPainter>
 #include <QPainterPath>
-ElaSuggestDelegate::ElaSuggestDelegate(QObject* parent)
-    : QStyledItemDelegate{parent}
+ElaSuggestDelegate::ElaSuggestDelegate(QObject* parent) : QStyledItemDelegate{parent}
 {
     _themeMode = eTheme->getThemeMode();
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
@@ -42,12 +41,12 @@ void ElaSuggestDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
     {
         if (option.state & QStyle::State_MouseOver)
         {
-            //选中时覆盖
+            // 选中时覆盖
             painter->fillPath(path, ElaThemeColor(_themeMode, BasicSelectedHoverAlpha));
         }
         else
         {
-            //选中
+            // 选中
             painter->fillPath(path, ElaThemeColor(_themeMode, BasicSelectedAlpha));
         }
     }
@@ -55,21 +54,22 @@ void ElaSuggestDelegate::paint(QPainter* painter, const QStyleOptionViewItem& op
     {
         if (option.state & QStyle::State_MouseOver)
         {
-            //覆盖时颜色
+            // 覆盖时颜色
             painter->fillPath(path, ElaThemeColor(_themeMode, BasicHoverAlpha));
         }
     }
-    //文字绘制
+    // 文字绘制
     painter->setPen(ElaThemeColor(_themeMode, BasicText));
     painter->drawText(option.rect.x() + 37, option.rect.y() + 25, suggest->getSuggestText());
 
-    //图标绘制
+    // 图标绘制
     if (suggest->getElaIcon() != ElaIconType::None)
     {
         QFont iconFont = QFont("ElaAwesome");
         iconFont.setPixelSize(eApp->getFontPixelSize() + 4);
         painter->setFont(iconFont);
-        painter->drawText(option.rect.x() + 11, option.rect.y() + 26, QChar(static_cast<char16_t>(suggest->getElaIcon())));
+        painter->drawText(option.rect.x() + 11, option.rect.y() + 26,
+                          QChar(static_cast<char16_t>(suggest->getElaIcon())));
     }
     painter->restore();
 }

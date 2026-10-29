@@ -95,7 +95,8 @@ QIcon ElaIcon::getElaIcon(ElaIconType::IconName awesome, int pixelSize, int fixe
     return QIcon(pix);
 }
 
-QIcon ElaIcon::getElaIcon(ElaIconType::IconName awesome, int pixelSize, int fixedWidth, int fixedHeight, QColor iconColor)
+QIcon ElaIcon::getElaIcon(ElaIconType::IconName awesome, int pixelSize, int fixedWidth, int fixedHeight,
+                          QColor iconColor)
 {
     QFont iconFont = QFont("ElaAwesome");
     QPixmap pix(fixedWidth, fixedHeight);

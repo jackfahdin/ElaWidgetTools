@@ -72,12 +72,12 @@ ElaNavigationStyle::~ElaNavigationStyle()
 {
 }
 
-void ElaNavigationStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaNavigationStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                       const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::PE_PanelItemViewItem:
-    {
+    case QStyle::PE_PanelItemViewItem: {
         // Item背景
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
@@ -139,36 +139,32 @@ void ElaNavigationStyle::drawPrimitive(PrimitiveElement element, const QStyleOpt
         }
         return;
     }
-    case QStyle::PE_PanelItemViewRow:
-    {
+    case QStyle::PE_PanelItemViewRow: {
         // 行背景
         return;
     }
-    case QStyle::PE_IndicatorBranch:
-    {
+    case QStyle::PE_IndicatorBranch: {
         // Branch指示器
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
-void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                     const QWidget* widget) const
 {
     int fontPixelSize = eApp->getFontPixelSize();
     switch (element)
     {
-    case QStyle::CE_ShapedFrame:
-    {
+    case QStyle::CE_ShapedFrame: {
         // viewport视口外的其他区域背景
         return;
     }
-    case QStyle::CE_ItemViewItem:
-    {
+    case QStyle::CE_ItemViewItem: {
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
             // 背景绘制
@@ -177,9 +173,11 @@ void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption*
             // 内容绘制
             QRect itemRect = option->rect;
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform |
+                                    QPainter::TextAntialiasing);
             ElaNavigationNode* node = static_cast<ElaNavigationNode*>(vopt->index.internalPointer());
-            ElaNavigationModel* model = dynamic_cast<ElaNavigationModel*>(const_cast<QAbstractItemModel*>(vopt->index.model()));
+            ElaNavigationModel* model =
+                dynamic_cast<ElaNavigationModel*>(const_cast<QAbstractItemModel*>(vopt->index.model()));
 
             if (this->_opacityAnimationTargetNode && node->getParentNode() == this->_opacityAnimationTargetNode)
             {
@@ -191,24 +189,30 @@ void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption*
             {
                 painter->setPen(Qt::NoPen);
                 painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-                painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + _pSelectMarkTop, 3, itemRect.height() - _pSelectMarkTop - _pSelectMarkBottom), 1.5, 1.5);
+                painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + _pSelectMarkTop, 3,
+                                                itemRect.height() - _pSelectMarkTop - _pSelectMarkBottom),
+                                         1.5, 1.5);
             }
             if (node == _lastSelectedNode)
             {
                 painter->setPen(Qt::NoPen);
                 painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-                painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + _pLastSelectMarkTop, 3, itemRect.height() - _pLastSelectMarkTop - _pLastSelectMarkBottom), 1.5, 1.5);
+                painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + _pLastSelectMarkTop, 3,
+                                                itemRect.height() - _pLastSelectMarkTop - _pLastSelectMarkBottom),
+                                         1.5, 1.5);
             }
 
             // 图标绘制
-            painter->setPen(vopt->index == _pPressIndex ? ElaThemeColor(_themeMode, BasicTextPress) : ElaThemeColor(_themeMode, BasicText));
+            painter->setPen(vopt->index == _pPressIndex ? ElaThemeColor(_themeMode, BasicTextPress)
+                                                        : ElaThemeColor(_themeMode, BasicText));
             if (node->getAwesome() != ElaIconType::None)
             {
                 painter->save();
                 QFont iconFont = QFont("ElaAwesome");
                 iconFont.setPixelSize(fontPixelSize + 4);
                 painter->setFont(iconFont);
-                painter->drawText(QRect(itemRect.x(), itemRect.y(), _iconAreaWidth, itemRect.height()), Qt::AlignCenter, QChar(static_cast<char16_t>(node->getAwesome())));
+                painter->drawText(QRect(itemRect.x(), itemRect.y(), _iconAreaWidth, itemRect.height()), Qt::AlignCenter,
+                                  QChar(static_cast<char16_t>(node->getAwesome())));
                 painter->restore();
             }
 
@@ -223,16 +227,21 @@ void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption*
             }
             else
             {
-                painter->setPen((vopt->index == _pPressIndex) ? ElaThemeColor(_themeMode, BasicTextPress) : ElaThemeColor(_themeMode, BasicText));
+                painter->setPen((vopt->index == _pPressIndex) ? ElaThemeColor(_themeMode, BasicTextPress)
+                                                              : ElaThemeColor(_themeMode, BasicText));
             }
             QRect textRect;
             if (node->getAwesome() != ElaIconType::None)
             {
-                textRect = QRect(itemRect.x() + _iconAreaWidth, itemRect.y(), itemRect.width() - _textRightSpacing - _indicatorIconAreaWidth - _iconAreaWidth, itemRect.height());
+                textRect = QRect(itemRect.x() + _iconAreaWidth, itemRect.y(),
+                                 itemRect.width() - _textRightSpacing - _indicatorIconAreaWidth - _iconAreaWidth,
+                                 itemRect.height());
             }
             else
             {
-                textRect = QRect(itemRect.x() + _leftPadding, itemRect.y(), itemRect.width() - _textRightSpacing - _indicatorIconAreaWidth - _leftPadding, itemRect.height());
+                textRect = QRect(itemRect.x() + _leftPadding, itemRect.y(),
+                                 itemRect.width() - _textRightSpacing - _indicatorIconAreaWidth - _leftPadding,
+                                 itemRect.height());
             }
             QString text = painter->fontMetrics().elidedText(node->getNodeTitle(), Qt::ElideRight, textRect.width());
             painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, text);
@@ -244,12 +253,14 @@ void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption*
                 {
                     if (node->getIsHasChild())
                     {
-                        QRectF expandIconRect(itemRect.right() - _indicatorIconAreaWidth, itemRect.y(), 17, itemRect.height());
+                        QRectF expandIconRect(itemRect.right() - _indicatorIconAreaWidth, itemRect.y(), 17,
+                                              itemRect.height());
                         painter->save();
                         QFont iconFont = QFont("ElaAwesome");
                         iconFont.setPixelSize(fontPixelSize + 4);
                         painter->setFont(iconFont);
-                        painter->translate(expandIconRect.x() + (qreal)expandIconRect.width() / 2, expandIconRect.y() + (qreal)expandIconRect.height() / 2);
+                        painter->translate(expandIconRect.x() + (qreal)expandIconRect.width() / 2,
+                                           expandIconRect.y() + (qreal)expandIconRect.height() / 2);
                         if (node == _expandAnimationTargetNode)
                         {
                             painter->rotate(_pRotate);
@@ -258,7 +269,7 @@ void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption*
                         {
                             if (node->getIsExpanded())
                             {
-                                //展开
+                                // 展开
                                 painter->rotate(-180);
                             }
                             else
@@ -267,8 +278,10 @@ void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption*
                                 painter->rotate(0);
                             }
                         }
-                        painter->translate(-expandIconRect.x() - (qreal)expandIconRect.width() / 2 + 1, -expandIconRect.y() - (qreal)expandIconRect.height() / 2);
-                        painter->drawText(expandIconRect, Qt::AlignVCenter, QChar(static_cast<char16_t>(ElaIconType::AngleDown)));
+                        painter->translate(-expandIconRect.x() - (qreal)expandIconRect.width() / 2 + 1,
+                                           -expandIconRect.y() - (qreal)expandIconRect.height() / 2);
+                        painter->drawText(expandIconRect, Qt::AlignVCenter,
+                                          QChar(static_cast<char16_t>(ElaIconType::AngleDown)));
                         painter->restore();
                     }
                     if (node->getIsChildHasKeyPoints())
@@ -290,7 +303,8 @@ void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption*
                         painter->setPen(Qt::NoPen);
                         painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
                         int keyPointRadius = 8;
-                        painter->drawEllipse(QPoint(itemRect.right() - 26, itemRect.y() + itemRect.height() / 2), keyPointRadius, keyPointRadius);
+                        painter->drawEllipse(QPoint(itemRect.right() - 26, itemRect.y() + itemRect.height() / 2),
+                                             keyPointRadius, keyPointRadius);
                         painter->setPen(QPen(ElaThemeColor(_themeMode, BasicTextInvert), 2));
                         QFont font = painter->font();
                         font.setBold(true);
@@ -307,7 +321,10 @@ void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption*
                             font.setPixelSize(fontPixelSize - 2);
                         }
                         painter->setFont(font);
-                        painter->drawText(QRect(QPoint(itemRect.right() - 26 - keyPointRadius, itemRect.y() + itemRect.height() / 2 - keyPointRadius), QSize(2 * keyPointRadius, 2 * keyPointRadius)), Qt::AlignCenter, QString::number(keyPoints));
+                        painter->drawText(QRect(QPoint(itemRect.right() - 26 - keyPointRadius,
+                                                       itemRect.y() + itemRect.height() / 2 - keyPointRadius),
+                                                QSize(2 * keyPointRadius, 2 * keyPointRadius)),
+                                          Qt::AlignCenter, QString::number(keyPoints));
                         painter->restore();
                     }
                 }
@@ -317,26 +334,24 @@ void ElaNavigationStyle::drawControl(ControlElement element, const QStyleOption*
 
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawControl(element, option, painter, widget);
 }
 
-QSize ElaNavigationStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const
+QSize ElaNavigationStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                                           const QWidget* widget) const
 {
     switch (type)
     {
-    case QStyle::CT_ItemViewItem:
-    {
+    case QStyle::CT_ItemViewItem: {
         QSize itemSize = QProxyStyle::sizeFromContents(type, option, size, widget);
         itemSize.setHeight(_pItemHeight);
         return itemSize;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

@@ -26,8 +26,7 @@
 ELA_PROPERTY_Q_CPP(ElaWindow, int, ThemeChangeTime)
 ELA_PROPERTY_Q_CPP(ElaWindow, ElaWindowType::StackSwitchMode, StackSwitchMode)
 Q_TAKEOVER_NATIVEEVENT_CPP(ElaWindow, d_func()->_appBar);
-ElaWindow::ElaWindow(QWidget* parent)
-    : QMainWindow{parent}, d_ptr(new ElaWindowPrivate())
+ElaWindow::ElaWindow(QWidget* parent) : QMainWindow{parent}, d_ptr(new ElaWindowPrivate())
 {
     Q_D(ElaWindow);
     d->q_ptr = this;
@@ -51,7 +50,8 @@ ElaWindow::ElaWindow(QWidget* parent)
     // 导航栏
     d->_navigationBar = new ElaNavigationBar(this);
     // 返回按钮状态变更
-    connect(ElaActionCommander::getInstance(), &ElaActionCommander::commanderStateChanged, d, &ElaWindowPrivate::onNavigationRouterStateChanged);
+    connect(ElaActionCommander::getInstance(), &ElaActionCommander::commanderStateChanged, d,
+            &ElaWindowPrivate::onNavigationRouterStateChanged);
 
     // 转发用户卡片点击信号
     connect(d->_navigationBar, &ElaNavigationBar::userInfoCardClicked, this, &ElaWindow::userInfoCardClicked);
@@ -186,7 +186,8 @@ int ElaWindow::getRibbonHeight() const
     return d->_appBar->getRibbonHeight();
 }
 
-void ElaWindow::setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* widget, QObject* hitTestObject, const QString& hitTestFunctionName)
+void ElaWindow::setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* widget, QObject* hitTestObject,
+                                const QString& hitTestFunctionName)
 {
     Q_D(ElaWindow);
     d->_appBar->setCustomWidget(customArea, widget, hitTestObject, hitTestFunctionName);
@@ -266,7 +267,8 @@ int ElaWindow::getNavigationBarWidth() const
 void ElaWindow::setCurrentStackIndex(int currentStackIndex)
 {
     Q_D(ElaWindow);
-    if (currentStackIndex >= d->_centerStackedWidget->getContainerStackedWidget()->count() || currentStackIndex < 0 || currentStackIndex == d->_centerStackedWidget->getLastTargetIndex())
+    if (currentStackIndex >= d->_centerStackedWidget->getContainerStackedWidget()->count() || currentStackIndex < 0 ||
+        currentStackIndex == d->_centerStackedWidget->getLastTargetIndex())
     {
         return;
     }
@@ -292,23 +294,19 @@ void ElaWindow::setNavigationBarDisplayMode(ElaNavigationType::NavigationDisplay
     bool isVisible = this->isVisible();
     switch (d->_pNavigationBarDisplayMode)
     {
-    case ElaNavigationType::Auto:
-    {
+    case ElaNavigationType::Auto: {
         d->_doNavigationDisplayModeChange();
         break;
     }
-    case ElaNavigationType::Minimal:
-    {
+    case ElaNavigationType::Minimal: {
         d->_navigationBar->setDisplayMode(ElaNavigationType::Minimal, isVisible);
         break;
     }
-    case ElaNavigationType::Compact:
-    {
+    case ElaNavigationType::Compact: {
         d->_navigationBar->setDisplayMode(ElaNavigationType::Compact, isVisible);
         break;
     }
-    case ElaNavigationType::Maximal:
-    {
+    case ElaNavigationType::Maximal: {
         d->_navigationBar->setDisplayMode(ElaNavigationType::Maximal, isVisible);
         break;
     }
@@ -331,7 +329,8 @@ void ElaWindow::setWindowPaintMode(ElaWindowType::PaintMode windowPaintMode)
     }
     if (windowPaintMode == ElaWindowType::PaintMode::Movie)
     {
-        d->_windowPaintMovie->setFileName(d->_themeMode == ElaThemeType::Light ? d->_lightWindowMoviePath : d->_darkWindowMoviePath);
+        d->_windowPaintMovie->setFileName(d->_themeMode == ElaThemeType::Light ? d->_lightWindowMoviePath
+                                                                               : d->_darkWindowMoviePath);
         d->_windowPaintMovie->start();
     }
     d->_pWindowPaintMode = windowPaintMode;
@@ -356,7 +355,8 @@ void ElaWindow::moveToCenter()
 #else
     auto geometry = qApp->screenAt(this->geometry().center())->geometry();
 #endif
-    setGeometry((geometry.left() + geometry.right() - width()) / 2, (geometry.top() + geometry.bottom() - height()) / 2, width(), height());
+    setGeometry((geometry.left() + geometry.right() - width()) / 2, (geometry.top() + geometry.bottom() - height()) / 2,
+                width(), height());
 }
 
 void ElaWindow::setIsNavigationBarEnable(bool isVisible)
@@ -397,19 +397,23 @@ void ElaWindow::setUserInfoCardSubTitle(const QString& subTitle)
     d->_navigationBar->setUserInfoCardSubTitle(subTitle);
 }
 
-ElaNavigationType::NodeResult ElaWindow::addExpanderNode(const QString& expanderTitle, QString& expanderKey, ElaIconType::IconName awesome) const
+ElaNavigationType::NodeResult ElaWindow::addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                         ElaIconType::IconName awesome) const
 {
     Q_D(const ElaWindow);
     return d->_navigationBar->addExpanderNode(expanderTitle, expanderKey, awesome);
 }
 
-ElaNavigationType::NodeResult ElaWindow::addExpanderNode(const QString& expanderTitle, QString& expanderKey, const QString& targetExpanderKey, ElaIconType::IconName awesome) const
+ElaNavigationType::NodeResult ElaWindow::addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                         const QString& targetExpanderKey,
+                                                         ElaIconType::IconName awesome) const
 {
     Q_D(const ElaWindow);
     return d->_navigationBar->addExpanderNode(expanderTitle, expanderKey, targetExpanderKey, awesome);
 }
 
-ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, QWidget* page, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, QWidget* page,
+                                                     ElaIconType::IconName awesome)
 {
     Q_D(ElaWindow);
     auto returnType = d->_navigationBar->addPageNode(pageTitle, page, awesome);
@@ -420,7 +424,8 @@ ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, Q
     return returnType;
 }
 
-ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, QWidget* page, int keyPoints, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, QWidget* page, int keyPoints,
+                                                     ElaIconType::IconName awesome)
 {
     Q_D(ElaWindow);
     auto returnType = d->_navigationBar->addPageNode(pageTitle, page, keyPoints, awesome);
@@ -431,7 +436,8 @@ ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, Q
     return returnType;
 }
 
-ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, QWidget* page,
+                                                     const QString& targetExpanderKey, ElaIconType::IconName awesome)
 {
     Q_D(ElaWindow);
     auto returnType = d->_navigationBar->addPageNode(pageTitle, page, targetExpanderKey, awesome);
@@ -442,7 +448,9 @@ ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, Q
     return returnType;
 }
 
-ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey, int keyPoints, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, QWidget* page,
+                                                     const QString& targetExpanderKey, int keyPoints,
+                                                     ElaIconType::IconName awesome)
 {
     Q_D(ElaWindow);
     auto returnType = d->_navigationBar->addPageNode(pageTitle, page, targetExpanderKey, keyPoints, awesome);
@@ -453,13 +461,15 @@ ElaNavigationType::NodeResult ElaWindow::addPageNode(const QString& pageTitle, Q
     return returnType;
 }
 
-ElaNavigationType::NodeResult ElaWindow::addFooterNode(const QString& footerTitle, QString& footerKey, int keyPoints, ElaIconType::IconName awesome) const
+ElaNavigationType::NodeResult ElaWindow::addFooterNode(const QString& footerTitle, QString& footerKey, int keyPoints,
+                                                       ElaIconType::IconName awesome) const
 {
     Q_D(const ElaWindow);
     return d->_navigationBar->addFooterNode(footerTitle, nullptr, footerKey, keyPoints, awesome);
 }
 
-ElaNavigationType::NodeResult ElaWindow::addFooterNode(const QString& footerTitle, QWidget* page, QString& footerKey, int keyPoints, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaWindow::addFooterNode(const QString& footerTitle, QWidget* page, QString& footerKey,
+                                                       int keyPoints, ElaIconType::IconName awesome)
 {
     Q_D(ElaWindow);
     auto returnType = d->_navigationBar->addFooterNode(footerTitle, page, footerKey, keyPoints, awesome);
@@ -476,7 +486,8 @@ ElaNavigationType::NodeResult ElaWindow::addCategoryNode(const QString& category
     return d->_navigationBar->addCategoryNode(categoryTitle, categoryKey);
 }
 
-ElaNavigationType::NodeResult ElaWindow::addCategoryNode(const QString& categoryTitle, QString& categoryKey, const QString& targetExpanderKey)
+ElaNavigationType::NodeResult ElaWindow::addCategoryNode(const QString& categoryTitle, QString& categoryKey,
+                                                         const QString& targetExpanderKey)
 {
     Q_D(const ElaWindow);
     return d->_navigationBar->addCategoryNode(categoryTitle, categoryKey, targetExpanderKey);
@@ -594,7 +605,10 @@ int ElaWindow::getCurrentNavigationIndex() const
 QString ElaWindow::getCurrentNavigationPageKey() const
 {
     Q_D(const ElaWindow);
-    return d->_navigationCenterStackedWidget->getContainerStackedWidget()->currentWidget()->property("ElaPageKey").toString();
+    return d->_navigationCenterStackedWidget->getContainerStackedWidget()
+        ->currentWidget()
+        ->property("ElaPageKey")
+        .toString();
 }
 
 const QList<ElaSuggestBox::SuggestData>& ElaWindow::getNavigationSuggestDataList() const
@@ -672,7 +686,7 @@ void ElaWindow::tabifyDockWidget(Qt::DockWidgetArea area, const QString& targetD
         return;
     }
     auto dockWidgetList = findChildren<QDockWidget*>();
-    for (const auto otherDock: dockWidgetList)
+    for (const auto otherDock : dockWidgetList)
     {
         if (otherDock == dockWidget)
         {
@@ -713,13 +727,11 @@ bool ElaWindow::eventFilter(QObject* watched, QEvent* event)
     Q_D(ElaWindow);
     switch (event->type())
     {
-    case QEvent::Resize:
-    {
+    case QEvent::Resize: {
         d->_doNavigationDisplayModeChange();
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -775,19 +787,16 @@ void ElaWindow::paintEvent(QPaintEvent* event)
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     switch (d->_windowDisplayMode)
     {
-    case ElaApplicationType::Normal:
-    {
+    case ElaApplicationType::Normal: {
         switch (d->_pWindowPaintMode)
         {
-        case ElaWindowType::Normal:
-        {
+        case ElaWindowType::Normal: {
             painter.setPen(Qt::NoPen);
             painter.setBrush(ElaThemeColor(d->_themeMode, WindowBase));
             painter.drawRect(rect());
             break;
         }
-        case ElaWindowType::Pixmap:
-        {
+        case ElaWindowType::Pixmap: {
             QPixmap* pix = d->_themeMode == ElaThemeType::Light ? d->_lightWindowPix : d->_darkWindowPix;
             qreal windowAspectRatio = (qreal)rect().width() / rect().height();
             qreal pixAspectRatio = (qreal)pix->width() / pix->height();
@@ -802,11 +811,12 @@ void ElaWindow::paintEvent(QPaintEvent* event)
                 targetPixWidth = pix->width();
                 targetPixHeight = qRound(pix->height() * pixAspectRatio / windowAspectRatio);
             }
-            painter.drawPixmap(rect(), *pix, QRect((pix->width() - targetPixWidth) / 2, (pix->height() - targetPixHeight) / 2, targetPixWidth, targetPixHeight));
+            painter.drawPixmap(rect(), *pix,
+                               QRect((pix->width() - targetPixWidth) / 2, (pix->height() - targetPixHeight) / 2,
+                                     targetPixWidth, targetPixHeight));
             break;
         }
-        case ElaWindowType::Movie:
-        {
+        case ElaWindowType::Movie: {
             QPixmap pix = d->_windowPaintMovie->currentPixmap();
             qreal windowAspectRatio = (qreal)rect().width() / rect().height();
             qreal pixAspectRatio = (qreal)pix.width() / pix.height();
@@ -821,17 +831,17 @@ void ElaWindow::paintEvent(QPaintEvent* event)
                 targetPixWidth = pix.width();
                 targetPixHeight = qRound(pix.height() * pixAspectRatio / windowAspectRatio);
             }
-            painter.drawPixmap(rect(), pix, QRect((pix.width() - targetPixWidth) / 2, (pix.height() - targetPixHeight) / 2, targetPixWidth, targetPixHeight));
+            painter.drawPixmap(rect(), pix,
+                               QRect((pix.width() - targetPixWidth) / 2, (pix.height() - targetPixHeight) / 2,
+                                     targetPixWidth, targetPixHeight));
             break;
         }
-        default:
-        {
+        default: {
             break;
         }
         }
     }
-    default:
-    {
+    default: {
         break;
     }
     }

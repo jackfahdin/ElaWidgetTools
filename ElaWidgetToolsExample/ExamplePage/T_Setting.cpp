@@ -14,8 +14,7 @@
 #include "ElaToggleSwitch.h"
 #include "ElaWindow.h"
 #include <QButtonGroup>
-T_Setting::T_Setting(QWidget* parent)
-    : T_BasePage(parent)
+T_Setting::T_Setting(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     ElaWindow* window = dynamic_cast<ElaWindow*>(parent);
@@ -71,12 +70,13 @@ T_Setting::T_Setting(QWidget* parent)
     windowPaintButtonGroup->addButton(_windowNormalButton, 0);
     windowPaintButtonGroup->addButton(_windowPixmapButton, 1);
     windowPaintButtonGroup->addButton(_windowMovieButton, 2);
-    connect(windowPaintButtonGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this, [=](QAbstractButton* button, bool isToggled) {
-        if (isToggled)
-        {
-            window->setWindowPaintMode((ElaWindowType::PaintMode)windowPaintButtonGroup->id(button));
-        }
-    });
+    connect(windowPaintButtonGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this,
+            [=](QAbstractButton* button, bool isToggled) {
+                if (isToggled)
+                {
+                    window->setWindowPaintMode((ElaWindowType::PaintMode)windowPaintButtonGroup->id(button));
+                }
+            });
     connect(window, &ElaWindow::pWindowPaintModeChanged, this, [=]() {
         auto button = windowPaintButtonGroup->button(window->getWindowPaintMode());
         ElaRadioButton* elaRadioButton = dynamic_cast<ElaRadioButton*>(button);
@@ -118,12 +118,13 @@ T_Setting::T_Setting(QWidget* parent)
     displayButtonGroup->addButton(_acrylicButton, 4);
     displayButtonGroup->addButton(_dwmBlurnormalButton, 5);
 #endif
-    connect(displayButtonGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this, [=](QAbstractButton* button, bool isToggled) {
-        if (isToggled)
-        {
-            eApp->setWindowDisplayMode((ElaApplicationType::WindowDisplayMode)displayButtonGroup->id(button));
-        }
-    });
+    connect(displayButtonGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this,
+            [=](QAbstractButton* button, bool isToggled) {
+                if (isToggled)
+                {
+                    eApp->setWindowDisplayMode((ElaApplicationType::WindowDisplayMode)displayButtonGroup->id(button));
+                }
+            });
     connect(eApp, &ElaApplication::pWindowDisplayModeChanged, this, [=]() {
         auto button = displayButtonGroup->button(eApp->getWindowDisplayMode());
         ElaRadioButton* elaRadioButton = dynamic_cast<ElaRadioButton*>(button);
@@ -201,12 +202,14 @@ T_Setting::T_Setting(QWidget* parent)
     navigationGroup->addButton(_minimumButton, 1);
     navigationGroup->addButton(_compactButton, 2);
     navigationGroup->addButton(_maximumButton, 3);
-    connect(navigationGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this, [=](QAbstractButton* button, bool isToggled) {
-        if (isToggled)
-        {
-            window->setNavigationBarDisplayMode((ElaNavigationType::NavigationDisplayMode)navigationGroup->id(button));
-        }
-    });
+    connect(navigationGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this,
+            [=](QAbstractButton* button, bool isToggled) {
+                if (isToggled)
+                {
+                    window->setNavigationBarDisplayMode(
+                        (ElaNavigationType::NavigationDisplayMode)navigationGroup->id(button));
+                }
+            });
 
     _noneButton = new ElaRadioButton("None", this);
     _popupButton = new ElaRadioButton("Popup", this);
@@ -233,12 +236,13 @@ T_Setting::T_Setting(QWidget* parent)
     stackSwitchGroup->addButton(_scaleButton, 2);
     stackSwitchGroup->addButton(_flipButton, 3);
     stackSwitchGroup->addButton(_blurButton, 4);
-    connect(stackSwitchGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this, [=](QAbstractButton* button, bool isToggled) {
-        if (isToggled)
-        {
-            window->setStackSwitchMode((ElaWindowType::StackSwitchMode)stackSwitchGroup->id(button));
-        }
-    });
+    connect(stackSwitchGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this,
+            [=](QAbstractButton* button, bool isToggled) {
+                if (isToggled)
+                {
+                    window->setStackSwitchMode((ElaWindowType::StackSwitchMode)stackSwitchGroup->id(button));
+                }
+            });
     connect(window, &ElaWindow::pStackSwitchModeChanged, this, [=]() {
         auto button = stackSwitchGroup->button(window->getStackSwitchMode());
         ElaRadioButton* elaRadioButton = dynamic_cast<ElaRadioButton*>(button);

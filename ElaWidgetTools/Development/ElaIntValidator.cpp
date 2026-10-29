@@ -1,13 +1,11 @@
 #include "ElaIntValidator.h"
 
-ElaIntValidator::ElaIntValidator(QObject* parent)
-    : QIntValidator{parent}
+ElaIntValidator::ElaIntValidator(QObject* parent) : QIntValidator{parent}
 {
     _pIsHexMode = false;
 }
 
-ElaIntValidator::ElaIntValidator(int bottom, int top, QObject* parent)
-    : QIntValidator{bottom, top, parent}
+ElaIntValidator::ElaIntValidator(int bottom, int top, QObject* parent) : QIntValidator{bottom, top, parent}
 {
     _pIsHexMode = false;
 }

@@ -9,8 +9,7 @@
 #include <QWidget>
 #include <utility>
 ELA_SINGLETON_CPP(ElaApplication)
-ElaApplication::ElaApplication(QObject* parent)
-    : QObject{parent}, d_ptr(new ElaApplicationPrivate())
+ElaApplication::ElaApplication(QObject* parent) : QObject{parent}, d_ptr(new ElaApplicationPrivate())
 {
     Q_D(ElaApplication);
     d->q_ptr = this;
@@ -39,23 +38,20 @@ void ElaApplication::setWindowDisplayMode(ElaApplicationType::WindowDisplayMode 
     }
     switch (windowDisplayType)
     {
-    case ElaApplicationType::Normal:
-    {
+    case ElaApplicationType::Normal: {
         break;
     }
-    case ElaApplicationType::ElaMica:
-    {
+    case ElaApplicationType::ElaMica: {
         d->_pWindowDisplayMode = windowDisplayType;
         d->_initMicaBaseImage(QImage(d->_pElaMicaImagePath));
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
 #ifdef Q_OS_WIN
-    for (auto widget: d->_micaWidgetList)
+    for (auto widget : d->_micaWidgetList)
     {
         ElaWinShadowHelper::getInstance()->setWindowDisplayMode(widget, windowDisplayType, lastDisplayMode);
         ElaWinShadowHelper::getInstance()->setWindowThemeMode(widget->winId(), d->_themeMode == ElaThemeType::Light);
@@ -110,7 +106,7 @@ void ElaApplication::init()
     Q_INIT_RESOURCE(ElaWidgetTools);
     QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
     QFontDatabase::addApplicationFont(":/include/Font/ElaAwesome.ttf");
-    //默认字体
+    // 默认字体
     QFont font = qApp->font();
     font.setPixelSize(d->_pFontPixelSize);
     font.setFamily("Microsoft YaHei");
@@ -141,8 +137,7 @@ void ElaApplication::syncWindowDisplayMode(QWidget* widget, bool isSync)
     switch (d->_pWindowDisplayMode)
     {
     case ElaApplicationType::Normal:
-    case ElaApplicationType::ElaMica:
-    {
+    case ElaApplicationType::ElaMica: {
         if (isSync)
         {
             if (d->_pWindowDisplayMode == ElaApplicationType::WindowDisplayMode::ElaMica)
@@ -152,17 +147,19 @@ void ElaApplication::syncWindowDisplayMode(QWidget* widget, bool isSync)
         }
         break;
     }
-    default:
-    {
+    default: {
 #ifdef Q_OS_WIN
         if (isSync)
         {
-            ElaWinShadowHelper::getInstance()->setWindowDisplayMode(widget, d->_pWindowDisplayMode, ElaApplicationType::Normal);
-            ElaWinShadowHelper::getInstance()->setWindowThemeMode(widget->winId(), d->_themeMode == ElaThemeType::Light);
+            ElaWinShadowHelper::getInstance()->setWindowDisplayMode(widget, d->_pWindowDisplayMode,
+                                                                    ElaApplicationType::Normal);
+            ElaWinShadowHelper::getInstance()->setWindowThemeMode(widget->winId(),
+                                                                  d->_themeMode == ElaThemeType::Light);
         }
         else
         {
-            ElaWinShadowHelper::getInstance()->setWindowDisplayMode(widget, ElaApplicationType::Normal, d->_pWindowDisplayMode);
+            ElaWinShadowHelper::getInstance()->setWindowDisplayMode(widget, ElaApplicationType::Normal,
+                                                                    d->_pWindowDisplayMode);
             ElaWinShadowHelper::getInstance()->setWindowThemeMode(widget->winId(), true);
         }
 #endif

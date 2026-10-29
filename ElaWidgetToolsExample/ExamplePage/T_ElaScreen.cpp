@@ -11,8 +11,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QVBoxLayout>
-T_ElaScreen::T_ElaScreen(QWidget* parent)
-    : T_BasePage(parent)
+T_ElaScreen::T_ElaScreen(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     setWindowTitle("ElaScreen");

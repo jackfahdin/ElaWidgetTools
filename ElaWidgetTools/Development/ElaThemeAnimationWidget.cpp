@@ -3,8 +3,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPropertyAnimation>
-ElaThemeAnimationWidget::ElaThemeAnimationWidget(QWidget* parent)
-    : QWidget{parent}
+ElaThemeAnimationWidget::ElaThemeAnimationWidget(QWidget* parent) : QWidget{parent}
 {
     _pEndRadius = 0.01;
 }
@@ -48,7 +47,8 @@ void ElaThemeAnimationWidget::paintEvent(QPaintEvent* event)
     qreal devicePixelRatioF = _pOldWindowBackground.devicePixelRatioF();
     QPainterPath clipPath;
     clipPath.moveTo(_pCenter.x() * devicePixelRatioF, _pCenter.y() * devicePixelRatioF);
-    clipPath.addEllipse(QPointF(_pCenter.x() * devicePixelRatioF, _pCenter.y() * devicePixelRatioF), _pRadius * devicePixelRatioF, _pRadius * devicePixelRatioF);
+    clipPath.addEllipse(QPointF(_pCenter.x() * devicePixelRatioF, _pCenter.y() * devicePixelRatioF),
+                        _pRadius * devicePixelRatioF, _pRadius * devicePixelRatioF);
     animationImagePainter.setClipPath(clipPath);
     animationImagePainter.drawImage(animationImage.rect(), animationImage);
     animationImagePainter.end();

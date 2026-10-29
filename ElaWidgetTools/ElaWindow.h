@@ -46,7 +46,8 @@ public:
 
     void moveToCenter();
 
-    void setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* customWidget, QObject* hitTestObject = nullptr, const QString& hitTestFunctionName = "");
+    void setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* customWidget, QObject* hitTestObject = nullptr,
+                         const QString& hitTestFunctionName = "");
     QWidget* getCustomWidget(ElaAppBarType::CustomArea customArea) const;
 
     void setCentralCustomWidget(QWidget* customWidget);
@@ -59,16 +60,26 @@ public:
     void setUserInfoCardPixmap(const QPixmap& pix);
     void setUserInfoCardTitle(const QString& title);
     void setUserInfoCardSubTitle(const QString& subTitle);
-    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, ElaIconType::IconName awesome = ElaIconType::None) const;
-    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, const QString& targetExpanderKey, ElaIconType::IconName awesome = ElaIconType::None) const;
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, int keyPoints, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey, int keyPoints, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QString& footerKey, int keyPoints = 0, ElaIconType::IconName awesome = ElaIconType::None) const;
-    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QWidget* page, QString& footerKey, int keyPoints = 0, ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                  ElaIconType::IconName awesome = ElaIconType::None) const;
+    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                  const QString& targetExpanderKey,
+                                                  ElaIconType::IconName awesome = ElaIconType::None) const;
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page,
+                                              ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, int keyPoints,
+                                              ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey,
+                                              ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey,
+                                              int keyPoints, ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QString& footerKey, int keyPoints = 0,
+                                                ElaIconType::IconName awesome = ElaIconType::None) const;
+    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QWidget* page, QString& footerKey,
+                                                int keyPoints = 0, ElaIconType::IconName awesome = ElaIconType::None);
     ElaNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey);
-    ElaNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey, const QString& targetExpanderKey);
+    ElaNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey,
+                                                  const QString& targetExpanderKey);
 
     void addCentralWidget(QWidget* centralWidget);
     QWidget* getCentralWidget(int index) const;
@@ -140,4 +151,3 @@ private:
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_ELAWINDOW_H_
-

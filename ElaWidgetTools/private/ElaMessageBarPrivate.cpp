@@ -12,10 +12,10 @@
 #include <QPropertyAnimation>
 #include <QTimer>
 
-QMap<QObject*, QMap<ElaMessageBarType::PositionPolicy, QList<ElaMessageBar*>*>> ElaMessageBarPrivate::_messageBarActiveMap;
+QMap<QObject*, QMap<ElaMessageBarType::PositionPolicy, QList<ElaMessageBar*>*>>
+    ElaMessageBarPrivate::_messageBarActiveMap;
 std::atomic<quint64> ElaMessageBarPrivate::_nextCreateSerial{0};
-ElaMessageBarPrivate::ElaMessageBarPrivate(QObject* parent)
-    : QObject{parent}
+ElaMessageBarPrivate::ElaMessageBarPrivate(QObject* parent) : QObject{parent}
 {
     setProperty("MessageBarClosedY", 0);
     setProperty("MessageBarFinishY", 0);
@@ -64,7 +64,7 @@ void ElaMessageBarPrivate::messageBarEnd()
     // 通知同类型的其他MessageBar
     auto parentWidget = q->parent();
     auto& messageBarMap = _messageBarActiveMap[parentWidget];
-    for (const auto messageBar: *messageBarMap[_policy])
+    for (const auto messageBar : *messageBarMap[_policy])
     {
         if (messageBar->d_ptr->_isNormalDisplay)
         {
@@ -91,7 +91,8 @@ void ElaMessageBarPrivate::_messageBarCreate(int displayMsec)
     font.setWeight(QFont::Medium);
     q->setFont(font);
     int textWidth = q->fontMetrics().horizontalAdvance(_text);
-    int fixedWidth = _closeButtonLeftRightMargin + _leftPadding + _titleLeftSpacing + _textLeftSpacing + _closeButtonWidth + titleWidth + textWidth + 2 * _shadowBorderWidth;
+    int fixedWidth = _closeButtonLeftRightMargin + _leftPadding + _titleLeftSpacing + _textLeftSpacing +
+                     _closeButtonWidth + titleWidth + textWidth + 2 * _shadowBorderWidth;
     q->setFixedWidth(fixedWidth > 500 ? 500 : fixedWidth);
     q->setFixedHeight(qMax(50, _getTextHeight()));
     int startX = 0;
@@ -124,13 +125,11 @@ void ElaMessageBarPrivate::_messageBarCreate(int displayMsec)
     switch (_policy)
     {
     case ElaMessageBarType::Top:
-    case ElaMessageBarType::Bottom:
-    {
+    case ElaMessageBarType::Bottom: {
         barPosAnimation->setDuration(250);
         break;
     }
-    default:
-    {
+    default: {
         barPosAnimation->setDuration(350);
         break;
     }
@@ -156,7 +155,8 @@ int ElaMessageBarPrivate::_getTextHeight()
     }
     font.setWeight(QFont::Light);
     QFontMetrics textFontMetrics(font);
-    int textRectWidth = q->minimumWidth() - (_leftPadding + _titleLeftSpacing + titleTextWidth + _textLeftSpacing + _closeButtonWidth + _closeButtonLeftRightMargin);
+    int textRectWidth = q->minimumWidth() - (_leftPadding + _titleLeftSpacing + titleTextWidth + _textLeftSpacing +
+                                             _closeButtonWidth + _closeButtonLeftRightMargin);
     int textFlags = Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere;
     int textHeight = textFontMetrics.boundingRect(QRect(0, 0, textRectWidth, 10000), textFlags, _text).height();
     return textHeight + 20;
@@ -171,8 +171,7 @@ void ElaMessageBarPrivate::_calculateInitialPos(int& startX, int& startY, int& e
     int lastEndY = endY;
     switch (_policy)
     {
-    case ElaMessageBarType::Top:
-    {
+    case ElaMessageBarType::Top: {
         // 25动画距离
         startX = q->parentWidget()->width() / 2 - q->minimumWidth() / 2;
         startY = minimumHeightTotal + _messageBarSpacing * indexLessCount + _messageBarVerticalTopMargin - 25;
@@ -180,58 +179,55 @@ void ElaMessageBarPrivate::_calculateInitialPos(int& startX, int& startY, int& e
         endY = minimumHeightTotal + _messageBarSpacing * indexLessCount + _messageBarVerticalTopMargin;
         break;
     }
-    case ElaMessageBarType::Left:
-    {
+    case ElaMessageBarType::Left: {
         startX = -q->minimumWidth();
         startY = minimumHeightTotal + _messageBarSpacing * indexLessCount + q->parentWidget()->height() / 2;
         endX = _messageBarHorizontalMargin;
         endY = startY;
         break;
     }
-    case ElaMessageBarType::Bottom:
-    {
+    case ElaMessageBarType::Bottom: {
         startX = q->parentWidget()->width() / 2 - q->minimumWidth() / 2;
-        startY = q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal - _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin - 25;
+        startY = q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal -
+                 _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin - 25;
         endX = startX;
-        endY = q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal - _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin;
+        endY = q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal -
+               _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin;
         break;
     }
-    case ElaMessageBarType::Right:
-    {
+    case ElaMessageBarType::Right: {
         startX = q->parentWidget()->width();
         startY = minimumHeightTotal + _messageBarSpacing * indexLessCount + q->parentWidget()->height() / 2;
         endX = q->parentWidget()->width() - q->minimumWidth() - _messageBarHorizontalMargin;
         endY = startY;
         break;
     }
-    case ElaMessageBarType::TopRight:
-    {
+    case ElaMessageBarType::TopRight: {
         startX = q->parentWidget()->width();
         startY = minimumHeightTotal + _messageBarSpacing * indexLessCount + _messageBarVerticalTopMargin;
         endX = q->parentWidget()->width() - q->minimumWidth() - _messageBarHorizontalMargin;
         endY = startY;
         break;
     }
-    case ElaMessageBarType::TopLeft:
-    {
+    case ElaMessageBarType::TopLeft: {
         startX = -q->minimumWidth();
         startY = minimumHeightTotal + _messageBarSpacing * indexLessCount + _messageBarVerticalTopMargin;
         endX = _messageBarHorizontalMargin;
         endY = startY;
         break;
     }
-    case ElaMessageBarType::BottomRight:
-    {
+    case ElaMessageBarType::BottomRight: {
         startX = q->parentWidget()->width();
-        startY = q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal - _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin;
+        startY = q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal -
+                 _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin;
         endX = q->parentWidget()->width() - q->minimumWidth() - _messageBarHorizontalMargin;
         endY = startY;
         break;
     }
-    case ElaMessageBarType::BottomLeft:
-    {
+    case ElaMessageBarType::BottomLeft: {
         startX = -q->minimumWidth();
-        startY = q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal - _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin;
+        startY = q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal -
+                 _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin;
         endX = _messageBarHorizontalMargin;
         endY = startY;
         break;
@@ -241,7 +237,8 @@ void ElaMessageBarPrivate::_calculateInitialPos(int& startX, int& startY, int& e
     {
         return;
     }
-    if (endY < _messageBarVerticalTopMargin || endY > q->parentWidget()->height() - _messageBarVerticalBottomMargin - q->minimumHeight())
+    if (endY < _messageBarVerticalTopMargin ||
+        endY > q->parentWidget()->height() - _messageBarVerticalBottomMargin - q->minimumHeight())
     {
         auto parentWidget = q->parent();
         auto& messageBarMap = _messageBarActiveMap[parentWidget];
@@ -259,7 +256,7 @@ QList<int> ElaMessageBarPrivate::_getOtherMessageBarTotalData()
     auto parentWidget = q->parent();
     auto& messageBarMap = _messageBarActiveMap[parentWidget];
     QList<ElaMessageBar*>* messageBarList = messageBarMap[_policy];
-    for (const auto messageBar: *messageBarList)
+    for (const auto messageBar : *messageBarList)
     {
         if (messageBar == q)
         {
@@ -286,20 +283,18 @@ qreal ElaMessageBarPrivate::_calculateTargetPosY()
     {
     case ElaMessageBarType::Top:
     case ElaMessageBarType::TopRight:
-    case ElaMessageBarType::TopLeft:
-    {
+    case ElaMessageBarType::TopLeft: {
         return minimumHeightTotal + _messageBarSpacing * indexLessCount + _messageBarVerticalTopMargin;
     }
     case ElaMessageBarType::Left:
-    case ElaMessageBarType::Right:
-    {
+    case ElaMessageBarType::Right: {
         return minimumHeightTotal + _messageBarSpacing * indexLessCount + q->parentWidget()->height() / 2;
     }
     case ElaMessageBarType::Bottom:
     case ElaMessageBarType::BottomRight:
-    case ElaMessageBarType::BottomLeft:
-    {
-        return q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal - _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin;
+    case ElaMessageBarType::BottomLeft: {
+        return q->parentWidget()->height() - q->minimumHeight() - minimumHeightTotal -
+               _messageBarSpacing * indexLessCount - _messageBarVerticalBottomMargin;
     }
     }
     return 0;
@@ -346,7 +341,8 @@ void ElaMessageBarPrivate::_drawSuccess(QPainter* painter)
     Q_Q(ElaMessageBar);
     painter->save();
     painter->setBrush(QColor(0xE0, 0xF6, 0xDD));
-    QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth, q->height() - 2 * _shadowBorderWidth);
+    QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth,
+                         q->height() - 2 * _shadowBorderWidth);
     painter->drawRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     // 图标绘制
     painter->setPen(Qt::white);
@@ -357,14 +353,17 @@ void ElaMessageBarPrivate::_drawSuccess(QPainter* painter)
     QFont iconFont = QFont("ElaAwesome");
     iconFont.setPixelSize(eApp->getFontPixelSize() - 1);
     painter->setFont(iconFont);
-    painter->drawText(_leftPadding, 0, q->width(), q->height(), Qt::AlignVCenter, QChar(static_cast<char16_t>(ElaIconType::Check)));
+    painter->drawText(_leftPadding, 0, q->width(), q->height(), Qt::AlignVCenter,
+                      QChar(static_cast<char16_t>(ElaIconType::Check)));
     // 时间进度条绘制
     QPainterPath clipPath;
     clipPath.addRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     painter->setClipPath(clipPath);
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor(0x3C, 0x96, 0x4B));
-    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight, foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1), 2, 2);
+    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight,
+                                    foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1),
+                             2, 2);
     painter->restore();
     // 文字颜色
     painter->setPen(QPen(Qt::black));
@@ -375,7 +374,8 @@ void ElaMessageBarPrivate::_drawWarning(QPainter* painter)
     Q_Q(ElaMessageBar);
     painter->save();
     painter->setBrush(QColor(0xFF, 0xF4, 0xCE));
-    QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth, q->height() - 2 * _shadowBorderWidth);
+    QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth,
+                         q->height() - 2 * _shadowBorderWidth);
     painter->drawRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     // 图标绘制
     // exclamation
@@ -391,7 +391,9 @@ void ElaMessageBarPrivate::_drawWarning(QPainter* painter)
     painter->setClipPath(clipPath);
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor(0xC4, 0xAD, 0x59));
-    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight, foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1), 2, 2);
+    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight,
+                                    foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1),
+                             2, 2);
     painter->restore();
     // 文字颜色
     painter->setPen(Qt::black);
@@ -402,7 +404,8 @@ void ElaMessageBarPrivate::_drawInformation(QPainter* painter)
     Q_Q(ElaMessageBar);
     painter->save();
     painter->setBrush(QColor(0xF4, 0xF4, 0xF4));
-    QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth, q->height() - 2 * _shadowBorderWidth);
+    QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth,
+                         q->height() - 2 * _shadowBorderWidth);
     painter->drawRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     // 图标绘制
     painter->setPen(Qt::white);
@@ -417,7 +420,9 @@ void ElaMessageBarPrivate::_drawInformation(QPainter* painter)
     painter->setClipPath(clipPath);
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor(0x00, 0x66, 0xB4));
-    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight, foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1), 2, 2);
+    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight,
+                                    foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1),
+                             2, 2);
     painter->restore();
     // 文字颜色
     painter->setPen(Qt::black);
@@ -428,7 +433,8 @@ void ElaMessageBarPrivate::_drawError(QPainter* painter)
     Q_Q(ElaMessageBar);
     painter->save();
     painter->setBrush(QColor(0xFD, 0xE7, 0xE9));
-    QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth, q->height() - 2 * _shadowBorderWidth);
+    QRect foregroundRect(_shadowBorderWidth, _shadowBorderWidth, q->width() - 2 * _shadowBorderWidth,
+                         q->height() - 2 * _shadowBorderWidth);
     painter->drawRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     // 图标绘制
     painter->setPen(Qt::white);
@@ -439,14 +445,17 @@ void ElaMessageBarPrivate::_drawError(QPainter* painter)
     QFont iconFont = QFont("ElaAwesome");
     iconFont.setPixelSize(eApp->getFontPixelSize());
     painter->setFont(iconFont);
-    painter->drawText(_leftPadding + 1, 0, q->width(), q->height(), Qt::AlignVCenter, QChar(static_cast<char16_t>(ElaIconType::Xmark)));
+    painter->drawText(_leftPadding + 1, 0, q->width(), q->height(), Qt::AlignVCenter,
+                      QChar(static_cast<char16_t>(ElaIconType::Xmark)));
     // 时间进度条绘制
     QPainterPath clipPath;
     clipPath.addRoundedRect(foregroundRect, _borderRadius, _borderRadius);
     painter->setClipPath(clipPath);
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor(0xCC, 0x5C, 0x65));
-    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight, foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1), 2, 2);
+    painter->drawRoundedRect(QRectF(foregroundRect.x(), foregroundRect.bottom() - _timePercentHeight,
+                                    foregroundRect.width() * _pTimePercent / 100.0, _timePercentHeight + 1),
+                             2, 2);
     painter->restore();
     // 文字颜色
     painter->setPen(Qt::black);

@@ -8,8 +8,7 @@
 #include <cmath>
 #endif
 ELA_SINGLETON_CPP(ElaExponentialBlur)
-ElaExponentialBlur::ElaExponentialBlur(QObject* parent)
-    : QObject{parent}, d_ptr(new ElaExponentialBlurPrivate())
+ElaExponentialBlur::ElaExponentialBlur(QObject* parent) : QObject{parent}, d_ptr(new ElaExponentialBlurPrivate())
 {
     Q_D(ElaExponentialBlur);
     d->q_ptr = this;

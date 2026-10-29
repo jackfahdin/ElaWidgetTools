@@ -2,8 +2,7 @@
 
 #include <QPainter>
 #include <QPropertyAnimation>
-ElaMaskWidget::ElaMaskWidget(QWidget* parent)
-    : QWidget{parent}
+ElaMaskWidget::ElaMaskWidget(QWidget* parent) : QWidget{parent}
 {
     setObjectName("ElaMaskWidget");
     setStyleSheet("#ElaMaskWidget{background-color:transparent;}");

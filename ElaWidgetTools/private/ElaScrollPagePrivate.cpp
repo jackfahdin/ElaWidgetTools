@@ -8,8 +8,7 @@
 #include "ElaBreadcrumbBar.h"
 #include "ElaScrollPage.h"
 
-ElaScrollPagePrivate::ElaScrollPagePrivate(QObject* parent)
-    : QObject{parent}
+ElaScrollPagePrivate::ElaScrollPagePrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -36,7 +35,7 @@ void ElaScrollPagePrivate::_switchCentralStackIndex(int targetIndex, int lastInd
     targetWidgetAnimation->setDuration(300);
     if (targetIndex > lastIndex)
     {
-        //左滑
+        // 左滑
         currentWidgetAnimation->setStartValue(currentWidget->pos());
         currentWidgetAnimation->setEndValue(QPoint(-_centralStackedWidget->width(), 0));
         targetWidgetAnimation->setStartValue(QPoint(_centralStackedWidget->width(), 0));
@@ -44,7 +43,7 @@ void ElaScrollPagePrivate::_switchCentralStackIndex(int targetIndex, int lastInd
     }
     else
     {
-        //右滑
+        // 右滑
         currentWidgetAnimation->setStartValue(currentWidget->pos());
         currentWidgetAnimation->setEndValue(QPoint(_centralStackedWidget->width(), 0));
         targetWidgetAnimation->setStartValue(QPoint(-_centralStackedWidget->width(), 0));

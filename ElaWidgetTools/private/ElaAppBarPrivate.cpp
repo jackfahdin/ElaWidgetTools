@@ -21,8 +21,7 @@
 #include <QWindow>
 #include <QtMath>
 
-ElaAppBarPrivate::ElaAppBarPrivate(QObject* parent)
-    : QObject{parent}
+ElaAppBarPrivate::ElaAppBarPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -141,8 +140,9 @@ void ElaAppBarPrivate::_showAppBarMenu(QPoint point)
             ::EnableMenuItem(hMenu, SC_SIZE, MFS_DISABLED);
             ::EnableMenuItem(hMenu, SC_MAXIMIZE, MFS_DISABLED);
         }
-        const int result = ::TrackPopupMenu(hMenu, (TPM_RETURNCMD | (QGuiApplication::isRightToLeft() ? TPM_RIGHTALIGN : TPM_LEFTALIGN)), nativePos.x(),
-                                            nativePos.y(), 0, hwnd, nullptr);
+        const int result = ::TrackPopupMenu(
+            hMenu, (TPM_RETURNCMD | (QGuiApplication::isRightToLeft() ? TPM_RIGHTALIGN : TPM_LEFTALIGN)), nativePos.x(),
+            nativePos.y(), 0, hwnd, nullptr);
         if (result != FALSE)
         {
             ::PostMessageW(hwnd, WM_SYSCOMMAND, result, 0);
@@ -156,37 +156,31 @@ void ElaAppBarPrivate::_updateCursor(int edges)
     Q_Q(const ElaAppBar);
     switch (edges)
     {
-    case 0:
-    {
+    case 0: {
         q->window()->setCursor(Qt::ArrowCursor);
         break;
     }
     case Qt::LeftEdge:
-    case Qt::RightEdge:
-    {
+    case Qt::RightEdge: {
         q->window()->setCursor(Qt::SizeHorCursor);
         break;
     }
     case Qt::TopEdge:
-    case Qt::BottomEdge:
-    {
+    case Qt::BottomEdge: {
         q->window()->setCursor(Qt::SizeVerCursor);
         break;
     }
     case Qt::LeftEdge | Qt::TopEdge:
-    case Qt::RightEdge | Qt::BottomEdge:
-    {
+    case Qt::RightEdge | Qt::BottomEdge: {
         q->window()->setCursor(Qt::SizeFDiagCursor);
         break;
     }
     case Qt::RightEdge | Qt::TopEdge:
-    case Qt::LeftEdge | Qt::BottomEdge:
-    {
+    case Qt::LeftEdge | Qt::BottomEdge: {
         q->window()->setCursor(Qt::SizeBDiagCursor);
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -218,7 +212,9 @@ bool ElaAppBarPrivate::_containsCursorToItem(QWidget* item)
                 if (customAreaHitTestObject)
                 {
                     bool isContainsInAppBar = false;
-                    QMetaObject::invokeMethod(customAreaHitTestObject, _customAreaHitTestFunctionNameList[i].toLocal8Bit().constData(), Qt::AutoConnection, Q_RETURN_ARG(bool, isContainsInAppBar));
+                    QMetaObject::invokeMethod(customAreaHitTestObject,
+                                              _customAreaHitTestFunctionNameList[i].toLocal8Bit().constData(),
+                                              Qt::AutoConnection, Q_RETURN_ARG(bool, isContainsInAppBar));
                     return isContainsInAppBar;
                 }
                 return false;
@@ -271,7 +267,7 @@ int ElaAppBarPrivate::_calculateMinimumWidth()
         }
     }
     QList<QAbstractButton*> buttonList = q->findChildren<QAbstractButton*>();
-    for (const auto clientWidget: _clientWidgetList)
+    for (const auto clientWidget : _clientWidgetList)
     {
         if (clientWidget->isVisible())
         {

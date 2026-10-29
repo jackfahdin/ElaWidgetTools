@@ -5,8 +5,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QTimer>
-ElaLCDNumber::ElaLCDNumber(QWidget* parent)
-    : QLCDNumber(parent), d_ptr(new ElaLCDNumberPrivate)
+ElaLCDNumber::ElaLCDNumber(QWidget* parent) : QLCDNumber(parent), d_ptr(new ElaLCDNumberPrivate)
 {
     Q_D(ElaLCDNumber);
     d->q_ptr = this;
@@ -27,8 +26,7 @@ ElaLCDNumber::ElaLCDNumber(QWidget* parent)
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaLCDNumberPrivate::onThemeModeChanged);
 }
 
-ElaLCDNumber::ElaLCDNumber(uint numDigits, QWidget* parent)
-    : ElaLCDNumber(parent)
+ElaLCDNumber::ElaLCDNumber(uint numDigits, QWidget* parent) : ElaLCDNumber(parent)
 {
     setDigitCount(numDigits);
 }

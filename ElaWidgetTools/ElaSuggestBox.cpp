@@ -26,7 +26,8 @@ ElaSuggestBox::SuggestData::SuggestData()
 {
 }
 
-ElaSuggestBox::SuggestData::SuggestData(ElaIconType::IconName icon, const QString& suggestText, const QVariantMap& suggestData)
+ElaSuggestBox::SuggestData::SuggestData(ElaIconType::IconName icon, const QString& suggestText,
+                                        const QVariantMap& suggestData)
     : _pElaIcon(icon), _pSuggestText(suggestText), _pSuggestData(suggestData)
 {
 }
@@ -35,8 +36,7 @@ ElaSuggestBox::SuggestData::~SuggestData()
 {
 }
 
-ElaSuggestBox::ElaSuggestBox(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaSuggestBoxPrivate())
+ElaSuggestBox::ElaSuggestBox(QWidget* parent) : QWidget{parent}, d_ptr(new ElaSuggestBoxPrivate())
 {
     Q_D(ElaSuggestBox);
     QWidget::setFixedSize(280, 35);
@@ -47,8 +47,10 @@ ElaSuggestBox::ElaSuggestBox(QWidget* parent)
     d->_searchEdit->setFixedHeight(35);
     d->_searchEdit->setPlaceholderText("查找功能");
     d->_searchEdit->setClearButtonEnabled(true);
-    d->_lightSearchAction = new QAction(ElaIcon::getInstance()->getElaIcon(ElaIconType::MagnifyingGlass), "Search", this);
-    d->_darkSearchAction = new QAction(ElaIcon::getInstance()->getElaIcon(ElaIconType::MagnifyingGlass, QColor(0xFF, 0xFF, 0xFF)), "Search", this);
+    d->_lightSearchAction =
+        new QAction(ElaIcon::getInstance()->getElaIcon(ElaIconType::MagnifyingGlass), "Search", this);
+    d->_darkSearchAction = new QAction(
+        ElaIcon::getInstance()->getElaIcon(ElaIconType::MagnifyingGlass, QColor(0xFF, 0xFF, 0xFF)), "Search", this);
 
     d->_themeMode = eTheme->getThemeMode();
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaSuggestBoxPrivate::onThemeModeChanged);
@@ -62,11 +64,11 @@ ElaSuggestBox::ElaSuggestBox(QWidget* parent)
     }
 
     connect(d->_lightSearchAction, &QAction::triggered, this, [=](bool checked) {
-        //qDebug() << "Search";
+        // qDebug() << "Search";
     });
 
     connect(d->_darkSearchAction, &QAction::triggered, this, [=](bool checked) {
-        //qDebug() << "Search";
+        // qDebug() << "Search";
     });
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(0);
@@ -139,7 +141,8 @@ QString ElaSuggestBox::addSuggestion(const QString& suggestText, const QVariantM
     return suggest->getSuggestKey();
 }
 
-QString ElaSuggestBox::addSuggestion(ElaIconType::IconName icon, const QString& suggestText, const QVariantMap& suggestData)
+QString ElaSuggestBox::addSuggestion(ElaIconType::IconName icon, const QString& suggestText,
+                                     const QVariantMap& suggestData)
 {
     Q_D(ElaSuggestBox);
     ElaSuggestion* suggest = new ElaSuggestion(this);
@@ -165,7 +168,7 @@ QStringList ElaSuggestBox::addSuggestion(const QList<ElaSuggestBox::SuggestData>
 {
     Q_D(ElaSuggestBox);
     QStringList suggestKeyList;
-    for (const auto& suggestData: suggestDataList)
+    for (const auto& suggestData : suggestDataList)
     {
         ElaSuggestion* suggest = new ElaSuggestion(this);
         suggest->setElaIcon(suggestData.getElaIcon());

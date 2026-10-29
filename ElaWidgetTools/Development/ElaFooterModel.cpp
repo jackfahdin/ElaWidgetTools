@@ -3,8 +3,7 @@
 #include <QUuid>
 
 #include "ElaNavigationNode.h"
-ElaFooterModel::ElaFooterModel(QObject* parent)
-    : QAbstractListModel{parent}
+ElaFooterModel::ElaFooterModel(QObject* parent) : QAbstractListModel{parent}
 {
     _pSelectedNode = nullptr;
 }
@@ -31,7 +30,9 @@ QVariant ElaFooterModel::data(const QModelIndex& index, int role) const
     return QVariant();
 }
 
-ElaNavigationType::NodeResult ElaFooterModel::addFooterNode(const QString& footerTitle, QString& footerKey, bool isHasFooterPage, int keyPoints, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaFooterModel::addFooterNode(const QString& footerTitle, QString& footerKey,
+                                                            bool isHasFooterPage, int keyPoints,
+                                                            ElaIconType::IconName awesome)
 {
     if (_footerNodeList.count() >= 3)
     {
@@ -57,7 +58,7 @@ int ElaFooterModel::getFooterNodeCount() const
 
 ElaNavigationNode* ElaFooterModel::getNavigationNode(const QString& footerKey)
 {
-    for (auto node: _footerNodeList)
+    for (auto node : _footerNodeList)
     {
         if (node->getNodeKey() == footerKey)
         {
@@ -69,7 +70,7 @@ ElaNavigationNode* ElaFooterModel::getNavigationNode(const QString& footerKey)
 
 void ElaFooterModel::removeNavigationNode(const QString& footerKey)
 {
-    for (auto node: _footerNodeList)
+    for (auto node : _footerNodeList)
     {
         if (node->getNodeKey() == footerKey)
         {

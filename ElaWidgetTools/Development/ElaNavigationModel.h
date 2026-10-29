@@ -25,14 +25,22 @@ public:
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
-    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, ElaIconType::IconName awesome);
-    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, const QString& targetExpanderKey, ElaIconType::IconName awesome);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QString& pageKey, ElaIconType::IconName awesome);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QString& pageKey, const QString& targetExpanderKey, ElaIconType::IconName awesome);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QString& pageKey, int keyPoints, ElaIconType::IconName awesome);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QString& pageKey, const QString& targetExpanderKey, int keyPoints, ElaIconType::IconName awesome);
+    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                  ElaIconType::IconName awesome);
+    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                  const QString& targetExpanderKey, ElaIconType::IconName awesome);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QString& pageKey,
+                                              ElaIconType::IconName awesome);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QString& pageKey,
+                                              const QString& targetExpanderKey, ElaIconType::IconName awesome);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QString& pageKey, int keyPoints,
+                                              ElaIconType::IconName awesome);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QString& pageKey,
+                                              const QString& targetExpanderKey, int keyPoints,
+                                              ElaIconType::IconName awesome);
     ElaNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey);
-    ElaNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey, const QString& targetExpanderKey);
+    ElaNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey,
+                                                  const QString& targetExpanderKey);
 
     QStringList removeNavigationNode(const QString& nodeKey);
 
@@ -49,4 +57,3 @@ private:
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELANAVIGATIONMODEL_H_
-

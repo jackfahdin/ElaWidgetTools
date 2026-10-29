@@ -7,8 +7,7 @@
 #include "ElaIconButton.h"
 #include "ElaText.h"
 #include "ElaTheme.h"
-ElaDockWidgetTitleBar::ElaDockWidgetTitleBar(QWidget* parent)
-    : QWidget{parent}
+ElaDockWidgetTitleBar::ElaDockWidgetTitleBar(QWidget* parent) : QWidget{parent}
 {
     _dockWidget = dynamic_cast<ElaDockWidget*>(parent);
     _iconLabel = new QLabel(this);
@@ -49,7 +48,7 @@ ElaDockWidgetTitleBar::ElaDockWidgetTitleBar(QWidget* parent)
     mainLayout->addWidget(_floatButton);
     mainLayout->addWidget(_closeButton);
 
-    //主题变更
+    // 主题变更
     _themeMode = eTheme->getThemeMode();
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
         _themeMode = themeMode;

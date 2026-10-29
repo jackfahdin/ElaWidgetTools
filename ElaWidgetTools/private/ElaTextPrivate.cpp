@@ -3,8 +3,7 @@
 #include "ElaText.h"
 #include "ElaTheme.h"
 #include <QTimer>
-ElaTextPrivate::ElaTextPrivate(QObject* parent)
-    : QObject{parent}
+ElaTextPrivate::ElaTextPrivate(QObject* parent) : QObject{parent}
 {
 }
 

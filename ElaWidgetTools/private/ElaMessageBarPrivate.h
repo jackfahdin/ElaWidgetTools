@@ -61,12 +61,12 @@ private:
 
     // 初始坐标计算
     void _calculateInitialPos(int& startX, int& startY, int& endX, int& endY);
-    //获取总高度和次序信息
+    // 获取总高度和次序信息
     QList<int> _getOtherMessageBarTotalData();
-    //计算目标坐标
+    // 计算目标坐标
     qreal _calculateTargetPosY();
 
-    //创建次序判断
+    // 创建次序判断
     bool _judgeCreateOrder(ElaMessageBar* otherMessageBar);
     void _updateActiveMap(bool isActive);
 

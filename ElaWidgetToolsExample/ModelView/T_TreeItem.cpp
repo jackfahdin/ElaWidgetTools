@@ -1,8 +1,7 @@
 #include "T_TreeItem.h"
 
 #include <QUuid>
-T_TreeItem::T_TreeItem(const QString& itemTitle, T_TreeItem* parent)
-    : QObject{parent}
+T_TreeItem::T_TreeItem(const QString& itemTitle, T_TreeItem* parent) : QObject{parent}
 {
     _itemKey = QUuid::createUuid().toString().remove("{").remove("}").remove("-");
     _itemTitle = itemTitle;
@@ -29,7 +28,7 @@ void T_TreeItem::setChildChecked(bool isChecked)
 {
     if (isChecked)
     {
-        for (auto node: _pChildrenItems)
+        for (auto node : _pChildrenItems)
         {
             node->setIsChecked(isChecked);
             node->setChildChecked(isChecked);
@@ -37,7 +36,7 @@ void T_TreeItem::setChildChecked(bool isChecked)
     }
     else
     {
-        for (auto node: _pChildrenItems)
+        for (auto node : _pChildrenItems)
         {
             node->setChildChecked(isChecked);
             node->setIsChecked(isChecked);
@@ -49,7 +48,7 @@ Qt::CheckState T_TreeItem::getChildCheckState()
 {
     bool isAllChecked = true;
     bool isAnyChecked = false;
-    for (auto node: _pChildrenItems)
+    for (auto node : _pChildrenItems)
     {
         if (node->getIsChecked())
         {

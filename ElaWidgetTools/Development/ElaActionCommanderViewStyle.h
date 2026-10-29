@@ -14,9 +14,12 @@ class ElaActionCommanderViewStyle : public QProxyStyle
 public:
     explicit ElaActionCommanderViewStyle(QStyle* style = nullptr);
     ~ElaActionCommanderViewStyle() override;
-    void drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const override;
-    void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const override;
-    QSize sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const override;
+    void drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                       const QWidget* widget) const override;
+    void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                     const QWidget* widget) const override;
+    QSize sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                           const QWidget* widget) const override;
     int pixelMetric(PixelMetric metric, const QStyleOption* option, const QWidget* widget) const override;
     QRect subElementRect(SubElement element, const QStyleOption* option, const QWidget* widget) const override;
 
@@ -27,4 +30,4 @@ private:
     int _leftPadding{11};
 };
 
-#endif //ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELAACTIONCOMMANDERVIEWSTYLE_H
+#endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELAACTIONCOMMANDERVIEWSTYLE_H

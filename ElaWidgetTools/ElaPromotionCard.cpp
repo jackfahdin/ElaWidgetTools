@@ -24,8 +24,7 @@ ELA_PROPERTY_Q_CPP(ElaPromotionCard, int, CardTitlePixelSize)
 ELA_PROPERTY_Q_CPP(ElaPromotionCard, int, PromotionTitlePixelSize)
 ELA_PROPERTY_Q_CPP(ElaPromotionCard, int, TitlePixelSize)
 ELA_PROPERTY_Q_CPP(ElaPromotionCard, int, SubTitlePixelSize)
-ElaPromotionCard::ElaPromotionCard(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaPromotionCardPrivate())
+ElaPromotionCard::ElaPromotionCard(QWidget* parent) : QWidget{parent}, d_ptr(new ElaPromotionCardPrivate())
 {
     Q_D(ElaPromotionCard);
     d->q_ptr = this;
@@ -105,8 +104,7 @@ bool ElaPromotionCard::event(QEvent* event)
     Q_D(ElaPromotionCard);
     switch (event->type())
     {
-    case QEvent::MouseButtonPress:
-    {
+    case QEvent::MouseButtonPress: {
         QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
         QPropertyAnimation* opacityAnimation = new QPropertyAnimation(d, "pPressOpacity");
         connect(opacityAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
@@ -133,17 +131,15 @@ bool ElaPromotionCard::event(QEvent* event)
         d->_isPressAnimationFinished = false;
         d->_pressGradient->setFocalPoint(mouseEvent->pos());
         d->_pressGradient->setCenter(mouseEvent->pos());
-        //点击后隐藏Hover效果
+        // 点击后隐藏Hover效果
         d->_startHoverOpacityAnimation(false);
         break;
     }
-    case QEvent::MouseButtonRelease:
-    {
+    case QEvent::MouseButtonRelease: {
         Q_EMIT promotionCardClicked();
         break;
     }
-    case QEvent::MouseMove:
-    {
+    case QEvent::MouseMove: {
         QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
         if (d->_pHoverOpacity < 1 && d->_isPressAnimationFinished)
         {
@@ -157,18 +153,15 @@ bool ElaPromotionCard::event(QEvent* event)
         update();
         break;
     }
-    case QEvent::Enter:
-    {
+    case QEvent::Enter: {
         d->_startHoverOpacityAnimation(true);
         break;
     }
-    case QEvent::Leave:
-    {
+    case QEvent::Leave: {
         d->_startHoverOpacityAnimation(false);
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -182,32 +175,34 @@ void ElaPromotionCard::paintEvent(QPaintEvent* event)
     painter.save();
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
     painter.setPen(Qt::NoPen);
-    //阴影绘制
+    // 阴影绘制
     eTheme->drawEffectShadow(&painter, rect(), d->_shadowBorderWidth, d->_pBorderRadius);
-    QRect foregroundRect(d->_shadowBorderWidth, d->_shadowBorderWidth, width() - 2 * d->_shadowBorderWidth, height() - 2 * d->_shadowBorderWidth);
+    QRect foregroundRect(d->_shadowBorderWidth, d->_shadowBorderWidth, width() - 2 * d->_shadowBorderWidth,
+                         height() - 2 * d->_shadowBorderWidth);
     QPainterPath path;
     path.addRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
     painter.setClipPath(path);
-    //背景图片绘制
+    // 背景图片绘制
     if (!d->_pCardPixmap.isNull())
     {
-        //源区域计算
+        // 源区域计算
         QRect pixSourceRect = d->_pCardPixmap.rect();
         qreal horizontalOffset = d->_pCardPixmap.width() * (1 - d->_pHorizontalCardPixmapRatio) / 2;
         qreal verticalOffset = d->_pCardPixmap.height() * (1 - d->_pVerticalCardPixmapRatio) / 2;
         pixSourceRect.adjust(horizontalOffset, verticalOffset, -horizontalOffset, -verticalOffset);
         painter.drawPixmap(foregroundRect, d->_pCardPixmap, pixSourceRect);
     }
-    //文字绘制
+    // 文字绘制
     painter.save();
     QFont font = painter.font();
-    //卡片标题
+    // 卡片标题
     font.setWeight(QFont::Bold);
     font.setPixelSize(d->_pCardTitlePixelSize);
     painter.setFont(font);
     painter.setPen(d->_pCardTitleColor);
-    painter.drawText(QRect(25, 25, foregroundRect.width() - 25, foregroundRect.height()), Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, d->_pCardTitle);
-    //标题
+    painter.drawText(QRect(25, 25, foregroundRect.width() - 25, foregroundRect.height()),
+                     Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, d->_pCardTitle);
+    // 标题
     font.setWeight(QFont::Bold);
     font.setPixelSize(d->_pTitlePixelSize);
     painter.setFont(font);
@@ -215,7 +210,7 @@ void ElaPromotionCard::paintEvent(QPaintEvent* event)
     int titleTextHeight = painter.fontMetrics().height();
     QRect titleRect(25, (height() - titleTextHeight) / 2, foregroundRect.width() - 25, titleTextHeight);
     painter.drawText(titleRect, Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, d->_pTitle);
-    //推广标题
+    // 推广标题
     if (!d->_pPromotionTitle.isEmpty())
     {
         font.setWeight(QFont::Normal);
@@ -223,34 +218,39 @@ void ElaPromotionCard::paintEvent(QPaintEvent* event)
         painter.setFont(font);
         int promotionTitleTextWidth = painter.fontMetrics().horizontalAdvance(d->_pPromotionTitle);
         int promotionTitleTextHeight = painter.fontMetrics().height();
-        QRect promotionTitleTextRect(32, titleRect.top() - promotionTitleTextHeight - 5, foregroundRect.width() / 2 - 25, promotionTitleTextHeight);
-        //背景绘制
+        QRect promotionTitleTextRect(32, titleRect.top() - promotionTitleTextHeight - 5,
+                                     foregroundRect.width() / 2 - 25, promotionTitleTextHeight);
+        // 背景绘制
         painter.setPen(Qt::NoPen);
         painter.setBrush(d->_pPromotionTitleBaseColor);
-        painter.drawRoundedRect(QRect(25, promotionTitleTextRect.top() - 2, promotionTitleTextWidth + 14, promotionTitleTextHeight + 4), 8, 8);
-        //文字绘制
+        painter.drawRoundedRect(
+            QRect(25, promotionTitleTextRect.top() - 2, promotionTitleTextWidth + 14, promotionTitleTextHeight + 4), 8,
+            8);
+        // 文字绘制
         painter.setPen(d->_pPromotionTitleColor);
-        painter.drawText(promotionTitleTextRect, Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine, d->_pPromotionTitle);
+        painter.drawText(promotionTitleTextRect, Qt::AlignLeft | Qt::AlignBottom | Qt::TextSingleLine,
+                         d->_pPromotionTitle);
     }
-    //副标题
+    // 副标题
     font.setWeight(QFont::Medium);
     font.setPixelSize(d->_pSubTitlePixelSize);
     painter.setFont(font);
     painter.setPen(d->_pSubTitleColor);
-    painter.drawText(QRect(25, titleRect.bottom(), foregroundRect.width() / 2 - 25, height() / 2), Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, d->_pSubTitle);
+    painter.drawText(QRect(25, titleRect.bottom(), foregroundRect.width() / 2 - 25, height() / 2),
+                     Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, d->_pSubTitle);
 
     painter.restore();
-    //效果阴影绘制
+    // 效果阴影绘制
     if (d->_isPressAnimationFinished)
     {
-        //覆盖阴影绘制
+        // 覆盖阴影绘制
         painter.setOpacity(d->_pHoverOpacity);
         painter.setBrush(*d->_hoverGradient);
         painter.drawEllipse(d->_hoverGradient->center(), d->_hoverGradient->radius(), d->_hoverGradient->radius());
     }
     else
     {
-        //点击阴影绘制
+        // 点击阴影绘制
         painter.setOpacity(d->_pPressOpacity);
         painter.setBrush(*d->_pressGradient);
         painter.drawEllipse(d->_pressGradient->center(), d->_pPressRadius, d->_pPressRadius / 1.1);

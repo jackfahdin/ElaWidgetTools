@@ -1,8 +1,7 @@
 #include "ElaRibbonBarModel.h"
 #include <QMenu>
 #include <QWidget>
-ElaRibbonBarModel::ElaRibbonBarModel(QObject* parent)
-    : QAbstractListModel(parent)
+ElaRibbonBarModel::ElaRibbonBarModel(QObject* parent) : QAbstractListModel(parent)
 {
     // 根组
     ElaRibbonGroupData data;
@@ -53,7 +52,7 @@ QAction* ElaRibbonBarModel::addRibbonAction(const QString& groupName, const QStr
     action->setProperty("ElaRibbonGroupName", groupName);
     ElaRibbonGroupData* targetGroup = nullptr;
     int insertIndex = 0;
-    for (auto& groupData: _ribbonDataList)
+    for (auto& groupData : _ribbonDataList)
     {
         if (groupData.groupName == groupName)
         {
@@ -80,14 +79,15 @@ QAction* ElaRibbonBarModel::addRibbonAction(const QString& groupName, const QStr
     return action;
 }
 
-QAction* ElaRibbonBarModel::addRibbonAction(const QString& groupName, const QString& actionName, ElaIconType::IconName icon)
+QAction* ElaRibbonBarModel::addRibbonAction(const QString& groupName, const QString& actionName,
+                                            ElaIconType::IconName icon)
 {
     auto action = new QAction(actionName, this);
     action->setProperty("ElaRibbonGroupName", groupName);
     action->setProperty("ElaRibbonIcon", QChar(static_cast<char16_t>(icon)));
     ElaRibbonGroupData* targetGroup = nullptr;
     int insertIndex = 0;
-    for (auto& groupData: _ribbonDataList)
+    for (auto& groupData : _ribbonDataList)
     {
         if (groupData.groupName == groupName)
         {
@@ -120,7 +120,7 @@ QAction* ElaRibbonBarModel::addRibbonAction(const QString& groupName, const QStr
     action->setProperty("ElaRibbonGroupName", groupName);
     ElaRibbonGroupData* targetGroup = nullptr;
     int insertIndex = 0;
-    for (auto& groupData: _ribbonDataList)
+    for (auto& groupData : _ribbonDataList)
     {
         if (groupData.groupName == groupName)
         {
@@ -155,7 +155,7 @@ void ElaRibbonBarModel::removeRibbonAction(QAction* action)
     }
     auto ribbonGroupName = action->property("ElaRibbonGroupName").toString();
     int actionIndex = 0;
-    for (auto& groupData: _ribbonDataList)
+    for (auto& groupData : _ribbonDataList)
     {
         if (groupData.groupName != ribbonGroupName)
         {
@@ -183,7 +183,7 @@ void ElaRibbonBarModel::removeRibbonAction(QAction* action)
 void ElaRibbonBarModel::removeRibbonAction(const QString& groupName, const QString& actionName)
 {
     int actionIndex = 0;
-    for (auto& groupData: _ribbonDataList)
+    for (auto& groupData : _ribbonDataList)
     {
         if (groupData.groupName != groupName)
         {
@@ -217,7 +217,7 @@ QAction* ElaRibbonBarModel::getRibbonAction(int index) const
     {
         return nullptr;
     }
-    for (const auto& groupData: _ribbonDataList)
+    for (const auto& groupData : _ribbonDataList)
     {
         if (groupData.ribbonDataList.count() > index)
         {
@@ -235,9 +235,9 @@ QModelIndex ElaRibbonBarModel::getRibbonActionModelIndex(QAction* ribbonAction) 
         return {};
     }
     int actionIndex = 0;
-    for (const auto& groupData: _ribbonDataList)
+    for (const auto& groupData : _ribbonDataList)
     {
-        for (const auto action: groupData.ribbonDataList)
+        for (const auto action : groupData.ribbonDataList)
         {
             if (action == ribbonAction)
             {
@@ -252,7 +252,7 @@ QModelIndex ElaRibbonBarModel::getRibbonActionModelIndex(QAction* ribbonAction) 
 QList<QAction*> ElaRibbonBarModel::getRibbonActions()
 {
     QList<QAction*> ribbonActionList;
-    for (const auto& ribbonGroup: _ribbonDataList)
+    for (const auto& ribbonGroup : _ribbonDataList)
     {
         ribbonActionList.append(ribbonGroup.ribbonDataList);
     }
@@ -262,7 +262,7 @@ QList<QAction*> ElaRibbonBarModel::getRibbonActions()
 QList<QAction*> ElaRibbonBarModel::getRibbonActions(const QString& groupName)
 {
     QList<QAction*> ribbonActionList;
-    for (const auto& ribbonGroup: _ribbonDataList)
+    for (const auto& ribbonGroup : _ribbonDataList)
     {
         if (ribbonGroup.groupName == groupName)
         {
@@ -275,11 +275,11 @@ QList<QAction*> ElaRibbonBarModel::getRibbonActions(const QString& groupName)
 QList<QAction*> ElaRibbonBarModel::getRibbonActions(const QString& groupName, const QString& actionName)
 {
     QList<QAction*> ribbonActionList;
-    for (const auto& groupData: _ribbonDataList)
+    for (const auto& groupData : _ribbonDataList)
     {
         if (groupData.groupName == groupName)
         {
-            for (auto action: groupData.ribbonDataList)
+            for (auto action : groupData.ribbonDataList)
             {
                 if (action->text() == actionName)
                 {
@@ -294,7 +294,7 @@ QList<QAction*> ElaRibbonBarModel::getRibbonActions(const QString& groupName, co
 int ElaRibbonBarModel::rowCount(const QModelIndex& parent) const
 {
     int rowCount = 0;
-    for (auto& ribbonGroup: _ribbonDataList)
+    for (auto& ribbonGroup : _ribbonDataList)
     {
         rowCount += ribbonGroup.ribbonDataList.count();
     }
@@ -305,8 +305,7 @@ QVariant ElaRibbonBarModel::data(const QModelIndex& index, int role) const
 {
     switch (role)
     {
-    case Qt::DisplayRole:
-    {
+    case Qt::DisplayRole: {
         auto action = getRibbonAction(index.row());
         if (!action)
         {
@@ -316,12 +315,10 @@ QVariant ElaRibbonBarModel::data(const QModelIndex& index, int role) const
         // 拉长间距
         return action->menu() ? actionText + "         " : actionText + "      ";
     }
-    case Qt::UserRole:
-    {
+    case Qt::UserRole: {
         return QVariant::fromValue(getRibbonAction(index.row()));
     }
-    default:
-    {
+    default: {
         break;
     }
     }

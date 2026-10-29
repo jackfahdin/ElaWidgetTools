@@ -1,7 +1,6 @@
 #include "T_ListViewModel.h"
 
-T_ListViewModel::T_ListViewModel(QObject* parent)
-    : QAbstractListModel{parent}
+T_ListViewModel::T_ListViewModel(QObject* parent) : QAbstractListModel{parent}
 {
     _dataList.append("最轻一个灵魂 送出玫瑰星光");
     _dataList.append("最轻一句提问 答案是生命的存亡");

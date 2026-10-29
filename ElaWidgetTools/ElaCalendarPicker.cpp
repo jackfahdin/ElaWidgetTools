@@ -11,8 +11,7 @@
 #include "ElaCalendarPickerPrivate.h"
 #include "ElaTheme.h"
 ELA_PROPERTY_Q_CPP(ElaCalendarPicker, int, BorderRadius)
-ElaCalendarPicker::ElaCalendarPicker(QWidget* parent)
-    : QPushButton{parent}, d_ptr(new ElaCalendarPickerPrivate())
+ElaCalendarPicker::ElaCalendarPicker(QWidget* parent) : QPushButton{parent}, d_ptr(new ElaCalendarPickerPrivate())
 {
     Q_D(ElaCalendarPicker);
     d->q_ptr = this;
@@ -29,11 +28,14 @@ ElaCalendarPicker::ElaCalendarPicker(QWidget* parent)
     d->_calendarPickerContainer->hide();
     connect(this, &QPushButton::clicked, d, &ElaCalendarPickerPrivate::onCalendarPickerClicked);
 
-    connect(d->_calendar, &ElaCalendar::pSelectedDateChanged, d, &ElaCalendarPickerPrivate::onCalendarSelectedDateChanged);
+    connect(d->_calendar, &ElaCalendar::pSelectedDateChanged, d,
+            &ElaCalendarPickerPrivate::onCalendarSelectedDateChanged);
     setSelectedDate(QDate::currentDate());
 
     d->_themeMode = eTheme->getThemeMode();
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) { d->_themeMode = themeMode; });
+    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
+        d->_themeMode = themeMode;
+    });
 }
 
 ElaCalendarPicker::~ElaCalendarPicker()
@@ -78,6 +80,7 @@ void ElaCalendarPicker::paintEvent(QPaintEvent* event)
     QFont iconFont = QFont("ElaAwesome");
     iconFont.setPixelSize(eApp->getFontPixelSize() + 4);
     painter.setFont(iconFont);
-    painter.drawText(QRect(baseRect.right() - 25, 0, 15, height()), Qt::AlignVCenter | Qt::AlignRight, QChar(static_cast<char16_t>(ElaIconType::CalendarRange)));
+    painter.drawText(QRect(baseRect.right() - 25, 0, 15, height()), Qt::AlignVCenter | Qt::AlignRight,
+                     QChar(static_cast<char16_t>(ElaIconType::CalendarRange)));
     painter.restore();
 }

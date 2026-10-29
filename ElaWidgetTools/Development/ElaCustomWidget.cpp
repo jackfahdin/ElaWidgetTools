@@ -6,18 +6,19 @@
 #include "ElaApplication.h"
 #include "ElaTheme.h"
 Q_TAKEOVER_NATIVEEVENT_CPP(ElaCustomWidget, _appBar);
-ElaCustomWidget::ElaCustomWidget(QWidget* parent)
-    : QDialog{parent}
+ElaCustomWidget::ElaCustomWidget(QWidget* parent) : QDialog{parent}
 {
     resize(500, 500); // 默认宽高
     setObjectName("ElaCustomWidget");
-    setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::WindowFullscreenButtonHint);
+    setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint |
+                   Qt::WindowCloseButtonHint | Qt::WindowFullscreenButtonHint);
 #if (QT_VERSION < QT_VERSION_CHECK(6, 5, 3) || QT_VERSION > QT_VERSION_CHECK(6, 6, 1))
     setStyleSheet("#ElaCustomWidget{background-color:transparent;}");
 #endif
     // 自定义AppBar
     _appBar = new ElaAppBar(this);
-    _appBar->setWindowButtonFlags(ElaAppBarType::MinimizeButtonHint | ElaAppBarType::MaximizeButtonHint | ElaAppBarType::CloseButtonHint);
+    _appBar->setWindowButtonFlags(ElaAppBarType::MinimizeButtonHint | ElaAppBarType::MaximizeButtonHint |
+                                  ElaAppBarType::CloseButtonHint);
     _mainLayout = new QVBoxLayout(this);
     _mainLayout->setContentsMargins(0, 0, 0, 0);
 

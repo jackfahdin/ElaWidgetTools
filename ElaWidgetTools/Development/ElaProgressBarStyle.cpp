@@ -19,12 +19,12 @@ ElaProgressBarStyle::~ElaProgressBarStyle()
 {
 }
 
-void ElaProgressBarStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaProgressBarStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                      const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::CE_ProgressBarLabel:
-    {
+    case QStyle::CE_ProgressBarLabel: {
         if (const QStyleOptionProgressBar* popt = qstyleoption_cast<const QStyleOptionProgressBar*>(option))
         {
             painter->save();
@@ -35,9 +35,8 @@ void ElaProgressBarStyle::drawControl(ControlElement element, const QStyleOption
         }
         return;
     }
-    case QStyle::CE_ProgressBarGroove:
-    {
-        //背景轨道
+    case QStyle::CE_ProgressBarGroove: {
+        // 背景轨道
         painter->save();
         painter->setRenderHints(QPainter::Antialiasing);
         painter->setPen(Qt::NoPen);
@@ -46,9 +45,8 @@ void ElaProgressBarStyle::drawControl(ControlElement element, const QStyleOption
         painter->restore();
         return;
     }
-    case QStyle::CE_ProgressBarContents:
-    {
-        //滑块
+    case QStyle::CE_ProgressBarContents: {
+        // 滑块
         const QStyleOptionProgressBar* popt = qstyleoption_cast<const QStyleOptionProgressBar*>(option);
         if (!popt)
         {
@@ -67,7 +65,7 @@ void ElaProgressBarStyle::drawControl(ControlElement element, const QStyleOption
         }
         if (popt->minimum == 0 && popt->maximum == 0)
         {
-            //忙碌动画
+            // 忙碌动画
             int startValue = this->property("busyStartValue").toInt();
             if (startValue < 0)
             {
@@ -85,7 +83,8 @@ void ElaProgressBarStyle::drawControl(ControlElement element, const QStyleOption
                 {
                     painter->translate((contentRect.x() + contentRect.width()) / 2, contentRect.y());
                     painter->rotate(180);
-                    painter->translate(-(contentRect.x() + contentRect.width()) / 2, -contentRect.y() - contentRect.height() * 0.90);
+                    painter->translate(-(contentRect.x() + contentRect.width()) / 2,
+                                       -contentRect.y() - contentRect.height() * 0.90);
                 }
                 painter->drawRoundedRect(QRectF(startValue, contentRect.y(), busyWidth, contentRect.height()), 3, 3);
             }
@@ -96,7 +95,8 @@ void ElaProgressBarStyle::drawControl(ControlElement element, const QStyleOption
                     endValue = contentRect.height();
                 }
                 int busyHeight = endValue - startValue;
-                painter->drawRoundedRect(QRectF(contentRect.x(), contentRect.height() - endValue, contentRect.width(), busyHeight), 3, 3);
+                painter->drawRoundedRect(
+                    QRectF(contentRect.x(), contentRect.height() - endValue, contentRect.width(), busyHeight), 3, 3);
             }
         }
         else
@@ -108,20 +108,23 @@ void ElaProgressBarStyle::drawControl(ControlElement element, const QStyleOption
                 {
                     painter->translate((contentRect.x() + contentRect.width()) / 2, contentRect.y());
                     painter->rotate(180);
-                    painter->translate(-(contentRect.x() + contentRect.width()) / 2, -contentRect.y() - contentRect.height() * 0.90);
+                    painter->translate(-(contentRect.x() + contentRect.width()) / 2,
+                                       -contentRect.y() - contentRect.height() * 0.90);
                 }
-                painter->drawRoundedRect(QRectF(contentRect.x(), contentRect.y(), contentRect.width() * ratio, contentRect.height()), 3, 3);
+                painter->drawRoundedRect(
+                    QRectF(contentRect.x(), contentRect.y(), contentRect.width() * ratio, contentRect.height()), 3, 3);
             }
             else
             {
-                painter->drawRoundedRect(QRectF(contentRect.x(), contentRect.y() + contentRect.height() * (1 - ratio), contentRect.width(), contentRect.height() * ratio), 3, 3);
+                painter->drawRoundedRect(QRectF(contentRect.x(), contentRect.y() + contentRect.height() * (1 - ratio),
+                                                contentRect.width(), contentRect.height() * ratio),
+                                         3, 3);
             }
         }
         painter->restore();
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -133,8 +136,7 @@ QRect ElaProgressBarStyle::subElementRect(SubElement element, const QStyleOption
     switch (element)
     {
     case QStyle::SE_ProgressBarGroove:
-    case QStyle::SE_ProgressBarContents:
-    {
+    case QStyle::SE_ProgressBarContents: {
         QRect textRect = subElementRect(SE_ProgressBarLabel, option, widget);
         const QStyleOptionProgressBar* popt = qstyleoption_cast<const QStyleOptionProgressBar*>(option);
         if (!popt)
@@ -160,8 +162,7 @@ QRect ElaProgressBarStyle::subElementRect(SubElement element, const QStyleOption
         }
         return contentRect;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

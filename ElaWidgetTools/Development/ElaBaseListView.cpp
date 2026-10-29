@@ -3,13 +3,11 @@
 #include <QMouseEvent>
 
 #include "ElaScrollBar.h"
-ElaBaseListView::ElaBaseListView(QWidget* parent)
-    : QListView(parent)
+ElaBaseListView::ElaBaseListView(QWidget* parent) : QListView(parent)
 {
     setObjectName("ElaBaseListView");
-    setStyleSheet(
-        "ElaBaseListView{background-color: transparent;border:0px;}"
-        "ElaBaseListView::item{border:none;}");
+    setStyleSheet("ElaBaseListView{background-color: transparent;border:0px;}"
+                  "ElaBaseListView::item{border:none;}");
     setAutoScroll(false);
     setFocusPolicy(Qt::NoFocus);
     setVerticalScrollBar(new ElaScrollBar(this));

@@ -2,8 +2,7 @@
 
 #include <QDebug>
 #include <QUuid>
-ElaActionCommanderNode::ElaActionCommanderNode(ElaActionCommanderNode* parent)
-    : QObject(nullptr)
+ElaActionCommanderNode::ElaActionCommanderNode(ElaActionCommanderNode* parent) : QObject(nullptr)
 {
     _pIsRootNode = false;
     _pIsCommandNode = false;
@@ -16,7 +15,7 @@ ElaActionCommanderNode::ElaActionCommanderNode(ElaActionCommanderNode* parent)
 ElaActionCommanderNode::~ElaActionCommanderNode()
 {
     // 不使用QT的继承链删除 手动释放 一般情况下此时_pChildNodes已经为空
-    for (const auto childNode: _pChildNodes)
+    for (const auto childNode : _pChildNodes)
     {
         delete childNode;
     }

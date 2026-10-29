@@ -2,8 +2,7 @@
 #include "ElaComboBox.h"
 #include "ElaTheme.h"
 #include <QLineEdit>
-ElaComboBoxPrivate::ElaComboBoxPrivate(QObject* parent)
-    : QObject{parent}
+ElaComboBoxPrivate::ElaComboBoxPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -20,7 +19,8 @@ void ElaComboBoxPrivate::onThemeChanged(ElaThemeType::ThemeMode themeMode)
     {
         QPalette palette = lineEdit->palette();
         palette.setColor(QPalette::Text, ElaThemeColor(_themeMode, BasicText));
-        palette.setColor(QPalette::PlaceholderText, _themeMode == ElaThemeType::Light ? QColor(0x00, 0x00, 0x00, 128) : QColor(0xBA, 0xBA, 0xBA));
+        palette.setColor(QPalette::PlaceholderText,
+                         _themeMode == ElaThemeType::Light ? QColor(0x00, 0x00, 0x00, 128) : QColor(0xBA, 0xBA, 0xBA));
         lineEdit->setPalette(palette);
     }
 }

@@ -2,8 +2,7 @@
 #include "ElaRibbonBar.h"
 
 #include <QPropertyAnimation>
-ElaRibbonBarPrivate::ElaRibbonBarPrivate(QObject* parent)
-    : QObject(parent)
+ElaRibbonBarPrivate::ElaRibbonBarPrivate(QObject* parent) : QObject(parent)
 {
 }
 

@@ -16,8 +16,7 @@ ELA_PROPERTY_Q_CPP(ElaMessageButton, QWidget*, MessageTargetWidget)
 ELA_PROPERTY_Q_CPP(ElaMessageButton, ElaMessageBarType::MessageMode, MessageMode);
 ELA_PROPERTY_Q_CPP(ElaMessageButton, ElaMessageBarType::PositionPolicy, PositionPolicy);
 
-ElaMessageButton::ElaMessageButton(QWidget* parent)
-    : QPushButton(parent), d_ptr(new ElaMessageButtonPrivate())
+ElaMessageButton::ElaMessageButton(QWidget* parent) : QPushButton(parent), d_ptr(new ElaMessageButtonPrivate())
 {
     Q_D(ElaMessageButton);
     d->q_ptr = this;
@@ -39,33 +38,33 @@ ElaMessageButton::ElaMessageButton(QWidget* parent)
         d->_themeMode = themeMode;
     });
     connect(this, &ElaMessageButton::clicked, this, [=]() {
-        switch(d->_pMessageMode)
+        switch (d->_pMessageMode)
         {
-        case ElaMessageBarType::Success:
-        {
-            ElaMessageBar::success(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec,d->_pMessageTargetWidget);
+        case ElaMessageBarType::Success: {
+            ElaMessageBar::success(d->_pPositionPolicy, d->_pBarTitle, d->_pBarText, d->_pDisplayMsec,
+                                   d->_pMessageTargetWidget);
             break;
         }
-        case ElaMessageBarType::Warning:
-        {
-            ElaMessageBar::warning(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec,d->_pMessageTargetWidget);
+        case ElaMessageBarType::Warning: {
+            ElaMessageBar::warning(d->_pPositionPolicy, d->_pBarTitle, d->_pBarText, d->_pDisplayMsec,
+                                   d->_pMessageTargetWidget);
             break;
         }
-        case ElaMessageBarType::Information:
-        {
-            ElaMessageBar::information(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec,d->_pMessageTargetWidget);
+        case ElaMessageBarType::Information: {
+            ElaMessageBar::information(d->_pPositionPolicy, d->_pBarTitle, d->_pBarText, d->_pDisplayMsec,
+                                       d->_pMessageTargetWidget);
             break;
         }
-        case ElaMessageBarType::Error:
-        {
-            ElaMessageBar::error(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec,d->_pMessageTargetWidget);
+        case ElaMessageBarType::Error: {
+            ElaMessageBar::error(d->_pPositionPolicy, d->_pBarTitle, d->_pBarText, d->_pDisplayMsec,
+                                 d->_pMessageTargetWidget);
             break;
         }
-        } });
+        }
+    });
 }
 
-ElaMessageButton::ElaMessageButton(const QString& text, QWidget* parent)
-    : ElaMessageButton(parent)
+ElaMessageButton::ElaMessageButton(const QString& text, QWidget* parent) : ElaMessageButton(parent)
 {
     setText(text);
 }
@@ -101,13 +100,19 @@ void ElaMessageButton::paintEvent(QPaintEvent* event)
 
     // 背景绘制
     painter.save();
-    QRect foregroundRect(d->_penBorderWidth + d->_shadowBorderWidth, d->_penBorderWidth + d->_shadowBorderWidth, width() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth), height() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth));
+    QRect foregroundRect(d->_penBorderWidth + d->_shadowBorderWidth, d->_penBorderWidth + d->_shadowBorderWidth,
+                         width() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth),
+                         height() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth));
     painter.setPen(QPen(ElaThemeColor(d->_themeMode, BasicBorder), d->_penBorderWidth));
-    painter.setBrush(isEnabled() ? underMouse() ? ElaThemeColor(d->_themeMode, BasicHover) : ElaThemeColor(d->_themeMode, BasicBase) : ElaThemeColor(d->_themeMode, BasicDisable));
+    painter.setBrush(isEnabled() ? underMouse() ? ElaThemeColor(d->_themeMode, BasicHover)
+                                                : ElaThemeColor(d->_themeMode, BasicBase)
+                                 : ElaThemeColor(d->_themeMode, BasicDisable));
     painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
 
-    //文字绘制
-    painter.setPen(isEnabled() ? d->_isLeftButtonPress ? ElaThemeColor(d->_themeMode, BasicTextPress) : ElaThemeColor(d->_themeMode, BasicText) : ElaThemeColor(d->_themeMode, BasicTextDisable));
+    // 文字绘制
+    painter.setPen(isEnabled() ? d->_isLeftButtonPress ? ElaThemeColor(d->_themeMode, BasicTextPress)
+                                                       : ElaThemeColor(d->_themeMode, BasicText)
+                               : ElaThemeColor(d->_themeMode, BasicTextDisable));
     painter.drawText(rect(), Qt::AlignCenter, text());
     painter.restore();
 }

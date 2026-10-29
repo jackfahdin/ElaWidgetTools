@@ -17,12 +17,12 @@ ElaLCDNumberStyle::~ElaLCDNumberStyle()
 {
 }
 
-void ElaLCDNumberStyle::drawControl(QStyle::ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaLCDNumberStyle::drawControl(QStyle::ControlElement element, const QStyleOption* option, QPainter* painter,
+                                    const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::CE_ShapedFrame:
-    {
+    case QStyle::CE_ShapedFrame: {
         if (const QStyleOptionFrame* fopt = qstyleoption_cast<const QStyleOptionFrame*>(option))
         {
             if (!_pIsTransparent)
@@ -37,14 +37,15 @@ void ElaLCDNumberStyle::drawControl(QStyle::ControlElement element, const QStyle
                 painter->drawRoundedRect(numberRect.adjusted(1, 1, -1, -1), 6, 6);
                 painter->setPen(Qt::NoPen);
                 painter->setBrush(ElaThemeColor(_themeMode, BasicBaseAlpha));
-                painter->drawRoundedRect(QRectF(numberRect.x() + 1.5, numberRect.y() + 1.5, numberRect.width() - 3, numberRect.height() - 3), 6, 6);
+                painter->drawRoundedRect(
+                    QRectF(numberRect.x() + 1.5, numberRect.y() + 1.5, numberRect.width() - 3, numberRect.height() - 3),
+                    6, 6);
                 painter->restore();
             }
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

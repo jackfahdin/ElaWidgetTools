@@ -19,8 +19,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-T_Popup::T_Popup(QWidget* parent)
-    : T_BasePage(parent)
+T_Popup::T_Popup(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     setWindowTitle("ElaPopup");
@@ -141,17 +140,14 @@ T_Popup::T_Popup(QWidget* parent)
     _timeRollerPicker->addRoller(hourItemList);
     _timeRollerPicker->addRoller(minuteList);
     _timeRollerPicker->addRoller({"AM", "PM"}, false);
-    _timeRollerPicker->setCurrentData({currentHour,
-                                       currentMinute,
-                                       currentTime.hour() >= 12 ? "PM" : "AM"});
+    _timeRollerPicker->setCurrentData({currentHour, currentMinute, currentTime.hour() >= 12 ? "PM" : "AM"});
 
     _clockRollerPicker = new ElaRollerPicker(this);
     _clockRollerPicker->addRoller(hourItemList);
     _clockRollerPicker->addRoller(minuteList);
     _clockRollerPicker->setRollerWidth(0, 135);
     _clockRollerPicker->setRollerWidth(1, 135);
-    _clockRollerPicker->setCurrentData({currentHour,
-                                        currentMinute});
+    _clockRollerPicker->setCurrentData({currentHour, currentMinute});
 
     QVBoxLayout* rollerPickerLayout = new QVBoxLayout();
     rollerPickerLayout->addWidget(_timeRollerPicker);

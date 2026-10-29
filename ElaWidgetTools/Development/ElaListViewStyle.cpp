@@ -20,12 +20,12 @@ ElaListViewStyle::~ElaListViewStyle()
 {
 }
 
-void ElaListViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaListViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                     const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::PE_PanelItemViewItem:
-    {
+    case QStyle::PE_PanelItemViewItem: {
         // Item背景
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
@@ -60,8 +60,7 @@ void ElaListViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOptio
         }
         return;
     }
-    case QStyle::PE_PanelItemViewRow:
-    {
+    case QStyle::PE_PanelItemViewRow: {
         // Item背景隔行变色
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
@@ -77,24 +76,22 @@ void ElaListViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOptio
         }
         return;
     }
-    case QStyle::PE_Widget:
-    {
+    case QStyle::PE_Widget: {
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
-void ElaListViewStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaListViewStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                   const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::CE_ShapedFrame:
-    {
+    case QStyle::CE_ShapedFrame: {
         // viewport视口外的其他区域背景
         if (!_pIsTransparent)
         {
@@ -109,8 +106,7 @@ void ElaListViewStyle::drawControl(ControlElement element, const QStyleOption* o
         }
         return;
     }
-    case QStyle::CE_ItemViewItem:
-    {
+    case QStyle::CE_ItemViewItem: {
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
             // 背景绘制
@@ -119,7 +115,8 @@ void ElaListViewStyle::drawControl(ControlElement element, const QStyleOption* o
             // 内容绘制
             QRect itemRect = option->rect;
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform |
+                                    QPainter::TextAntialiasing);
             const ElaListView* listView = dynamic_cast<const ElaListView*>(widget);
             QListView::ViewMode viewMode = listView->viewMode();
             // QRect checkRect = proxy()->subElementRect(SE_ItemViewItemCheckIndicator, vopt, widget);
@@ -154,27 +151,28 @@ void ElaListViewStyle::drawControl(ControlElement element, const QStyleOption* o
                 int heightOffset = itemRect.height() / 4;
                 painter->setPen(Qt::NoPen);
                 painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-                painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + heightOffset, 3, itemRect.height() - 2 * heightOffset), 1.5, 1.5);
+                painter->drawRoundedRect(
+                    QRectF(itemRect.x() + 3, itemRect.y() + heightOffset, 3, itemRect.height() - 2 * heightOffset), 1.5,
+                    1.5);
             }
             painter->restore();
         }
 
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawControl(element, option, painter, widget);
 }
 
-QSize ElaListViewStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const
+QSize ElaListViewStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                                         const QWidget* widget) const
 {
     switch (type)
     {
-    case QStyle::CT_ItemViewItem:
-    {
+    case QStyle::CT_ItemViewItem: {
         QSize itemSize = QProxyStyle::sizeFromContents(type, option, size, widget);
         const ElaListView* listView = dynamic_cast<const ElaListView*>(widget);
         QListView::ViewMode viewMode = listView->viewMode();
@@ -185,8 +183,7 @@ QSize ElaListViewStyle::sizeFromContents(ContentsType type, const QStyleOption* 
         itemSize.setHeight(_pItemHeight);
         return itemSize;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

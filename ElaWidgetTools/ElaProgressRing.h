@@ -47,4 +47,4 @@ protected:
     virtual void paintEvent(QPaintEvent* event) override;
 };
 
-#endif //ELAWORKSPACE_ELAWIDGETTOOLS_ELAPROGRESSRING_H_
+#endif // ELAWORKSPACE_ELAWIDGETTOOLS_ELAPROGRESSRING_H_

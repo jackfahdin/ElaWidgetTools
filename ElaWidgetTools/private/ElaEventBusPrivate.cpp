@@ -1,8 +1,7 @@
 #include "ElaEventBusPrivate.h"
 
 #include "ElaEventBus.h"
-ElaEventPrivate::ElaEventPrivate(QObject* parent)
-    : QObject{parent}
+ElaEventPrivate::ElaEventPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -10,8 +9,7 @@ ElaEventPrivate::~ElaEventPrivate()
 {
 }
 
-ElaEventBusPrivate::ElaEventBusPrivate(QObject* parent)
-    : QObject{parent}
+ElaEventBusPrivate::ElaEventBusPrivate(QObject* parent) : QObject{parent}
 {
 }
 

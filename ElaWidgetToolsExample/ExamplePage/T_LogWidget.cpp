@@ -6,8 +6,7 @@
 
 #include "ElaLog.h"
 #include "T_LogModel.h"
-T_LogWidget::T_LogWidget(QWidget* parent)
-    : QWidget{parent}
+T_LogWidget::T_LogWidget(QWidget* parent) : QWidget{parent}
 {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 5, 5, 0);

@@ -19,28 +19,27 @@ ElaMenuBarStyle::~ElaMenuBarStyle()
 {
 }
 
-void ElaMenuBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaMenuBarStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                    const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::PE_PanelButtonTool:
-    {
+    case QStyle::PE_PanelButtonTool: {
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
-void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                  const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::CE_ToolButtonLabel:
-    {
+    case QStyle::CE_ToolButtonLabel: {
         if (const QStyleOptionToolButton* topt = qstyleoption_cast<const QStyleOptionToolButton*>(option))
         {
             painter->save();
@@ -51,8 +50,9 @@ void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* op
                 painter->setBrush(ElaThemeColor(_themeMode, BasicHoverAlpha));
                 painter->drawRect(topt->rect);
             }
-            //展开图标
-            painter->setPen(!topt->state.testFlag(QStyle::State_Enabled) ? Qt::gray : ElaThemeColor(_themeMode, BasicText));
+            // 展开图标
+            painter->setPen(!topt->state.testFlag(QStyle::State_Enabled) ? Qt::gray
+                                                                         : ElaThemeColor(_themeMode, BasicText));
             QFont iconFont = QFont("ElaAwesome");
             iconFont.setPixelSize(eApp->getFontPixelSize() + 5);
             painter->setFont(iconFont);
@@ -61,12 +61,10 @@ void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* op
         }
         return;
     }
-    case QStyle::CE_MenuBarEmptyArea:
-    {
+    case QStyle::CE_MenuBarEmptyArea: {
         return;
     }
-    case QStyle::CE_MenuBarItem:
-    {
+    case QStyle::CE_MenuBarItem: {
         if (const QStyleOptionMenuItem* mopt = qstyleoption_cast<const QStyleOptionMenuItem*>(option))
         {
             if (mopt->menuItemType == QStyleOptionMenuItem::Separator)
@@ -77,7 +75,7 @@ void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* op
             QRect menuItemRect = mopt->rect;
             painter->save();
             painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-            //背景绘制
+            // 背景绘制
             painter->setPen(Qt::NoPen);
             if (mopt->state.testFlag(QStyle::State_Enabled))
             {
@@ -91,7 +89,7 @@ void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* op
                 }
                 painter->drawRoundedRect(menuItemRect, 3, 3);
             }
-            //图标和文字绘制
+            // 图标和文字绘制
             QIcon icon = mopt->icon;
             QString menuText = mopt->text;
             QString iconText;
@@ -107,11 +105,13 @@ void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* op
             }
             if (menuText.isEmpty())
             {
-                //图标
+                // 图标
                 if (!iconText.isEmpty())
                 {
                     painter->save();
-                    painter->setPen(!mopt->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicTextDisable) : ElaThemeColor(_themeMode, BasicText));
+                    painter->setPen(!mopt->state.testFlag(QStyle::State_Enabled)
+                                        ? ElaThemeColor(_themeMode, BasicTextDisable)
+                                        : ElaThemeColor(_themeMode, BasicText));
                     QFont iconFont = QFont("ElaAwesome");
                     iconFont.setPixelSize(menuBarHeight * 0.7);
                     painter->setFont(iconFont);
@@ -120,14 +120,18 @@ void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* op
                 }
                 else if (!icon.isNull())
                 {
-                    QRect menuIconRect(menuItemRect.center().x() - menuBarHeight * 0.4, menuItemRect.center().y() - menuBarHeight * 0.4, menuBarHeight * 0.8, menuBarHeight * 0.8);
+                    QRect menuIconRect(menuItemRect.center().x() - menuBarHeight * 0.4,
+                                       menuItemRect.center().y() - menuBarHeight * 0.4, menuBarHeight * 0.8,
+                                       menuBarHeight * 0.8);
                     painter->drawPixmap(menuIconRect, icon.pixmap(menuBarHeight * 0.8, menuBarHeight * 0.8));
                 }
             }
             else
             {
-                //图标 + 文字
-                painter->setPen(!mopt->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicTextDisable) : ElaThemeColor(_themeMode, BasicText));
+                // 图标 + 文字
+                painter->setPen(!mopt->state.testFlag(QStyle::State_Enabled)
+                                    ? ElaThemeColor(_themeMode, BasicTextDisable)
+                                    : ElaThemeColor(_themeMode, BasicText));
                 if (icon.isNull() && iconText.isEmpty())
                 {
                     painter->drawText(menuItemRect, Qt::AlignCenter, menuText);
@@ -136,20 +140,26 @@ void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* op
                 {
                     if (!iconText.isEmpty())
                     {
-                        QRectF menuIconRect(menuItemRect.x() + menuBarHeight * 0.1 + _menuBarItemMargin, menuBarHeight * 0.1, menuBarHeight * 0.8, menuBarHeight * 0.8);
+                        QRectF menuIconRect(menuItemRect.x() + menuBarHeight * 0.1 + _menuBarItemMargin,
+                                            menuBarHeight * 0.1, menuBarHeight * 0.8, menuBarHeight * 0.8);
                         painter->save();
                         QFont iconFont = QFont("ElaAwesome");
                         iconFont.setPixelSize(menuBarHeight * 0.7);
                         painter->setFont(iconFont);
                         painter->drawText(menuIconRect, Qt::AlignCenter, iconText);
                         painter->restore();
-                        painter->drawText(QRect(menuIconRect.right(), menuItemRect.y(), menuItemRect.width() - menuIconRect.width(), menuBarHeight), Qt::AlignCenter, menuText);
+                        painter->drawText(QRect(menuIconRect.right(), menuItemRect.y(),
+                                                menuItemRect.width() - menuIconRect.width(), menuBarHeight),
+                                          Qt::AlignCenter, menuText);
                     }
                     else
                     {
-                        QRect menuIconRect(menuItemRect.x() + menuBarHeight * 0.1 + _menuBarItemMargin, menuBarHeight * 0.1, menuBarHeight * 0.8, menuBarHeight * 0.8);
+                        QRect menuIconRect(menuItemRect.x() + menuBarHeight * 0.1 + _menuBarItemMargin,
+                                           menuBarHeight * 0.1, menuBarHeight * 0.8, menuBarHeight * 0.8);
                         painter->drawPixmap(menuIconRect, icon.pixmap(menuBarHeight * 0.8, menuBarHeight * 0.8));
-                        painter->drawText(QRect(menuIconRect.right(), menuItemRect.y(), menuItemRect.width() - menuIconRect.width(), menuBarHeight), Qt::AlignCenter, menuText);
+                        painter->drawText(QRect(menuIconRect.right(), menuItemRect.y(),
+                                                menuItemRect.width() - menuIconRect.width(), menuBarHeight),
+                                          Qt::AlignCenter, menuText);
                     }
                 }
             }
@@ -157,8 +167,7 @@ void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* op
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -166,25 +175,25 @@ void ElaMenuBarStyle::drawControl(ControlElement element, const QStyleOption* op
     QProxyStyle::drawControl(element, option, painter, widget);
 }
 
-QSize ElaMenuBarStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const
+QSize ElaMenuBarStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                                        const QWidget* widget) const
 {
     switch (type)
     {
-    case QStyle::CT_MenuBar:
-    {
+    case QStyle::CT_MenuBar: {
         QSize menuBarHeight = QProxyStyle::sizeFromContents(type, option, size, widget);
         menuBarHeight.setHeight(widget->height());
         return menuBarHeight;
     }
-    case QStyle::CT_MenuBarItem:
-    {
+    case QStyle::CT_MenuBarItem: {
         if (const QStyleOptionMenuItem* mopt = qstyleoption_cast<const QStyleOptionMenuItem*>(option))
         {
             QSize menuBarItemSize = QProxyStyle::sizeFromContents(type, option, size, widget);
             menuBarItemSize.setHeight(widget->height());
             if ((!mopt->icon.isNull()) && !mopt->text.isEmpty())
             {
-                menuBarItemSize.setWidth(menuBarItemSize.width() + mopt->fontMetrics.horizontalAdvance(mopt->text) + 2 * _menuBarItemMargin);
+                menuBarItemSize.setWidth(menuBarItemSize.width() + mopt->fontMetrics.horizontalAdvance(mopt->text) +
+                                         2 * _menuBarItemMargin);
             }
             if (!mopt->text.contains("&"))
             {
@@ -193,8 +202,7 @@ QSize ElaMenuBarStyle::sizeFromContents(ContentsType type, const QStyleOption* o
             return menuBarItemSize;
         }
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -205,20 +213,16 @@ int ElaMenuBarStyle::pixelMetric(PixelMetric metric, const QStyleOption* option,
 {
     switch (metric)
     {
-    case QStyle::PM_MenuBarHMargin:
-    {
+    case QStyle::PM_MenuBarHMargin: {
         return 0;
     }
-    case QStyle::PM_MenuBarItemSpacing:
-    {
+    case QStyle::PM_MenuBarItemSpacing: {
         return 6;
     }
-    case QStyle::PM_ToolBarExtensionExtent:
-    {
+    case QStyle::PM_ToolBarExtensionExtent: {
         return 26;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

@@ -6,8 +6,7 @@
 #endif
 int ElaExponentialBlurPrivate::_aprec = 12;
 int ElaExponentialBlurPrivate::_zprec = 7;
-ElaExponentialBlurPrivate::ElaExponentialBlurPrivate(QObject* parent)
-    : QObject{parent}
+ElaExponentialBlurPrivate::ElaExponentialBlurPrivate(QObject* parent) : QObject{parent}
 {
 }
 

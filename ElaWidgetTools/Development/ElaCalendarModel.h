@@ -14,12 +14,13 @@ enum ElaCalendarType
     DayMode = 0x0003,
 };
 
-struct ElaCalendarData : public QObjectData {
+struct ElaCalendarData : public QObjectData
+{
 public:
-    ElaCalendarData(){};
-    ~ElaCalendarData(){};
+    ElaCalendarData() {};
+    ~ElaCalendarData() {};
     ElaCalendarData(int year, int month, int day, QString desText = "")
-        : year(year), month(month), day(day), desText(desText){};
+        : year(year), month(month), day(day), desText(desText) {};
     ElaCalendarData(const ElaCalendarData& other)
     {
         year = other.year;
@@ -72,4 +73,3 @@ private:
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELACALENDARMODEL_H_
-

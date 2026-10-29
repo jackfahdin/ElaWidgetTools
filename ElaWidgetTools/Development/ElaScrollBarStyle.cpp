@@ -15,20 +15,22 @@ ElaScrollBarStyle::ElaScrollBarStyle(QStyle* style)
     _pScrollBar = nullptr;
     _pSliderExtent = 2.4;
     _themeMode = eTheme->getThemeMode();
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) { _themeMode = themeMode; });
+    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
+        _themeMode = themeMode;
+    });
 }
 
 ElaScrollBarStyle::~ElaScrollBarStyle()
 {
 }
 
-void ElaScrollBarStyle::drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget) const
+void ElaScrollBarStyle::drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter,
+                                           const QWidget* widget) const
 {
-    //QStyle::SC_ScrollBarGroove QStyle::SC_ScrollBarAddLine   QStyle::SC_ScrollBarSubLine上指示器
+    // QStyle::SC_ScrollBarGroove QStyle::SC_ScrollBarAddLine   QStyle::SC_ScrollBarSubLine上指示器
     switch (control)
     {
-    case QStyle::CC_ScrollBar:
-    {
+    case QStyle::CC_ScrollBar: {
         if (const QStyleOptionSlider* sopt = qstyleoption_cast<const QStyleOptionSlider*>(option))
         {
             painter->save();
@@ -42,7 +44,7 @@ void ElaScrollBarStyle::drawComplexControl(ComplexControl control, const QStyleO
                 painter->setPen(Qt::NoPen);
                 painter->setBrush(ElaThemeColor(_themeMode, BasicBase));
                 painter->drawRoundedRect(scrollBarRect, 6, 6);
-                //指示器绘制 center()在此处不适用 存在外围边距宽度 需手动计算
+                // 指示器绘制 center()在此处不适用 存在外围边距宽度 需手动计算
                 int sideLength = 8;
                 painter->setBrush(ElaThemeColor(_themeMode, ScrollBarHandle));
                 if (sopt->orientation == Qt::Horizontal)
@@ -95,24 +97,25 @@ void ElaScrollBarStyle::drawComplexControl(ComplexControl control, const QStyleO
                 }
             }
             painter->setOpacity(1);
-            //滑块绘制
+            // 滑块绘制
             QRectF sliderRect = subControlRect(control, sopt, QStyle::SC_ScrollBarSlider, widget);
             painter->setBrush(ElaThemeColor(_themeMode, ScrollBarHandle));
             if (sopt->orientation == Qt::Horizontal)
             {
-                sliderRect.setRect(sliderRect.x(), sliderRect.bottom() - _sliderMargin - _pSliderExtent, sliderRect.width(), _pSliderExtent);
+                sliderRect.setRect(sliderRect.x(), sliderRect.bottom() - _sliderMargin - _pSliderExtent,
+                                   sliderRect.width(), _pSliderExtent);
             }
             else
             {
-                sliderRect.setRect(sliderRect.right() - _sliderMargin - _pSliderExtent, sliderRect.y(), _pSliderExtent, sliderRect.height());
+                sliderRect.setRect(sliderRect.right() - _sliderMargin - _pSliderExtent, sliderRect.y(), _pSliderExtent,
+                                   sliderRect.height());
             }
             painter->drawRoundedRect(sliderRect, _pSliderExtent / 2.0, _pSliderExtent / 2.0);
             painter->restore();
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -124,19 +127,18 @@ int ElaScrollBarStyle::pixelMetric(PixelMetric metric, const QStyleOption* optio
     // qDebug() << metric << QProxyStyle::pixelMetric(metric, option, widget);
     switch (metric)
     {
-    case QStyle::PM_ScrollBarExtent:
-    {
+    case QStyle::PM_ScrollBarExtent: {
         return _scrollBarExtent;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     return QProxyStyle::pixelMetric(metric, option, widget);
 }
 
-int ElaScrollBarStyle::styleHint(StyleHint hint, const QStyleOption* option, const QWidget* widget, QStyleHintReturn* returnData) const
+int ElaScrollBarStyle::styleHint(StyleHint hint, const QStyleOption* option, const QWidget* widget,
+                                 QStyleHintReturn* returnData) const
 {
     if (hint == QStyle::SH_ScrollBar_LeftClickAbsolutePosition)
     {

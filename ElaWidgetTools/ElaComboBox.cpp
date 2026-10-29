@@ -12,8 +12,7 @@
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 ELA_PROPERTY_Q_CPP(ElaComboBox, int, BorderRadius)
-ElaComboBox::ElaComboBox(QWidget* parent)
-    : QComboBox(parent), d_ptr(new ElaComboBoxPrivate())
+ElaComboBox::ElaComboBox(QWidget* parent) : QComboBox(parent), d_ptr(new ElaComboBoxPrivate())
 {
     Q_D(ElaComboBox);
     d->q_ptr = this;
@@ -24,7 +23,7 @@ ElaComboBox::ElaComboBox(QWidget* parent)
     d->_comboBoxStyle = new ElaComboBoxStyle(style());
     setStyle(d->_comboBoxStyle);
 
-    //调用view 让container初始化
+    // 调用view 让container初始化
     setView(new QListView(this));
     QAbstractItemView* comboBoxView = this->view();
     comboBoxView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -132,7 +131,7 @@ void ElaComboBox::showPopup()
             viewPosAnimation->setDuration(400);
             viewPosAnimation->start(QAbstractAnimation::DeleteWhenStopped);
         }
-        //指示器动画
+        // 指示器动画
         QPropertyAnimation* rotateAnimation = new QPropertyAnimation(d->_comboBoxStyle, "pExpandIconRotate");
         connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
             update();
@@ -168,7 +167,8 @@ void ElaComboBox::hidePopup()
             QPropertyAnimation* viewPosAnimation = new QPropertyAnimation(view(), "pos");
             connect(viewPosAnimation, &QPropertyAnimation::finished, this, [=]() {
                 layout->addWidget(view());
-                QMouseEvent focusEvent(QEvent::MouseButtonPress, QPoint(-1, -1), QPoint(-1, -1), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+                QMouseEvent focusEvent(QEvent::MouseButtonPress, QPoint(-1, -1), QPoint(-1, -1), Qt::NoButton,
+                                       Qt::NoButton, Qt::NoModifier);
                 QApplication::sendEvent(parentWidget(), &focusEvent);
                 QComboBox::hidePopup();
                 container->setFixedHeight(containerHeight);
@@ -192,7 +192,7 @@ void ElaComboBox::hidePopup()
             fixedSizeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
             d->_isAllowHidePopup = false;
         }
-        //指示器动画
+        // 指示器动画
         QPropertyAnimation* rotateAnimation = new QPropertyAnimation(d->_comboBoxStyle, "pExpandIconRotate");
         connect(rotateAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
             update();

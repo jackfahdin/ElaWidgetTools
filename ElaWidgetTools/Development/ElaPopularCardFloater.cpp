@@ -40,7 +40,9 @@ ElaPopularCardFloater::ElaPopularCardFloater(ElaPopularCard* card, ElaPopularCar
     connect(_overButton, &ElaPushButton::clicked, _card, &ElaPopularCard::popularCardButtonClicked);
 
     _themeMode = eTheme->getThemeMode();
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) { _themeMode = themeMode; });
+    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
+        _themeMode = themeMode;
+    });
     setVisible(false);
 }
 
@@ -63,12 +65,13 @@ void ElaPopularCardFloater::showFloater()
     geometryAnimation->setDuration(300);
     QRect cardGeometry = QRect(_card->mapTo(_cardPrivate->_pCardFloatArea, QPoint(0, 0)), _card->size());
     QRect endGeometry = _calculateTargetGeometry(cardGeometry);
-    QRect startGeometry = QRect(endGeometry.x() + _floatGeometryOffset, endGeometry.y() + _floatGeometryOffset, _card->width(), _card->height());
+    QRect startGeometry = QRect(endGeometry.x() + _floatGeometryOffset, endGeometry.y() + _floatGeometryOffset,
+                                _card->width(), _card->height());
     geometryAnimation->setStartValue(startGeometry);
     geometryAnimation->setEndValue(endGeometry);
     geometryAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 
-    //Button动画
+    // Button动画
     QPropertyAnimation* buttonAnimation = new QPropertyAnimation(_overButton, "geometry");
     buttonAnimation->setEasingCurve(QEasingCurve::OutQuad);
     buttonAnimation->setDuration(300);
@@ -108,7 +111,7 @@ void ElaPopularCardFloater::hideFloater()
     opacityAnimation->setEndValue(0);
     opacityAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 
-    //内容调整动画
+    // 内容调整动画
     QPropertyAnimation* hoverAnimation = new QPropertyAnimation(this, "pHoverYOffset");
     connect(hoverAnimation, &QPropertyAnimation::valueChanged, this, [=]() {
         update();
@@ -118,7 +121,7 @@ void ElaPopularCardFloater::hideFloater()
     hoverAnimation->setEndValue(0);
     hoverAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 
-    //Button动画
+    // Button动画
     QPropertyAnimation* buttonAnimation = new QPropertyAnimation(_overButton, "geometry");
     buttonAnimation->setEasingCurve(QEasingCurve::InOutSine);
     buttonAnimation->setDuration(300);
@@ -140,18 +143,15 @@ bool ElaPopularCardFloater::event(QEvent* event)
 {
     switch (event->type())
     {
-    case QEvent::Leave:
-    {
+    case QEvent::Leave: {
         hideFloater();
         break;
     }
-    case QEvent::MouseButtonRelease:
-    {
+    case QEvent::MouseButtonRelease: {
         Q_EMIT _card->popularCardClicked();
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -169,18 +169,24 @@ void ElaPopularCardFloater::paintEvent(QPaintEvent* event)
     QRect shadowRect = rect();
     shadowRect.adjust(0, 0, 0, -_pHoverYOffset);
     eTheme->drawEffectShadow(&painter, shadowRect, _cardPrivate->_shadowBorderWidth, _cardPrivate->_pBorderRadius);
-    QRectF foregroundRect(_cardPrivate->_shadowBorderWidth, _cardPrivate->_shadowBorderWidth - _pHoverYOffset + 1, width() - 2 * _cardPrivate->_shadowBorderWidth, height() - 2 * _cardPrivate->_shadowBorderWidth);
-    QRectF cardForegroundRect(_cardPrivate->_shadowBorderWidth, _cardPrivate->_shadowBorderWidth - _cardPrivate->_pHoverYOffset + 1, _card->width() - 2 * _cardPrivate->_shadowBorderWidth, _card->height() - 2 * _cardPrivate->_shadowBorderWidth);
+    QRectF foregroundRect(_cardPrivate->_shadowBorderWidth, _cardPrivate->_shadowBorderWidth - _pHoverYOffset + 1,
+                          width() - 2 * _cardPrivate->_shadowBorderWidth,
+                          height() - 2 * _cardPrivate->_shadowBorderWidth);
+    QRectF cardForegroundRect(
+        _cardPrivate->_shadowBorderWidth, _cardPrivate->_shadowBorderWidth - _cardPrivate->_pHoverYOffset + 1,
+        _card->width() - 2 * _cardPrivate->_shadowBorderWidth, _card->height() - 2 * _cardPrivate->_shadowBorderWidth);
 
-    //背景绘制
+    // 背景绘制
     painter.setOpacity(1);
     painter.setPen(ElaThemeColor(_themeMode, PopupBorderHover));
     painter.setBrush(ElaThemeColor(_themeMode, DialogBase));
     painter.drawRoundedRect(foregroundRect, _cardPrivate->_pBorderRadius, _cardPrivate->_pBorderRadius);
     painter.setClipRect(foregroundRect);
-    //图片绘制
+    // 图片绘制
     painter.save();
-    QRectF pixRect(foregroundRect.x() + cardForegroundRect.height() * 0.15, foregroundRect.y() + cardForegroundRect.height() * 0.15, cardForegroundRect.height() * 0.7, cardForegroundRect.height() * 0.7);
+    QRectF pixRect(foregroundRect.x() + cardForegroundRect.height() * 0.15,
+                   foregroundRect.y() + cardForegroundRect.height() * 0.15, cardForegroundRect.height() * 0.7,
+                   cardForegroundRect.height() * 0.7);
 
     QPainterPath pixPath;
     pixPath.addRoundedRect(pixRect, 4, 4);
@@ -188,40 +194,59 @@ void ElaPopularCardFloater::paintEvent(QPaintEvent* event)
     painter.drawPixmap(pixRect, _cardPrivate->_pCardPixmap, _cardPrivate->_pCardPixmap.rect());
     painter.restore();
 
-    //文字绘制
-    //Title
+    // 文字绘制
+    // Title
     painter.setPen(ElaThemeColor(_themeMode, BasicText));
     QFont font = painter.font();
     font.setWeight(QFont::Bold);
     font.setPixelSize(fontPixelSize + 2);
     painter.setFont(font);
     int titleHeight = painter.fontMetrics().height();
-    QRectF titleRect(pixRect.right() + _cardPrivate->_textHSpacing, pixRect.y(), _floatGeometryOffset * 2 + cardForegroundRect.width() - pixRect.width() - _cardPrivate->_textHSpacing * 2 - cardForegroundRect.height() * 0.15 - _cardPrivate->_buttonTargetRect.width(), titleHeight);
+    QRectF titleRect(pixRect.right() + _cardPrivate->_textHSpacing, pixRect.y(),
+                     _floatGeometryOffset * 2 + cardForegroundRect.width() - pixRect.width() -
+                         _cardPrivate->_textHSpacing * 2 - cardForegroundRect.height() * 0.15 -
+                         _cardPrivate->_buttonTargetRect.width(),
+                     titleHeight);
     QString titleText = painter.fontMetrics().elidedText(_cardPrivate->_pTitle, Qt::ElideRight, titleRect.width());
     painter.drawText(titleRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, titleText);
 
-    //SubTitle
+    // SubTitle
     font.setWeight(QFont::DemiBold);
     font.setPixelSize(fontPixelSize);
     painter.setFont(font);
     int subTitleHeight = painter.fontMetrics().height();
-    QRectF subTitleRect(pixRect.right() + _cardPrivate->_textHSpacing, titleRect.bottom() + _cardPrivate->_textVSpacing, _floatGeometryOffset * 2 + cardForegroundRect.width() - pixRect.width() - _cardPrivate->_textHSpacing * 2 - cardForegroundRect.height() * 0.15 - _cardPrivate->_buttonTargetRect.width(), subTitleHeight);
-    QString subTitleText = painter.fontMetrics().elidedText(_cardPrivate->_pSubTitle, Qt::ElideRight, subTitleRect.width());
+    QRectF subTitleRect(pixRect.right() + _cardPrivate->_textHSpacing, titleRect.bottom() + _cardPrivate->_textVSpacing,
+                        _floatGeometryOffset * 2 + cardForegroundRect.width() - pixRect.width() -
+                            _cardPrivate->_textHSpacing * 2 - cardForegroundRect.height() * 0.15 -
+                            _cardPrivate->_buttonTargetRect.width(),
+                        subTitleHeight);
+    QString subTitleText =
+        painter.fontMetrics().elidedText(_cardPrivate->_pSubTitle, Qt::ElideRight, subTitleRect.width());
     painter.drawText(subTitleRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, subTitleText);
 
-    //DetailedText
+    // DetailedText
     painter.setPen(ElaThemeColor(_themeMode, BasicDetailsText));
     int detailedTextHeight = painter.fontMetrics().height() * 2 + 2;
-    QRectF detailedTextRect(pixRect.x(), pixRect.bottom() + cardForegroundRect.height() * 0.15, cardForegroundRect.width() + 2 * _floatGeometryOffset - _cardPrivate->_textHSpacing - cardForegroundRect.height() * 0.15, detailedTextHeight);
-    QString detailedText = painter.fontMetrics().elidedText(_cardPrivate->_pDetailedText, Qt::ElideRight, detailedTextRect.width() * 1.9);
+    QRectF detailedTextRect(pixRect.x(), pixRect.bottom() + cardForegroundRect.height() * 0.15,
+                            cardForegroundRect.width() + 2 * _floatGeometryOffset - _cardPrivate->_textHSpacing -
+                                cardForegroundRect.height() * 0.15,
+                            detailedTextHeight);
+    QString detailedText =
+        painter.fontMetrics().elidedText(_cardPrivate->_pDetailedText, Qt::ElideRight, detailedTextRect.width() * 1.9);
     painter.drawText(detailedTextRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, detailedText);
 
-    //分割线绘制
+    // 分割线绘制
     painter.setPen(ElaThemeColor(_themeMode, BasicBaseLine));
-    painter.drawLine(foregroundRect.x(), detailedTextRect.bottom() + 5, foregroundRect.right(), detailedTextRect.bottom() + 5);
+    painter.drawLine(foregroundRect.x(), detailedTextRect.bottom() + 5, foregroundRect.right(),
+                     detailedTextRect.bottom() + 5);
 
-    //CardFloatPixmap
-    painter.drawPixmap(QRect(pixRect.x(), detailedTextRect.bottom() + 15, cardForegroundRect.bottom() + _floatGeometryOffset + 90 - detailedTextRect.bottom() - 15 - _cardPrivate->_shadowBorderWidth - 10, cardForegroundRect.bottom() + _floatGeometryOffset + 90 - detailedTextRect.bottom() - 15 - _cardPrivate->_shadowBorderWidth - 10), _cardPrivate->_pCardFloatPixmap);
+    // CardFloatPixmap
+    painter.drawPixmap(QRect(pixRect.x(), detailedTextRect.bottom() + 15,
+                             cardForegroundRect.bottom() + _floatGeometryOffset + 90 - detailedTextRect.bottom() - 15 -
+                                 _cardPrivate->_shadowBorderWidth - 10,
+                             cardForegroundRect.bottom() + _floatGeometryOffset + 90 - detailedTextRect.bottom() - 15 -
+                                 _cardPrivate->_shadowBorderWidth - 10),
+                       _cardPrivate->_pCardFloatPixmap);
     painter.restore();
 }
 

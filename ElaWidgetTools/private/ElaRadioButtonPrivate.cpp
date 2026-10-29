@@ -2,8 +2,7 @@
 
 #include "ElaRadioButton.h"
 #include "ElaTheme.h"
-ElaRadioButtonPrivate::ElaRadioButtonPrivate(QObject* parent)
-    : QObject(parent)
+ElaRadioButtonPrivate::ElaRadioButtonPrivate(QObject* parent) : QObject(parent)
 {
 }
 

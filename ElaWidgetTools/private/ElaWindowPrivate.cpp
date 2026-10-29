@@ -12,8 +12,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QtMath>
-ElaWindowPrivate::ElaWindowPrivate(QObject* parent)
-    : QObject{parent}
+ElaWindowPrivate::ElaWindowPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -105,8 +104,7 @@ void ElaWindowPrivate::onThemeReadyChange()
     switch (eApp->getWindowDisplayMode())
     {
     case ElaApplicationType::Normal:
-    case ElaApplicationType::ElaMica:
-    {
+    case ElaApplicationType::ElaMica: {
         _appBar->setIsOnlyAllowMinAndClose(true);
         if (!_animationWidget)
         {
@@ -140,8 +138,7 @@ void ElaWindowPrivate::onThemeReadyChange()
         }
         break;
     }
-    default:
-    {
+    default: {
         if (eTheme->getThemeMode() == ElaThemeType::Light)
         {
             eTheme->setThemeMode(ElaThemeType::Dark);
@@ -165,7 +162,8 @@ void ElaWindowPrivate::onThemeModeChanged(ElaThemeType::ThemeMode themeMode)
         {
             _windowPaintMovie->stop();
         }
-        _windowPaintMovie->setFileName(_themeMode == ElaThemeType::Light ? _lightWindowMoviePath : _darkWindowMoviePath);
+        _windowPaintMovie->setFileName(_themeMode == ElaThemeType::Light ? _lightWindowMoviePath
+                                                                         : _darkWindowMoviePath);
         _windowPaintMovie->start();
     }
     q->update();
@@ -179,15 +177,18 @@ void ElaWindowPrivate::onWindowDisplayModeChanged()
     {
         _windowPaintMovie->stop();
     }
-    if (_windowDisplayMode == ElaApplicationType::WindowDisplayMode::Normal && _pWindowPaintMode == ElaWindowType::Movie)
+    if (_windowDisplayMode == ElaApplicationType::WindowDisplayMode::Normal &&
+        _pWindowPaintMode == ElaWindowType::Movie)
     {
-        _windowPaintMovie->setFileName(_themeMode == ElaThemeType::Light ? _lightWindowMoviePath : _darkWindowMoviePath);
+        _windowPaintMovie->setFileName(_themeMode == ElaThemeType::Light ? _lightWindowMoviePath
+                                                                         : _darkWindowMoviePath);
         _windowPaintMovie->start();
     }
     q->update();
 }
 
-void ElaWindowPrivate::onNavigationNodeClicked(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey, bool isRouteBack)
+void ElaWindowPrivate::onNavigationNodeClicked(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey,
+                                               bool isRouteBack)
 {
     QWidget* page = _routeMap.value(nodeKey);
     if (!page)
@@ -196,7 +197,8 @@ void ElaWindowPrivate::onNavigationNodeClicked(ElaNavigationType::NavigationNode
         return;
     }
     int nodeIndex = _navigationCenterStackedWidget->getContainerStackedWidget()->indexOf(page);
-    if (_navigationTargetIndex == nodeIndex || _navigationCenterStackedWidget->getContainerStackedWidget()->count() <= nodeIndex)
+    if (_navigationTargetIndex == nodeIndex ||
+        _navigationCenterStackedWidget->getContainerStackedWidget()->count() <= nodeIndex)
     {
         return;
     }
@@ -204,7 +206,8 @@ void ElaWindowPrivate::onNavigationNodeClicked(ElaNavigationType::NavigationNode
     _navigationCenterStackedWidget->doWindowStackSwitch(_pStackSwitchMode, nodeIndex, isRouteBack);
 }
 
-void ElaWindowPrivate::onNavigationNodeAdded(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey, QWidget* page)
+void ElaWindowPrivate::onNavigationNodeAdded(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey,
+                                             QWidget* page)
 {
     if (nodeType == ElaNavigationType::CategoryNode)
     {
@@ -235,7 +238,8 @@ void ElaWindowPrivate::onNavigationNodeRemoved(ElaNavigationType::NavigationNode
     }
 }
 
-void ElaWindowPrivate::onNavigationRouterStateChanged(const QString& domainName, ElaActionCommanderType::CommanderState state)
+void ElaWindowPrivate::onNavigationRouterStateChanged(const QString& domainName,
+                                                      ElaActionCommanderType::CommanderState state)
 {
     if (domainName != "ElaWidgetToolsAction")
     {
@@ -243,23 +247,19 @@ void ElaWindowPrivate::onNavigationRouterStateChanged(const QString& domainName,
     }
     switch (state)
     {
-    case ElaActionCommanderType::UndoValid:
-    {
+    case ElaActionCommanderType::UndoValid: {
         _appBar->setRouteBackButtonEnable(true);
         break;
     }
-    case ElaActionCommanderType::UndoInvalid:
-    {
+    case ElaActionCommanderType::UndoInvalid: {
         _appBar->setRouteBackButtonEnable(false);
         break;
     }
-    case ElaActionCommanderType::RedoValid:
-    {
+    case ElaActionCommanderType::RedoValid: {
         _appBar->setRouteForwardButtonEnable(true);
         break;
     }
-    case ElaActionCommanderType::RedoInvalid:
-    {
+    case ElaActionCommanderType::RedoInvalid: {
         _appBar->setRouteForwardButtonEnable(false);
         break;
     }
@@ -268,7 +268,8 @@ void ElaWindowPrivate::onNavigationRouterStateChanged(const QString& domainName,
 
 qreal ElaWindowPrivate::_distance(QPoint point1, QPoint point2)
 {
-    return std::sqrt((point1.x() - point2.x()) * (point1.x() - point2.x()) + (point1.y() - point2.y()) * (point1.y() - point2.y()));
+    return std::sqrt((point1.x() - point2.x()) * (point1.x() - point2.x()) +
+                     (point1.y() - point2.y()) * (point1.y() - point2.y()));
 }
 
 void ElaWindowPrivate::_resetWindowLayout(bool isAnimation)

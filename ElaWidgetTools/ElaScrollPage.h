@@ -24,7 +24,8 @@ public:
     void setBottomCustomWidget(QWidget* customWidget);
     QWidget* getBottomCustomWidget() const;
 
-    void addCentralWidget(QWidget* centralWidget, bool isWidgetResizeable = true, bool isVerticalGrabGesture = true, qreal mousePressEventDelay = 0.0);
+    void addCentralWidget(QWidget* centralWidget, bool isWidgetResizeable = true, bool isVerticalGrabGesture = true,
+                          qreal mousePressEventDelay = 0.0);
 
     void navigation(int widgetIndex, bool isLogRoute = true);
 

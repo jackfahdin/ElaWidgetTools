@@ -10,8 +10,7 @@
 ELA_PROPERTY_Q_CPP(ElaTabWidget, bool, IsTabTransparent);
 ELA_PROPERTY_Q_CPP(ElaTabWidget, bool, IsContainerAcceptDrops);
 ELA_PROPERTY_Q_CPP(ElaTabWidget, QSize, FloatWidgetSize)
-ElaTabWidget::ElaTabWidget(QWidget* parent)
-    : QTabWidget(parent), d_ptr(new ElaTabWidgetPrivate())
+ElaTabWidget::ElaTabWidget(QWidget* parent) : QTabWidget(parent), d_ptr(new ElaTabWidgetPrivate())
 {
     Q_D(ElaTabWidget);
     d->q_ptr = this;
@@ -103,7 +102,8 @@ void ElaTabWidget::tabInserted(int index)
 {
     Q_D(ElaTabWidget);
     QWidget* tabWidget = widget(index);
-    if (tabWidget && !tabWidget->property("IsMetaWidget").toBool() && !tabWidget->property("ElaOriginTabWidget").isValid())
+    if (tabWidget && !tabWidget->property("IsMetaWidget").toBool() &&
+        !tabWidget->property("ElaOriginTabWidget").isValid())
     {
         d->_addTabWidgetToList(tabWidget);
     }

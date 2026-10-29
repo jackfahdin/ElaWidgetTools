@@ -17,8 +17,10 @@ class ElaToolButtonStyle : public QProxyStyle
 public:
     explicit ElaToolButtonStyle(QStyle* style = nullptr);
     ~ElaToolButtonStyle() override;
-    void drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget = nullptr) const override;
-    QSize sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const override;
+    void drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter,
+                            const QWidget* widget = nullptr) const override;
+    QSize sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                           const QWidget* widget) const override;
 
 private:
     ElaThemeType::ThemeMode _themeMode;
@@ -31,4 +33,3 @@ private:
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELATOOLBUTTONSTYLE_H_
-

@@ -11,8 +11,7 @@
 #include "ElaMessageBar.h"
 #include "T_IconDelegate.h"
 #include "T_IconModel.h"
-T_Icon::T_Icon(QWidget* parent)
-    : T_BasePage(parent)
+T_Icon::T_Icon(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     setWindowTitle("ElaIcon");

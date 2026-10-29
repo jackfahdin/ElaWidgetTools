@@ -4,8 +4,7 @@
 #include "ElaTheme.h"
 #include <QMouseEvent>
 #include <QPainter>
-ElaRollerPickerContainer::ElaRollerPickerContainer(QWidget* parent)
-    : QWidget{parent}
+ElaRollerPickerContainer::ElaRollerPickerContainer(QWidget* parent) : QWidget{parent}
 {
     _pAnimationPixOffsetY = 0;
     _pButtonAreaHeight = 38;
@@ -142,14 +141,20 @@ void ElaRollerPickerContainer::paintEvent(QPaintEvent* event)
             if (i != _rollerList.count() - 1)
             {
                 painter.setPen(ElaThemeColor(_themeMode, BasicBorder));
-                painter.drawLine(rollerXOffset, foregroundRect.y(), rollerXOffset, foregroundRect.bottom() - _pButtonAreaHeight);
+                painter.drawLine(rollerXOffset, foregroundRect.y(), rollerXOffset,
+                                 foregroundRect.bottom() - _pButtonAreaHeight);
             }
         }
         // 横向分割线
-        painter.drawLine(foregroundRect.x(), foregroundRect.bottom() - _pButtonAreaHeight, foregroundRect.right(), foregroundRect.bottom() - _pButtonAreaHeight);
+        painter.drawLine(foregroundRect.x(), foregroundRect.bottom() - _pButtonAreaHeight, foregroundRect.right(),
+                         foregroundRect.bottom() - _pButtonAreaHeight);
         // 按钮区域绘制
-        _overButtonRect = QRect(foregroundRect.x() + _buttonMargin, foregroundRect.bottom() - _pButtonAreaHeight + _buttonMargin, (foregroundRect.width() - 2 * _buttonMargin - _buttonSpacing) / 2, _pButtonAreaHeight - 2 * _buttonMargin + 1);
-        _cancelButtonRect = QRect(_overButtonRect.right() + _buttonSpacing, _overButtonRect.y(), _overButtonRect.width(), _overButtonRect.height());
+        _overButtonRect =
+            QRect(foregroundRect.x() + _buttonMargin, foregroundRect.bottom() - _pButtonAreaHeight + _buttonMargin,
+                  (foregroundRect.width() - 2 * _buttonMargin - _buttonSpacing) / 2,
+                  _pButtonAreaHeight - 2 * _buttonMargin + 1);
+        _cancelButtonRect = QRect(_overButtonRect.right() + _buttonSpacing, _overButtonRect.y(),
+                                  _overButtonRect.width(), _overButtonRect.height());
         // 按钮覆盖绘制
         painter.setPen(Qt::NoPen);
         painter.setBrush(ElaThemeColor(_themeMode, BasicHover));
@@ -179,7 +184,7 @@ void ElaRollerPickerContainer::_handleSaveOrReset(bool isSave)
     {
         // 保存历史数据
         _historyIndexList.clear();
-        for (auto roller: _rollerList)
+        for (auto roller : _rollerList)
         {
             _historyIndexList.append(roller->getCurrentIndex());
         }

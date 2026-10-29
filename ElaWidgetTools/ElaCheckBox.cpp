@@ -2,8 +2,7 @@
 
 #include "ElaApplication.h"
 #include "ElaCheckBoxStyle.h"
-ElaCheckBox::ElaCheckBox(QWidget* parent)
-    : QCheckBox(parent)
+ElaCheckBox::ElaCheckBox(QWidget* parent) : QCheckBox(parent)
 {
     _pBorderRadius = 3;
     setMouseTracking(true);
@@ -14,8 +13,7 @@ ElaCheckBox::ElaCheckBox(QWidget* parent)
     setFont(font);
 }
 
-ElaCheckBox::ElaCheckBox(const QString& text, QWidget* parent)
-    : ElaCheckBox(parent)
+ElaCheckBox::ElaCheckBox(const QString& text, QWidget* parent) : ElaCheckBox(parent)
 {
     setText(text);
 }

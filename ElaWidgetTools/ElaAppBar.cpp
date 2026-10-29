@@ -30,11 +30,13 @@ ELA_PROPERTY_Q_CPP(ElaAppBar, bool, IsStayTop)
 ELA_PROPERTY_Q_CPP(ElaAppBar, bool, IsDefaultClosed)
 ELA_PROPERTY_Q_CPP(ElaAppBar, bool, IsOnlyAllowMinAndClose)
 
-ElaAppBar::ElaAppBar(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaAppBarPrivate())
+ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPrivate())
 {
     Q_D(ElaAppBar);
-    d->_buttonFlags = ElaAppBarType::RouteBackButtonHint | ElaAppBarType::RouteForwardButtonHint | ElaAppBarType::StayTopButtonHint | ElaAppBarType::ThemeChangeButtonHint | ElaAppBarType::MinimizeButtonHint | ElaAppBarType::MaximizeButtonHint | ElaAppBarType::CloseButtonHint;
+    d->_buttonFlags = ElaAppBarType::RouteBackButtonHint | ElaAppBarType::RouteForwardButtonHint |
+                      ElaAppBarType::StayTopButtonHint | ElaAppBarType::ThemeChangeButtonHint |
+                      ElaAppBarType::MinimizeButtonHint | ElaAppBarType::MaximizeButtonHint |
+                      ElaAppBarType::CloseButtonHint;
     window()->setAttribute(Qt::WA_Mapped);
     d->_pAppBarHeight = 45;
     d->_pRibbonHeight = 0;
@@ -56,7 +58,9 @@ ElaAppBar::ElaAppBar(QWidget* parent)
     window()->setWindowFlags((window()->windowFlags()) | Qt::WindowMinimizeButtonHint | Qt::FramelessWindowHint);
 #endif
 #else
-    window()->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::FramelessWindowHint | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::WindowSystemMenuHint | Qt::WindowFullscreenButtonHint | Qt::WindowSystemMenuHint);
+    window()->setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::FramelessWindowHint | Qt::WindowMinMaxButtonsHint |
+                             Qt::WindowCloseButtonHint | Qt::WindowSystemMenuHint | Qt::WindowFullscreenButtonHint |
+                             Qt::WindowSystemMenuHint);
 #endif
     setMouseTracking(true);
     setObjectName("ElaAppBar");
@@ -96,7 +100,7 @@ ElaAppBar::ElaAppBar(QWidget* parent)
     });
     connect(this, &ElaAppBar::pIsStayTopChanged, d, &ElaAppBarPrivate::onStayTopButtonClicked);
 
-    //图标
+    // 图标
     d->_iconLabel = new QLabel(this);
     d->_iconLabelLayout = d->_createVLayout(d->_iconLabel);
     if (parent->windowIcon().isNull())
@@ -114,7 +118,7 @@ ElaAppBar::ElaAppBar(QWidget* parent)
         d->_iconLabelLayout->setContentsMargins(icon.isNull() ? 0 : 10, 0, 0, 0);
     });
 
-    //标题
+    // 标题
     d->_titleLabel = new ElaText(this);
     d->_titleLabel->setIsWrapAnywhere(false);
     d->_titleLabel->setTextPixelSize(13);
@@ -218,14 +222,16 @@ ElaAppBar::ElaAppBar(QWidget* parent)
             if (d->_pIsFixedSize)
             {
                 HWND hwnd = (HWND)(d->_currentWinID);
-                SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_FRAMECHANGED);
+                SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                             SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_FRAMECHANGED);
             }
         });
     }
-    //主屏幕变更处理
+    // 主屏幕变更处理
     connect(qApp, &QApplication::primaryScreenChanged, this, [=]() {
         HWND hwnd = (HWND)(d->_currentWinID);
-        ::SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+        ::SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                       SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
         ::RedrawWindow(hwnd, nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW);
     });
     d->_lastScreen = qApp->screenAt(window()->geometry().center());
@@ -271,7 +277,8 @@ int ElaAppBar::getRibbonHeight() const
     return d->_pRibbonHeight;
 }
 
-void ElaAppBar::setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* widget, QObject* hitTestObject, const QString& hitTestFunctionName)
+void ElaAppBar::setCustomWidget(ElaAppBarType::CustomArea customArea, QWidget* widget, QObject* hitTestObject,
+                                const QString& hitTestFunctionName)
 {
     Q_D(ElaAppBar);
     if (!widget || widget == this)
@@ -319,7 +326,7 @@ void ElaAppBar::setIsFixedSize(bool isFixedSize)
     DWORD style = ::GetWindowLongPtr(hwnd, GWL_STYLE);
     if (d->_pIsFixedSize)
     {
-        //切换DPI处理
+        // 切换DPI处理
         style &= ~WS_THICKFRAME;
         ::SetWindowLongPtr(hwnd, GWL_STYLE, style);
     }
@@ -329,7 +336,8 @@ void ElaAppBar::setIsFixedSize(bool isFixedSize)
     }
 #else
     bool isVisible = window()->isVisible();
-    window()->setWindowFlags((window()->windowFlags()) | Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
+    window()->setWindowFlags((window()->windowFlags()) | Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint |
+                             Qt::WindowCloseButtonHint);
     if (!isFixedSize)
     {
         window()->setWindowFlag(Qt::WindowMaximizeButtonHint);
@@ -430,8 +438,7 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
     const LPARAM lParam = msg->lParam;
     switch (uMsg)
     {
-    case WM_WINDOWPOSCHANGING:
-    {
+    case WM_WINDOWPOSCHANGING: {
         WINDOWPOS* wp = reinterpret_cast<WINDOWPOS*>(lParam);
         if (wp != nullptr && (wp->flags & SWP_NOSIZE) == 0)
         {
@@ -441,8 +448,7 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         }
         return 0;
     }
-    case WM_NCPAINT:
-    {
+    case WM_NCPAINT: {
         if (!eWinHelper->getIsCompositionEnabled())
         {
             *result = FALSE;
@@ -453,8 +459,7 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
             return -1;
         }
     }
-    case WM_NCACTIVATE:
-    {
+    case WM_NCACTIVATE: {
         if (eWinHelper->getIsCompositionEnabled())
         {
             *result = ::DefWindowProcW(hwnd, WM_NCACTIVATE, wParam, -1);
@@ -465,8 +470,7 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         }
         return 1;
     }
-    case WM_SIZE:
-    {
+    case WM_SIZE: {
         if (wParam == SIZE_RESTORED)
         {
             d->_changeMaxButtonAwesome(false);
@@ -478,8 +482,7 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         return 0;
     }
 #if QT_VERSION <= QT_VERSION_CHECK(6, 0, 0)
-    case WM_SHOWWINDOW:
-    {
+    case WM_SHOWWINDOW: {
         if (wParam == FALSE)
         {
             return 0;
@@ -494,8 +497,7 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         return -1;
     }
 #endif
-    case WM_NCCALCSIZE:
-    {
+    case WM_NCCALCSIZE: {
         if (wParam == FALSE)
         {
             return 0;
@@ -552,22 +554,21 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         return 1;
 #endif
     }
-    case WM_MOVE:
-    {
+    case WM_MOVE: {
         QScreen* currentScreen = qApp->screenAt(window()->geometry().center());
         if (currentScreen && currentScreen != d->_lastScreen)
         {
             if (d->_lastScreen)
             {
-                ::SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+                ::SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                               SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
                 ::RedrawWindow(hwnd, nullptr, nullptr, RDW_INVALIDATE | RDW_UPDATENOW);
             }
             d->_lastScreen = currentScreen;
         }
         break;
     }
-    case WM_NCHITTEST:
-    {
+    case WM_NCHITTEST: {
         if (d->_containsCursorToItem(d->_maxButton))
         {
             if (*result == HTNOWHERE)
@@ -649,8 +650,7 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         *result = HTCLIENT;
         return 1;
     }
-    case WM_GETMINMAXINFO:
-    {
+    case WM_GETMINMAXINFO: {
         MINMAXINFO* minmaxInfo = reinterpret_cast<MINMAXINFO*>(lParam);
         RECT rect;
         SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
@@ -661,29 +661,25 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         minmaxInfo->ptMaxPosition.y = rect.top;
         return 1;
     }
-    case WM_LBUTTONDBLCLK:
-    {
+    case WM_LBUTTONDBLCLK: {
         QVariantMap postData;
         postData.insert("WMClickType", ElaAppBarType::WMLBUTTONDBLCLK);
         ElaEventBus::getInstance()->post("WMWindowClicked", postData);
         return 0;
     }
-    case WM_LBUTTONDOWN:
-    {
+    case WM_LBUTTONDOWN: {
         QVariantMap postData;
         postData.insert("WMClickType", ElaAppBarType::WMLBUTTONDOWN);
         ElaEventBus::getInstance()->post("WMWindowClicked", postData);
         return 0;
     }
-    case WM_LBUTTONUP:
-    {
+    case WM_LBUTTONUP: {
         QVariantMap postData;
         postData.insert("WMClickType", ElaAppBarType::WMLBUTTONUP);
         ElaEventBus::getInstance()->post("WMWindowClicked", postData);
         return 0;
     }
-    case WM_NCLBUTTONDOWN:
-    {
+    case WM_NCLBUTTONDOWN: {
         QVariantMap postData;
         postData.insert("WMClickType", ElaAppBarType::WMNCLBUTTONDOWN);
         ElaEventBus::getInstance()->post("WMWindowClicked", postData);
@@ -693,8 +689,7 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         }
         break;
     }
-    case WM_NCLBUTTONUP:
-    {
+    case WM_NCLBUTTONUP: {
         QVariantMap postData;
         postData.insert("WMClickType", ElaAppBarType::WMNCLBUTTONDOWN);
         ElaEventBus::getInstance()->post("WMWindowClicked", postData);
@@ -705,16 +700,14 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         }
         break;
     }
-    case WM_NCLBUTTONDBLCLK:
-    {
+    case WM_NCLBUTTONDBLCLK: {
         if (!d->_pIsOnlyAllowMinAndClose && !d->_pIsFixedSize)
         {
             return 0;
         }
         return 1;
     }
-    case WM_NCRBUTTONDOWN:
-    {
+    case WM_NCRBUTTONDOWN: {
         if (wParam == HTCAPTION && !d->_pIsOnlyAllowMinAndClose)
         {
             d->_showAppBarMenu(QCursor::pos());
@@ -722,9 +715,9 @@ int ElaAppBar::takeOverNativeEvent(const QByteArray& eventType, void* message, l
         break;
     }
     case WM_KEYDOWN:
-    case WM_SYSKEYDOWN:
-    {
-        if ((GetAsyncKeyState(VK_MENU) & 0x8000) && (GetAsyncKeyState(VK_SPACE) & 0x8000) && !d->_pIsOnlyAllowMinAndClose)
+    case WM_SYSKEYDOWN: {
+        if ((GetAsyncKeyState(VK_MENU) & 0x8000) && (GetAsyncKeyState(VK_SPACE) & 0x8000) &&
+            !d->_pIsOnlyAllowMinAndClose)
         {
             auto pos = window()->geometry().topLeft();
             d->_showAppBarMenu(QPoint(pos.x(), pos.y() + this->height()));
@@ -741,8 +734,7 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
     Q_D(ElaAppBar);
     switch (event->type())
     {
-    case QEvent::Resize:
-    {
+    case QEvent::Resize: {
         QSize size = parentWidget()->size();
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 3) && QT_VERSION <= QT_VERSION_CHECK(6, 6, 1))
         if (::IsZoomed((HWND)d->_currentWinID))
@@ -759,8 +751,7 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
         break;
     }
 #ifdef Q_OS_WIN
-    case QEvent::Show:
-    {
+    case QEvent::Show: {
         if (!d->_pIsFixedSize && !d->_pIsOnlyAllowMinAndClose)
         {
             HWND hwnd = (HWND)d->_currentWinID;
@@ -785,8 +776,7 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
         break;
     }
 #endif
-    case QEvent::Close:
-    {
+    case QEvent::Close: {
         QCloseEvent* closeEvent = dynamic_cast<QCloseEvent*>(event);
         if (!d->_pIsDefaultClosed && closeEvent->spontaneous())
         {
@@ -804,8 +794,7 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
         }
     }
 #ifndef Q_OS_WIN
-    case QEvent::MouseButtonPress:
-    {
+    case QEvent::MouseButtonPress: {
         if (d->_edges != 0)
         {
             QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
@@ -830,8 +819,7 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
         }
         break;
     }
-    case QEvent::MouseButtonDblClick:
-    {
+    case QEvent::MouseButtonDblClick: {
         if (d->_containsCursorToItem(this))
         {
             if (window()->isMaximized())
@@ -845,8 +833,7 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
         }
         break;
     }
-    case QEvent::MouseButtonRelease:
-    {
+    case QEvent::MouseButtonRelease: {
         d->_edges = 0;
         QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
         if (mouseEvent->button() == Qt::RightButton)
@@ -855,8 +842,7 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
         }
         break;
     }
-    case QEvent::HoverMove:
-    {
+    case QEvent::HoverMove: {
         if (window()->isMaximized() || window()->isFullScreen())
         {
             break;
@@ -872,7 +858,8 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
 #else
             mouseEvent->position().toPoint();
 #endif
-        if (p.x() >= d->_margins && p.x() <= (window()->width() - d->_margins) && p.y() >= d->_margins && p.y() <= (window()->height() - d->_margins))
+        if (p.x() >= d->_margins && p.x() <= (window()->width() - d->_margins) && p.y() >= d->_margins &&
+            p.y() <= (window()->height() - d->_margins))
         {
             if (d->_edges != 0)
             {
@@ -902,8 +889,7 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
         break;
     }
 #endif
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -920,7 +906,9 @@ void ElaAppBar::paintEvent(QPaintEvent* event)
         painter.save();
         painter.setRenderHints(QPainter::Antialiasing);
         auto borderWidth = eWinHelper->getSystemMetricsForDpi((HWND)d->_currentWinID, SM_CXBORDER);
-        painter.setPen(QPen(window()->isActiveWindow() ? ElaThemeColor(d->_themeMode, Win10BorderActive) : ElaThemeColor(d->_themeMode, Win10BorderInactive), borderWidth));
+        painter.setPen(QPen(window()->isActiveWindow() ? ElaThemeColor(d->_themeMode, Win10BorderActive)
+                                                       : ElaThemeColor(d->_themeMode, Win10BorderInactive),
+                            borderWidth));
         painter.drawLine(QPoint(0, 0), QPoint(window()->width(), 0));
         painter.restore();
     }

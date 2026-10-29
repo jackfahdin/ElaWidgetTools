@@ -3,14 +3,15 @@
 #include <QPainter>
 
 #include "ElaTheme.h"
-ElaSuggestBoxSearchViewContainer::ElaSuggestBoxSearchViewContainer(QWidget* parent)
-    : QWidget{parent}
+ElaSuggestBoxSearchViewContainer::ElaSuggestBoxSearchViewContainer(QWidget* parent) : QWidget{parent}
 {
     setContentsMargins(8, 8, 8, 8);
     setObjectName("ElaSuggestBoxSearchViewBaseWidget");
     setStyleSheet("#ElaSuggestBoxSearchViewBaseWidget{background-color:transparent}");
     _themeMode = eTheme->getThemeMode();
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) { _themeMode = themeMode; });
+    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
+        _themeMode = themeMode;
+    });
 }
 
 ElaSuggestBoxSearchViewContainer::~ElaSuggestBoxSearchViewContainer()

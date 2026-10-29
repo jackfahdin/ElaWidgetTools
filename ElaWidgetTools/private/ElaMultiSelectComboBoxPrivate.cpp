@@ -4,8 +4,7 @@
 
 #include "ElaComboBoxView.h"
 #include "ElaMultiSelectComboBox.h"
-ElaMultiSelectComboBoxPrivate::ElaMultiSelectComboBoxPrivate(QObject* parent)
-    : QObject{parent}
+ElaMultiSelectComboBoxPrivate::ElaMultiSelectComboBoxPrivate(QObject* parent) : QObject{parent}
 {
 }
 

@@ -3,8 +3,7 @@
 #include <QIcon>
 
 #include "T_TreeItem.h"
-T_TreeViewModel::T_TreeViewModel(QObject* parent)
-    : QAbstractItemModel{parent}
+T_TreeViewModel::T_TreeViewModel(QObject* parent) : QAbstractItemModel{parent}
 {
     _rootItem = new T_TreeItem("root");
     for (int i = 0; i < 20; i++)

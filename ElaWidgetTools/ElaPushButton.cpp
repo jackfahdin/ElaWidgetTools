@@ -13,8 +13,7 @@ ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, LightHoverColor)
 ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, DarkHoverColor)
 ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, LightPressColor)
 ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, DarkPressColor)
-ElaPushButton::ElaPushButton(QWidget* parent)
-    : QPushButton(parent), d_ptr(new ElaPushButtonPrivate())
+ElaPushButton::ElaPushButton(QWidget* parent) : QPushButton(parent), d_ptr(new ElaPushButtonPrivate())
 {
     Q_D(ElaPushButton);
     d->q_ptr = this;
@@ -40,8 +39,7 @@ ElaPushButton::ElaPushButton(QWidget* parent)
     });
 }
 
-ElaPushButton::ElaPushButton(const QString& text, QWidget* parent)
-    : ElaPushButton(parent)
+ElaPushButton::ElaPushButton(const QString& text, QWidget* parent) : ElaPushButton(parent)
 {
     setText(text);
 }
@@ -100,22 +98,28 @@ void ElaPushButton::paintEvent(QPaintEvent* event)
     if (d->_themeMode == ElaThemeType::Light)
     {
         painter.setPen(ElaThemeColor(ElaThemeType::Light, BasicBorder));
-        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pLightPressColor : (underMouse() ? d->_pLightHoverColor : d->_pLightDefaultColor) : ElaThemeColor(d->_themeMode, BasicDisable));
+        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pLightPressColor
+                                                     : (underMouse() ? d->_pLightHoverColor : d->_pLightDefaultColor)
+                                     : ElaThemeColor(d->_themeMode, BasicDisable));
     }
     else
     {
         painter.setPen(Qt::NoPen);
-        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pDarkPressColor : (underMouse() ? d->_pDarkHoverColor : d->_pDarkDefaultColor) : ElaThemeColor(d->_themeMode, BasicDisable));
+        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pDarkPressColor
+                                                     : (underMouse() ? d->_pDarkHoverColor : d->_pDarkDefaultColor)
+                                     : ElaThemeColor(d->_themeMode, BasicDisable));
     }
     painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
     // 底边线绘制
     if (!d->_isPressed)
     {
         painter.setPen(ElaThemeColor(d->_themeMode, BasicBaseLine));
-        painter.drawLine(foregroundRect.x() + d->_pBorderRadius, height() - 1, foregroundRect.width() - d->_pBorderRadius, height() - 1);
+        painter.drawLine(foregroundRect.x() + d->_pBorderRadius, height() - 1,
+                         foregroundRect.width() - d->_pBorderRadius, height() - 1);
     }
-    //文字绘制
-    painter.setPen(isEnabled() ? d->_themeMode == ElaThemeType::Light ? d->_lightTextColor : d->_darkTextColor : ElaThemeColor(d->_themeMode, BasicTextDisable));
+    // 文字绘制
+    painter.setPen(isEnabled() ? d->_themeMode == ElaThemeType::Light ? d->_lightTextColor : d->_darkTextColor
+                               : ElaThemeColor(d->_themeMode, BasicTextDisable));
     painter.drawText(foregroundRect, Qt::AlignCenter, text());
     painter.restore();
 }

@@ -8,8 +8,7 @@
 #include "ElaTheme.h"
 #include "ElaToolButton.h"
 #include "ElaWindow.h"
-T_BasePage::T_BasePage(QWidget* parent)
-    : ElaScrollPage(parent)
+T_BasePage::T_BasePage(QWidget* parent) : ElaScrollPage(parent)
 {
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=]() {
         if (!parent)

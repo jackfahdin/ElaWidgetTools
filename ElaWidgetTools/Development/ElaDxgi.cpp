@@ -7,8 +7,7 @@
 
 #include <limits>
 
-ElaDxgi::ElaDxgi(QObject* parent)
-    : QObject(parent)
+ElaDxgi::ElaDxgi(QObject* parent) : QObject(parent)
 {
     _pIsInitSuccess = false;
     _pGrabFrameRate = 120;
@@ -32,8 +31,8 @@ bool ElaDxgi::initialize(int dxID, int outputID)
     ID3D11Device* d3dDevice = nullptr;
     ID3D11DeviceContext* d3dContext = nullptr;
     D3D_FEATURE_LEVEL feat = D3D_FEATURE_LEVEL_11_0;
-    HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0,
-                                   D3D11_SDK_VERSION, &d3dDevice, &feat, &d3dContext);
+    HRESULT hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, nullptr, 0, D3D11_SDK_VERSION,
+                                   &d3dDevice, &feat, &d3dContext);
     if (FAILED(hr))
     {
         _pLastError = "Failed to D3D11CreateDevice ErrorCode = " + QString::number(uint(hr), 16);
@@ -86,7 +85,7 @@ bool ElaDxgi::initialize(int dxID, int outputID)
         qDebug() << _pLastError;
         d3dDevice->Release();
         d3dContext->Release();
-        for (auto adapter: dxgiAdapterVector)
+        for (auto adapter : dxgiAdapterVector)
         {
             adapter->Release();
         }
@@ -99,7 +98,7 @@ bool ElaDxgi::initialize(int dxID, int outputID)
     {
         dxgiOutputVector.append(dxgiOutput);
     }
-    for (auto adapter: dxgiAdapterVector)
+    for (auto adapter : dxgiAdapterVector)
     {
         adapter->Release();
     }
@@ -123,7 +122,7 @@ bool ElaDxgi::initialize(int dxID, int outputID)
         qDebug() << _pLastError;
         d3dDevice->Release();
         d3dContext->Release();
-        for (auto output: dxgiOutputVector)
+        for (auto output : dxgiOutputVector)
         {
             output->Release();
         }
@@ -131,7 +130,7 @@ bool ElaDxgi::initialize(int dxID, int outputID)
     }
     IDXGIOutput6* dxgiOutput6 = nullptr;
     hr = dxgiOutput->QueryInterface(__uuidof(IDXGIOutput6), reinterpret_cast<void**>(&dxgiOutput6));
-    for (auto output: dxgiOutputVector)
+    for (auto output : dxgiOutputVector)
     {
         output->Release();
     }
@@ -277,8 +276,9 @@ QImage ElaDxgi::_captureFrame(IDXGIResource* desktopResource)
     });
     D3D11_TEXTURE2D_DESC desc{};
     textureRes->GetDesc(&desc);
-    if (desc.Format != DXGI_FORMAT_B8G8R8A8_UNORM || desc.Width == 0 || desc.Height == 0
-        || desc.Width > static_cast<UINT>((std::numeric_limits<int>::max)() / 4) || desc.Height > static_cast<UINT>((std::numeric_limits<int>::max)()))
+    if (desc.Format != DXGI_FORMAT_B8G8R8A8_UNORM || desc.Width == 0 || desc.Height == 0 ||
+        desc.Width > static_cast<UINT>((std::numeric_limits<int>::max)() / 4) ||
+        desc.Height > static_cast<UINT>((std::numeric_limits<int>::max)()))
     {
         qWarning() << "桌面纹理格式或尺寸无效";
         return {};

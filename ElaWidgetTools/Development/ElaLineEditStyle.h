@@ -10,11 +10,11 @@ class ElaLineEditStyle : public QProxyStyle
 public:
     explicit ElaLineEditStyle(QStyle* style = nullptr);
     ~ElaLineEditStyle();
-    void drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget = nullptr) const override;
+    void drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                       const QWidget* widget = nullptr) const override;
 
 private:
     ElaThemeType::ThemeMode _themeMode;
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELALINEEDITSTYLE_H_
-

@@ -32,7 +32,8 @@ public:
     Q_SLOT void onThemeReadyChange();
     Q_SLOT void onThemeModeChanged(ElaThemeType::ThemeMode themeMode);
     Q_SLOT void onWindowDisplayModeChanged();
-    Q_SLOT void onNavigationNodeClicked(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey, bool isRouteBack);
+    Q_SLOT void onNavigationNodeClicked(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey,
+                                        bool isRouteBack);
     Q_SLOT void onNavigationNodeAdded(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey, QWidget* page);
     Q_SLOT void onNavigationNodeRemoved(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey);
     Q_SLOT void onNavigationRouterStateChanged(const QString& domainName, ElaActionCommanderType::CommanderState state);
@@ -71,4 +72,3 @@ private:
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_PRIVATE_ELAWINDOWPRIVATE_H_
-

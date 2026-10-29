@@ -1,7 +1,6 @@
 #include "ElaCalendarTitleModel.h"
 
-ElaCalendarTitleModel::ElaCalendarTitleModel(QObject* parent)
-    : QAbstractListModel{parent}
+ElaCalendarTitleModel::ElaCalendarTitleModel(QObject* parent) : QAbstractListModel{parent}
 {
 }
 
@@ -20,32 +19,25 @@ QVariant ElaCalendarTitleModel::data(const QModelIndex& index, int role) const
     {
         switch (index.row())
         {
-        case 0:
-        {
+        case 0: {
             return tr("日");
         }
-        case 1:
-        {
+        case 1: {
             return tr("一");
         }
-        case 2:
-        {
+        case 2: {
             return tr("二");
         }
-        case 3:
-        {
+        case 3: {
             return tr("三");
         }
-        case 4:
-        {
+        case 4: {
             return tr("四");
         }
-        case 5:
-        {
+        case 5: {
             return tr("五");
         }
-        case 6:
-        {
+        case 6: {
             return tr("六");
         }
         }

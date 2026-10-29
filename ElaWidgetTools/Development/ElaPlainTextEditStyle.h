@@ -12,11 +12,11 @@ class ElaPlainTextEditStyle : public QProxyStyle
 public:
     explicit ElaPlainTextEditStyle(QStyle* style = nullptr);
     ~ElaPlainTextEditStyle();
-    void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget = nullptr) const override;
+    void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                     const QWidget* widget = nullptr) const override;
 
 private:
     ElaThemeType::ThemeMode _themeMode;
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELAPLAINTEXTEDITSTYLE_H_
-

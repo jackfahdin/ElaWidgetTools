@@ -1,7 +1,6 @@
 #include "ElaCalendarModel.h"
 
-ElaCalendarModel::ElaCalendarModel(QObject* parent)
-    : QAbstractListModel{parent}
+ElaCalendarModel::ElaCalendarModel(QObject* parent) : QAbstractListModel{parent}
 {
     _pMinimumDate.setDate(1924, 1, 1);
     _pMaximumDate.setDate(2124, 12, 31);
@@ -51,16 +50,13 @@ QModelIndex ElaCalendarModel::getIndexFromDate(QDate date)
 {
     switch (_displayMode)
     {
-    case YearMode:
-    {
+    case YearMode: {
         return this->index(date.year() - _pMinimumDate.year());
     }
-    case MonthMode:
-    {
+    case MonthMode: {
         return this->index((date.year() - _pMinimumDate.year()) * 12 + date.month() - 1);
     }
-    case DayMode:
-    {
+    case DayMode: {
         return this->index(_pMinimumDate.daysTo(date) + _offset);
     }
     }
@@ -82,12 +78,10 @@ QVariant ElaCalendarModel::data(const QModelIndex& index, int role) const
     {
         switch (_displayMode)
         {
-        case YearMode:
-        {
+        case YearMode: {
             return QVariant::fromValue<ElaCalendarData>(ElaCalendarData(_pMinimumDate.year() + index.row(), 1, 1));
         }
-        case MonthMode:
-        {
+        case MonthMode: {
             int year = _pMinimumDate.year() + index.row() / 12;
             int month = index.row() % 12 + 1;
             if (month == 1)
@@ -96,17 +90,18 @@ QVariant ElaCalendarModel::data(const QModelIndex& index, int role) const
             }
             else
             {
-                return QVariant::fromValue<ElaCalendarData>(ElaCalendarData(_pMinimumDate.year() + index.row() / 12, month, 1));
+                return QVariant::fromValue<ElaCalendarData>(
+                    ElaCalendarData(_pMinimumDate.year() + index.row() / 12, month, 1));
             }
         }
-        case DayMode:
-        {
+        case DayMode: {
             if (index.row() >= _offset)
             {
                 QDate date = getDateFromIndex(index);
                 if (date.day() == 1)
                 {
-                    return QVariant::fromValue<ElaCalendarData>(ElaCalendarData(date.year(), date.month(), date.day(), QString("%1月").arg(date.month())));
+                    return QVariant::fromValue<ElaCalendarData>(
+                        ElaCalendarData(date.year(), date.month(), date.day(), QString("%1月").arg(date.month())));
                 }
                 else
                 {
@@ -123,16 +118,13 @@ int ElaCalendarModel::rowCount(const QModelIndex& parent) const
 {
     switch (_displayMode)
     {
-    case YearMode:
-    {
+    case YearMode: {
         return _pMaximumDate.year() - _pMinimumDate.year() + 1;
     }
-    case MonthMode:
-    {
+    case MonthMode: {
         return (_pMaximumDate.year() - _pMinimumDate.year() + 1) * 12;
     }
-    case DayMode:
-    {
+    case DayMode: {
         return _dayRowCount;
     }
     }

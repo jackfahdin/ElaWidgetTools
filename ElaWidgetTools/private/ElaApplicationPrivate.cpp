@@ -12,8 +12,7 @@
 #include "ElaApplication.h"
 #include "ElaMicaBaseInitObject.h"
 #include "ElaWinShadowHelper.h"
-ElaApplicationPrivate::ElaApplicationPrivate(QObject* parent)
-    : QObject{parent}
+ElaApplicationPrivate::ElaApplicationPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -26,19 +25,16 @@ void ElaApplicationPrivate::onThemeModeChanged(ElaThemeType::ThemeMode themeMode
     _themeMode = themeMode;
     switch (_pWindowDisplayMode)
     {
-    case ElaApplicationType::Normal:
-    {
+    case ElaApplicationType::Normal: {
         break;
     }
-    case ElaApplicationType::ElaMica:
-    {
+    case ElaApplicationType::ElaMica: {
         _updateAllMicaWidget();
         break;
     }
-    default:
-    {
+    default: {
 #ifdef Q_OS_WIN
-        for (auto widget: _micaWidgetList)
+        for (auto widget : _micaWidgetList)
         {
             ElaWinShadowHelper::getInstance()->setWindowThemeMode(widget->winId(), _themeMode == ElaThemeType::Light);
         }
@@ -52,8 +48,7 @@ bool ElaApplicationPrivate::eventFilter(QObject* watched, QEvent* event)
 {
     switch (event->type())
     {
-    case QEvent::Show:
-    {
+    case QEvent::Show: {
         if (_pWindowDisplayMode == ElaApplicationType::WindowDisplayMode::ElaMica)
         {
             QWidget* widget = qobject_cast<QWidget*>(watched);
@@ -68,15 +63,15 @@ bool ElaApplicationPrivate::eventFilter(QObject* watched, QEvent* event)
             QWidget* widget = qobject_cast<QWidget*>(watched);
             if (widget)
             {
-                ElaWinShadowHelper::getInstance()->setWindowDisplayMode(widget, _pWindowDisplayMode, _pWindowDisplayMode);
+                ElaWinShadowHelper::getInstance()->setWindowDisplayMode(widget, _pWindowDisplayMode,
+                                                                        _pWindowDisplayMode);
             }
 #endif
         }
         break;
     }
     case QEvent::Move:
-    case QEvent::Resize:
-    {
+    case QEvent::Resize: {
         if (_pWindowDisplayMode == ElaApplicationType::WindowDisplayMode::ElaMica)
         {
             QWidget* widget = qobject_cast<QWidget*>(watched);
@@ -87,8 +82,7 @@ bool ElaApplicationPrivate::eventFilter(QObject* watched, QEvent* event)
         }
         break;
     }
-    case QEvent::Destroy:
-    {
+    case QEvent::Destroy: {
         QWidget* widget = qobject_cast<QWidget*>(watched);
         if (widget)
         {
@@ -96,8 +90,7 @@ bool ElaApplicationPrivate::eventFilter(QObject* watched, QEvent* event)
         }
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -140,14 +133,18 @@ QRect ElaApplicationPrivate::_calculateWindowVirtualGeometry(QWidget* widget)
             QRect screenGeometry = currentScreen->availableGeometry();
             xImageRatio = (qreal)_lightBaseImage.width() / screenGeometry.width();
             yImageRatio = (qreal)_lightBaseImage.height() / screenGeometry.height();
-            relativeGeometry = QRect((geometry.x() - screenGeometry.x()) * xImageRatio, (geometry.y() - screenGeometry.y()) * yImageRatio, geometry.width() * xImageRatio, geometry.height() * yImageRatio);
+            relativeGeometry = QRect((geometry.x() - screenGeometry.x()) * xImageRatio,
+                                     (geometry.y() - screenGeometry.y()) * yImageRatio, geometry.width() * xImageRatio,
+                                     geometry.height() * yImageRatio);
             return relativeGeometry;
         }
     }
     QRect primaryScreenGeometry = qApp->primaryScreen()->availableGeometry();
     xImageRatio = (qreal)_lightBaseImage.width() / primaryScreenGeometry.width();
     yImageRatio = (qreal)_lightBaseImage.height() / primaryScreenGeometry.height();
-    relativeGeometry = QRect((geometry.x() - primaryScreenGeometry.x()) * xImageRatio, (geometry.y() - primaryScreenGeometry.y()) * yImageRatio, geometry.width() * xImageRatio, geometry.height() * yImageRatio);
+    relativeGeometry = QRect((geometry.x() - primaryScreenGeometry.x()) * xImageRatio,
+                             (geometry.y() - primaryScreenGeometry.y()) * yImageRatio, geometry.width() * xImageRatio,
+                             geometry.height() * yImageRatio);
     return relativeGeometry;
 }
 
@@ -158,11 +155,15 @@ void ElaApplicationPrivate::_updateMica(QWidget* widget, bool isProcessEvent)
         QPalette palette = widget->palette();
         if (_themeMode == ElaThemeType::Light)
         {
-            palette.setBrush(QPalette::Window, _lightBaseImage.copy(_calculateWindowVirtualGeometry(widget)).scaled(widget->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            palette.setBrush(QPalette::Window,
+                             _lightBaseImage.copy(_calculateWindowVirtualGeometry(widget))
+                                 .scaled(widget->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         }
         else
         {
-            palette.setBrush(QPalette::Window, _darkBaseImage.copy(_calculateWindowVirtualGeometry(widget)).scaled(widget->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            palette.setBrush(QPalette::Window,
+                             _darkBaseImage.copy(_calculateWindowVirtualGeometry(widget))
+                                 .scaled(widget->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         }
         widget->setPalette(palette);
         if (isProcessEvent)
@@ -176,7 +177,7 @@ void ElaApplicationPrivate::_updateAllMicaWidget()
 {
     if (_pWindowDisplayMode == ElaApplicationType::WindowDisplayMode::ElaMica)
     {
-        for (auto widget: _micaWidgetList)
+        for (auto widget : _micaWidgetList)
         {
             _updateMica(widget, false);
         }
@@ -185,7 +186,7 @@ void ElaApplicationPrivate::_updateAllMicaWidget()
 
 void ElaApplicationPrivate::_resetAllMicaWidget()
 {
-    for (auto widget: _micaWidgetList)
+    for (auto widget : _micaWidgetList)
     {
         QPalette palette = widget->palette();
         palette.setBrush(QPalette::Window, Qt::transparent);

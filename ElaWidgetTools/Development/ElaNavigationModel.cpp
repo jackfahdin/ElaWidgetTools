@@ -4,8 +4,7 @@
 #include <QJsonObject>
 
 #include "ElaNavigationNode.h"
-ElaNavigationModel::ElaNavigationModel(QObject* parent)
-    : QAbstractItemModel{parent}
+ElaNavigationModel::ElaNavigationModel(QObject* parent) : QAbstractItemModel{parent}
 {
     _rootNode = new ElaNavigationNode("root");
     _rootNode->setIsRootNode(true);
@@ -137,7 +136,8 @@ QVariant ElaNavigationModel::data(const QModelIndex& index, int role) const
     return QVariant();
 }
 
-ElaNavigationType::NodeResult ElaNavigationModel::addExpanderNode(const QString& expanderTitle, QString& expanderKey, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaNavigationModel::addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                                  ElaIconType::IconName awesome)
 {
     ElaNavigationNode* node = new ElaNavigationNode(expanderTitle, _rootNode);
     node->setDepth(1);
@@ -152,7 +152,9 @@ ElaNavigationType::NodeResult ElaNavigationModel::addExpanderNode(const QString&
     return ElaNavigationType::NodeResult::Success;
 }
 
-ElaNavigationType::NodeResult ElaNavigationModel::addExpanderNode(const QString& expanderTitle, QString& expanderKey, const QString& targetExpanderKey, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaNavigationModel::addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                                  const QString& targetExpanderKey,
+                                                                  ElaIconType::IconName awesome)
 {
     if (!_nodesMap.contains(targetExpanderKey))
     {
@@ -175,7 +177,8 @@ ElaNavigationType::NodeResult ElaNavigationModel::addExpanderNode(const QString&
     {
         node->setIsVisible(true);
     }
-    beginInsertRows(parentNode->getModelIndex(), parentNode->getChildrenNodes().count(), parentNode->getChildrenNodes().count());
+    beginInsertRows(parentNode->getModelIndex(), parentNode->getChildrenNodes().count(),
+                    parentNode->getChildrenNodes().count());
     parentNode->appendChildNode(node);
     _nodesMap.insert(node->getNodeKey(), node);
     endInsertRows();
@@ -183,7 +186,8 @@ ElaNavigationType::NodeResult ElaNavigationModel::addExpanderNode(const QString&
     return ElaNavigationType::NodeResult::Success;
 }
 
-ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pageTitle, QString& pageKey, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pageTitle, QString& pageKey,
+                                                              ElaIconType::IconName awesome)
 {
     ElaNavigationNode* node = new ElaNavigationNode(pageTitle, _rootNode);
     node->setAwesome(awesome);
@@ -201,7 +205,9 @@ ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pag
     return ElaNavigationType::NodeResult::Success;
 }
 
-ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pageTitle, QString& pageKey, const QString& targetExpanderKey, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pageTitle, QString& pageKey,
+                                                              const QString& targetExpanderKey,
+                                                              ElaIconType::IconName awesome)
 {
     if (!_nodesMap.contains(targetExpanderKey))
     {
@@ -223,7 +229,8 @@ ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pag
     {
         node->setIsVisible(true);
     }
-    beginInsertRows(parentNode->getModelIndex(), parentNode->getChildrenNodes().count(), parentNode->getChildrenNodes().count());
+    beginInsertRows(parentNode->getModelIndex(), parentNode->getChildrenNodes().count(),
+                    parentNode->getChildrenNodes().count());
     parentNode->appendChildNode(node);
     _nodesMap.insert(node->getNodeKey(), node);
     endInsertRows();
@@ -235,7 +242,8 @@ ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pag
     return ElaNavigationType::NodeResult::Success;
 }
 
-ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pageTitle, QString& pageKey, int keyPoints, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pageTitle, QString& pageKey, int keyPoints,
+                                                              ElaIconType::IconName awesome)
 {
     ElaNavigationNode* node = new ElaNavigationNode(pageTitle, _rootNode);
     node->setAwesome(awesome);
@@ -254,7 +262,9 @@ ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pag
     return ElaNavigationType::NodeResult::Success;
 }
 
-ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pageTitle, QString& pageKey, const QString& targetExpanderKey, int keyPoints, ElaIconType::IconName awesome)
+ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pageTitle, QString& pageKey,
+                                                              const QString& targetExpanderKey, int keyPoints,
+                                                              ElaIconType::IconName awesome)
 {
     if (!_nodesMap.contains(targetExpanderKey))
     {
@@ -277,7 +287,8 @@ ElaNavigationType::NodeResult ElaNavigationModel::addPageNode(const QString& pag
     {
         node->setIsVisible(true);
     }
-    beginInsertRows(parentNode->getModelIndex(), parentNode->getChildrenNodes().count(), parentNode->getChildrenNodes().count());
+    beginInsertRows(parentNode->getModelIndex(), parentNode->getChildrenNodes().count(),
+                    parentNode->getChildrenNodes().count());
     parentNode->appendChildNode(node);
     _nodesMap.insert(node->getNodeKey(), node);
     endInsertRows();
@@ -303,7 +314,8 @@ ElaNavigationType::NodeResult ElaNavigationModel::addCategoryNode(const QString&
     return ElaNavigationType::NodeResult::Success;
 }
 
-ElaNavigationType::NodeResult ElaNavigationModel::addCategoryNode(const QString& categoryTitle, QString& categoryKey, const QString& targetExpanderKey)
+ElaNavigationType::NodeResult ElaNavigationModel::addCategoryNode(const QString& categoryTitle, QString& categoryKey,
+                                                                  const QString& targetExpanderKey)
 {
     if (!_nodesMap.contains(targetExpanderKey))
     {
@@ -325,7 +337,8 @@ ElaNavigationType::NodeResult ElaNavigationModel::addCategoryNode(const QString&
     {
         node->setIsVisible(true);
     }
-    beginInsertRows(parentNode->getModelIndex(), parentNode->getChildrenNodes().count(), parentNode->getChildrenNodes().count());
+    beginInsertRows(parentNode->getModelIndex(), parentNode->getChildrenNodes().count(),
+                    parentNode->getChildrenNodes().count());
     parentNode->appendChildNode(node);
     _nodesMap.insert(node->getNodeKey(), node);
     endInsertRows();
@@ -377,7 +390,7 @@ ElaNavigationNode* ElaNavigationModel::getNavigationNode(const QString& nodeKey)
 QList<ElaNavigationNode*> ElaNavigationModel::getRootExpanderNodes() const
 {
     QList<ElaNavigationNode*> expandedNodeList;
-    for (auto node: _rootNode->getChildrenNodes())
+    for (auto node : _rootNode->getChildrenNodes())
     {
         if (node->getIsExpanderNode())
         {
@@ -390,7 +403,7 @@ QList<ElaNavigationNode*> ElaNavigationModel::getRootExpanderNodes() const
 QList<ElaNavigationNode*> ElaNavigationModel::getRootExpandedNodes() const
 {
     QList<ElaNavigationNode*> expandedNodeList;
-    for (auto node: _rootNode->getChildrenNodes())
+    for (auto node : _rootNode->getChildrenNodes())
     {
         if (node->getIsExpanderNode() && node->getIsExpanded())
         {
@@ -403,7 +416,7 @@ QList<ElaNavigationNode*> ElaNavigationModel::getRootExpandedNodes() const
 QList<ElaNavigationNode*> ElaNavigationModel::getRootCategoryNodes() const
 {
     QList<ElaNavigationNode*> categoryNodeList;
-    for (auto node: _rootNode->getChildrenNodes())
+    for (auto node : _rootNode->getChildrenNodes())
     {
         if (node->getIsCategoryNode())
         {

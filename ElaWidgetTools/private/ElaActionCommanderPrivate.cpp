@@ -5,8 +5,7 @@
 #include "ElaActionCommanderView.h"
 #include "ElaMessageBar.h"
 
-ElaActionCommanderPrivate::ElaActionCommanderPrivate(QObject* parent)
-    : QObject{parent}
+ElaActionCommanderPrivate::ElaActionCommanderPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -20,28 +19,27 @@ void ElaActionCommanderPrivate::_showCommandDesc(const ElaActionCommand* command
     {
         return;
     }
-    QString commandTitle = isExecute ? "执行" : isRedo ? "重做"
-                                                       : "撤回";
+    QString commandTitle = isExecute ? "执行" : isRedo ? "重做" : "撤回";
     switch (command->getMessageMode())
     {
-    case ElaMessageBarType::Success:
-    {
-        ElaMessageBar::success(ElaMessageBarType::TopRight, commandTitle, command->getCommandDesc(), _pMessageDisplayMesc, command->getMessageWidget());
+    case ElaMessageBarType::Success: {
+        ElaMessageBar::success(ElaMessageBarType::TopRight, commandTitle, command->getCommandDesc(),
+                               _pMessageDisplayMesc, command->getMessageWidget());
         break;
     }
-    case ElaMessageBarType::Warning:
-    {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, commandTitle, command->getCommandDesc(), _pMessageDisplayMesc, command->getMessageWidget());
+    case ElaMessageBarType::Warning: {
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, commandTitle, command->getCommandDesc(),
+                               _pMessageDisplayMesc, command->getMessageWidget());
         break;
     }
-    case ElaMessageBarType::Information:
-    {
-        ElaMessageBar::information(ElaMessageBarType::TopRight, commandTitle, command->getCommandDesc(), _pMessageDisplayMesc, command->getMessageWidget());
+    case ElaMessageBarType::Information: {
+        ElaMessageBar::information(ElaMessageBarType::TopRight, commandTitle, command->getCommandDesc(),
+                                   _pMessageDisplayMesc, command->getMessageWidget());
         break;
     }
-    case ElaMessageBarType::Error:
-    {
-        ElaMessageBar::error(ElaMessageBarType::TopRight, commandTitle, command->getCommandDesc(), _pMessageDisplayMesc, command->getMessageWidget());
+    case ElaMessageBarType::Error: {
+        ElaMessageBar::error(ElaMessageBarType::TopRight, commandTitle, command->getCommandDesc(), _pMessageDisplayMesc,
+                             command->getMessageWidget());
         break;
     }
     }
@@ -53,12 +51,14 @@ bool ElaActionCommanderPrivate::_executeCommand(const QString& domainName, ElaAc
     auto& commandData = _commandDomainMap[domainName];
     if (commandData.isBusyMode)
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", _pMessageDisplayMesc, command->getMessageWidget());
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", _pMessageDisplayMesc,
+                               command->getMessageWidget());
         return false;
     }
     if (!command)
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "命令对象不可用!", _pMessageDisplayMesc, command->getMessageWidget());
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "命令对象不可用!", _pMessageDisplayMesc,
+                               command->getMessageWidget());
         return false;
     }
     q->setCurrentDomain(domainName);
@@ -75,17 +75,20 @@ bool ElaActionCommanderPrivate::_recordCommand(const QString& domainName, ElaAct
     auto& commandData = _commandDomainMap[domainName];
     if (commandData.isBusyMode)
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", _pMessageDisplayMesc, command->getMessageWidget());
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", _pMessageDisplayMesc,
+                               command->getMessageWidget());
         return false;
     }
     if (!command)
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "命令对象不可用!", _pMessageDisplayMesc, command->getMessageWidget());
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "命令对象不可用!", _pMessageDisplayMesc,
+                               command->getMessageWidget());
         return false;
     }
     if (!_isCommanderValid)
     {
-        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "当前不处于可编辑模式，仅支持运行命令!", _pMessageDisplayMesc, command->getMessageWidget());
+        ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "当前不处于可编辑模式，仅支持运行命令!",
+                               _pMessageDisplayMesc, command->getMessageWidget());
         return false;
     }
     q->setCurrentDomain(domainName);
@@ -146,7 +149,8 @@ bool ElaActionCommanderPrivate::_recordCommand(const QString& domainName, ElaAct
     commandData.currentIndex = commandList.count() - 1;
     commandModel->addCommand(command);
     _commanderView->clearSelection();
-    _commanderView->selectionModel()->select(commandModel->getCommandModelIndex(command), QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    _commanderView->selectionModel()->select(commandModel->getCommandModelIndex(command),
+                                             QItemSelectionModel::Select | QItemSelectionModel::Rows);
     return true;
 }
 
@@ -179,7 +183,8 @@ void ElaActionCommanderPrivate::_undoCommand(const QString& domainName, bool isS
     auto commandModel = commandData.commanderModel;
     commandModel->updateCommand(command, false);
     _commanderView->clearSelection();
-    _commanderView->selectionModel()->select(commandModel->getCommandModelIndex(command), QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    _commanderView->selectionModel()->select(commandModel->getCommandModelIndex(command),
+                                             QItemSelectionModel::Select | QItemSelectionModel::Rows);
     _commanderView->viewport()->update();
     if (isShowMessage)
     {
@@ -220,7 +225,8 @@ void ElaActionCommanderPrivate::_redoCommand(const QString& domainName, bool isS
     commandModel->updateCommand(command, true);
     _commanderView->viewport()->update();
     _commanderView->clearSelection();
-    _commanderView->selectionModel()->select(commandModel->getCommandModelIndex(command), QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    _commanderView->selectionModel()->select(commandModel->getCommandModelIndex(command),
+                                             QItemSelectionModel::Select | QItemSelectionModel::Rows);
     if (isShowMessage)
     {
         _showCommandDesc(command, true);

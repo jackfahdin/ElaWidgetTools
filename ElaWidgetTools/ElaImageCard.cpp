@@ -9,8 +9,7 @@
 
 ELA_PROPERTY_Q_CPP(ElaImageCard, int, BorderRadius)
 ELA_PROPERTY_Q_CPP(ElaImageCard, bool, IsPreserveAspectCrop)
-ElaImageCard::ElaImageCard(QWidget* parent)
-    : QWidget(parent), d_ptr(new ElaImageCardPrivate())
+ElaImageCard::ElaImageCard(QWidget* parent) : QWidget(parent), d_ptr(new ElaImageCardPrivate())
 {
     Q_D(ElaImageCard);
     d->q_ptr = this;
@@ -67,7 +66,9 @@ void ElaImageCard::paintEvent(QPaintEvent* event)
             targetPixWidth = d->_pCardImage.width();
             targetPixHeight = qRound(d->_pCardImage.height() * pixAspectRatio / windowAspectRatio);
         }
-        painter.drawImage(rect(), d->_pCardImage, QRect((d->_pCardImage.width() - targetPixWidth) / 2, (d->_pCardImage.height() - targetPixHeight) / 2, targetPixWidth, targetPixHeight));
+        painter.drawImage(rect(), d->_pCardImage,
+                          QRect((d->_pCardImage.width() - targetPixWidth) / 2,
+                                (d->_pCardImage.height() - targetPixHeight) / 2, targetPixWidth, targetPixHeight));
     }
     else
     {

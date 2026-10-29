@@ -1,8 +1,7 @@
 #include "ElaDrawerArea.h"
 #include "ElaDrawerAreaPrivate.h"
 #include "ElaTheme.h"
-ElaDrawerArea::ElaDrawerArea(QWidget* parent)
-    : QWidget(parent), d_ptr(new ElaDrawerAreaPrivate())
+ElaDrawerArea::ElaDrawerArea(QWidget* parent) : QWidget(parent), d_ptr(new ElaDrawerAreaPrivate())
 {
     Q_D(ElaDrawerArea);
     d->q_ptr = this;

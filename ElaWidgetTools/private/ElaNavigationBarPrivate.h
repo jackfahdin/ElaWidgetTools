@@ -38,7 +38,7 @@ public:
     ~ElaNavigationBarPrivate() override;
     Q_SLOT void onNavigationOpenNewWindow(const QString& nodeKey);
 
-    //核心跳转逻辑
+    // 核心跳转逻辑
     void onTreeViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
     void onFooterViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
 
@@ -89,5 +89,3 @@ private:
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_PRIVATE_ELANAVIGATIONBARPRIVATE_H_
-
-

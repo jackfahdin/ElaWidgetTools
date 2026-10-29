@@ -8,8 +8,7 @@
 
 #include <QPainter>
 #include <QPropertyAnimation>
-ElaActionCommanderView::ElaActionCommanderView(QWidget* parent)
-    : QTreeView(parent)
+ElaActionCommanderView::ElaActionCommanderView(QWidget* parent) : QTreeView(parent)
 {
     setObjectName("ElaActionCommanderView");
     setStyleSheet("#ElaActionCommanderView{border:0px;background-color:transparent;}");
@@ -33,7 +32,8 @@ ElaActionCommanderView::ElaActionCommanderView(QWidget* parent)
     floatVScrollBar->setIsAnimation(true);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, &ElaActionCommanderView::customContextMenuRequested, this, &ElaActionCommanderView::onCustomContextMenuRequested);
+    connect(this, &ElaActionCommanderView::customContextMenuRequested, this,
+            &ElaActionCommanderView::onCustomContextMenuRequested);
 
     _style = new ElaActionCommanderViewStyle(style());
     setStyle(_style);

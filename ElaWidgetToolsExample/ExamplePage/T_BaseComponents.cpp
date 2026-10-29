@@ -19,8 +19,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-T_BaseComponents::T_BaseComponents(QWidget* parent)
-    : T_BasePage(parent)
+T_BaseComponents::T_BaseComponents(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     setWindowTitle("ElaBaseComponents");
@@ -66,13 +65,8 @@ T_BaseComponents::T_BaseComponents(QWidget* parent)
     toggleButtonLayout->addSpacing(10);
 
     _comboBox = new ElaComboBox(this);
-    QStringList comboList{
-        "我愿投身前途未卜的群星",
-        "潜行 步伐小心翼翼",
-        "不留游走痕迹",
-        "如同一簇幽灵",
-        "所谓 道德加上伦理",
-        "抱歉只能律己"};
+    QStringList comboList{"我愿投身前途未卜的群星", "潜行 步伐小心翼翼", "不留游走痕迹",
+                          "如同一簇幽灵",           "所谓 道德加上伦理", "抱歉只能律己"};
     _comboBox->addItems(comboList);
     ElaScrollPageArea* comboBoxArea = new ElaScrollPageArea(this);
     QHBoxLayout* comboBoxLayout = new QHBoxLayout(comboBoxArea);
@@ -92,7 +86,8 @@ T_BaseComponents::T_BaseComponents(QWidget* parent)
     comboBoxLayout->addSpacing(10);
 
     _multiSelectComboBox = new ElaMultiSelectComboBox(this);
-    QStringList multiComboList{"执念的鱼", "提着灯闯过远洋的甄选", "继续下潜", "无需誓言", "我的心像自沉的旧母舰", "没入深渊", "我曾凝望曾是航向的日出"};
+    QStringList multiComboList{"执念的鱼", "提着灯闯过远洋的甄选",  "继续下潜", "无需誓言", "我的心像自沉的旧母舰",
+                               "没入深渊", "我曾凝望曾是航向的日出"};
     QStringList multiSelectComboList{"执念的鱼", "提着灯闯过远洋的甄选", "无需誓言", "我的心像自沉的旧母舰"};
     _multiSelectComboBox->addItems(multiComboList);
     _multiSelectComboBox->setCurrentSelection(multiSelectComboList);
@@ -207,12 +202,13 @@ T_BaseComponents::T_BaseComponents(QWidget* parent)
     spinButtonGroup->addButton(compactButton, 1);
     spinButtonGroup->addButton(sideButton, 2);
     spinButtonGroup->addButton(pmSideButton, 3);
-    connect(spinButtonGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this, [=](QAbstractButton* button, bool isToggled) {
-        if (isToggled)
-        {
-            _spinBox->setButtonMode((ElaSpinBoxType::ButtonMode)spinButtonGroup->id(button));
-        }
-    });
+    connect(spinButtonGroup, QOverload<QAbstractButton*, bool>::of(&QButtonGroup::buttonToggled), this,
+            [=](QAbstractButton* button, bool isToggled) {
+                if (isToggled)
+                {
+                    _spinBox->setButtonMode((ElaSpinBoxType::ButtonMode)spinButtonGroup->id(button));
+                }
+            });
 
     _slider = new ElaSlider(this);
     ElaScrollPageArea* sliderArea = new ElaScrollPageArea(this);
@@ -312,29 +308,24 @@ void T_BaseComponents::mouseReleaseEvent(QMouseEvent* event)
 {
     switch (event->button())
     {
-    case Qt::LeftButton:
-    {
-        //ElaMessageBar::success(ElaMessageBarType::TopRight, "Success", "Never Close Your Eyes", 2500);
-        //ElaMessageBar::success(ElaMessageBarType::TopRight, "Success", "Never Close Your Eyes", 1500);
+    case Qt::LeftButton: {
+        // ElaMessageBar::success(ElaMessageBarType::TopRight, "Success", "Never Close Your Eyes", 2500);
+        // ElaMessageBar::success(ElaMessageBarType::TopRight, "Success", "Never Close Your Eyes", 1500);
         break;
     }
-    case Qt::BackButton:
-    {
+    case Qt::BackButton: {
         this->navigation(0);
         break;
     }
-    case Qt::ForwardButton:
-    {
+    case Qt::ForwardButton: {
         this->navigation(1);
         break;
     }
-    case Qt::MiddleButton:
-    {
+    case Qt::MiddleButton: {
         this->navigation(2);
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

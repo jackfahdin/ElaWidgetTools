@@ -5,8 +5,7 @@
 
 #include "ElaProgressBarPrivate.h"
 #include "ElaProgressBarStyle.h"
-ElaProgressBar::ElaProgressBar(QWidget* parent)
-    : QProgressBar(parent), d_ptr(new ElaProgressBarPrivate())
+ElaProgressBar::ElaProgressBar(QWidget* parent) : QProgressBar(parent), d_ptr(new ElaProgressBarPrivate())
 {
     Q_D(ElaProgressBar);
     setObjectName("ElaProgressBar");

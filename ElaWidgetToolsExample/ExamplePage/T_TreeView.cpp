@@ -10,8 +10,7 @@
 #include "ElaText.h"
 #include "ElaTreeView.h"
 #include "T_TreeViewModel.h"
-T_TreeView::T_TreeView(QWidget* parent)
-    : T_BasePage(parent)
+T_TreeView::T_TreeView(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     setWindowTitle("ElaTreeView");
@@ -86,7 +85,7 @@ T_TreeView::T_TreeView(QWidget* parent)
     indentationLayout->addWidget(indentationSlider);
     indentationLayout->addWidget(indentationValueText);
 
-    //展开全部
+    // 展开全部
     QHBoxLayout* expandCollapseLayout = new QHBoxLayout();
     expandCollapseLayout->setContentsMargins(0, 0, 0, 0);
     ElaPushButton* expandButton = new ElaPushButton("展开全部", this);
@@ -95,7 +94,7 @@ T_TreeView::T_TreeView(QWidget* parent)
         _treeView->expandAll();
     });
 
-    //收起全部
+    // 收起全部
     ElaPushButton* collapseButton = new ElaPushButton("收起全部", this);
     collapseButton->setFixedWidth(80);
     connect(collapseButton, &ElaPushButton::clicked, this, [=]() {

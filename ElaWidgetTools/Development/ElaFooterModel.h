@@ -13,7 +13,8 @@ class ElaFooterModel : public QAbstractListModel
 public:
     explicit ElaFooterModel(QObject* parent = nullptr);
     ~ElaFooterModel();
-    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QString& footerKey, bool isHasFooterPage, int keyPoints = 0, ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QString& footerKey, bool isHasFooterPage,
+                                                int keyPoints = 0, ElaIconType::IconName awesome = ElaIconType::None);
     int getFooterNodeCount() const;
     ElaNavigationNode* getNavigationNode(const QString& footerKey);
     void removeNavigationNode(const QString& footerKey);
@@ -27,4 +28,3 @@ private:
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELAFOOTERMODEL_H_
-

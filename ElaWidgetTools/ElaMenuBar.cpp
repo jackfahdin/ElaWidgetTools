@@ -7,8 +7,7 @@
 #include "ElaIcon.h"
 #include "ElaMenu.h"
 #include "ElaMenuBarStyle.h"
-ElaMenuBar::ElaMenuBar(QWidget* parent)
-    : QMenuBar(parent)
+ElaMenuBar::ElaMenuBar(QWidget* parent) : QMenuBar(parent)
 {
     setMouseTracking(true);
     setObjectName("ElaMenuBar");

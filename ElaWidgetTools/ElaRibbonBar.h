@@ -40,9 +40,11 @@ public:
     // 添加到指定Ribbon页的指定组
     QAction* addRibbonAction(const QString& pageName, const QString& groupName, const QString& actionName);
     // 添加到指定Ribbon页的指定组 并指定图标（随主题变化）
-    QAction* addRibbonAction(const QString& pageName, const QString& groupName, const QString& actionName, ElaIconType::IconName icon);
+    QAction* addRibbonAction(const QString& pageName, const QString& groupName, const QString& actionName,
+                             ElaIconType::IconName icon);
     // 添加到指定Ribbon页的指定组 并指定QIcon
-    QAction* addRibbonAction(const QString& pageName, const QString& groupName, const QString& actionName, const QIcon& icon);
+    QAction* addRibbonAction(const QString& pageName, const QString& groupName, const QString& actionName,
+                             const QIcon& icon);
     // 添加自定义窗口到指定Ribbon页的指定组
     QAction* addRibbonWidget(const QString& pageName, const QString& groupName, QWidget* widget);
 
@@ -62,4 +64,4 @@ protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
 };
 
-#endif //ELAWORKSPACE_ELAWIDGETTOOLS_ELARIBBONBAR_H_
+#endif // ELAWORKSPACE_ELAWIDGETTOOLS_ELARIBBONBAR_H_

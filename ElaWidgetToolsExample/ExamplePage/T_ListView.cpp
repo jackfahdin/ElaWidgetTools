@@ -7,8 +7,7 @@
 #include "ElaScrollBar.h"
 #include "ElaText.h"
 #include "T_ListViewModel.h"
-T_ListView::T_ListView(QWidget* parent)
-    : T_BasePage(parent)
+T_ListView::T_ListView(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     setWindowTitle("ElaListView");
@@ -16,7 +15,7 @@ T_ListView::T_ListView(QWidget* parent)
     // 顶部元素
     createCustomWidget("列表视图被放置于此，可在此界面体验其效果并按需添加进项目中");
 
-    //ElaListView
+    // ElaListView
     ElaText* listText = new ElaText("ElaListView", this);
     listText->setTextPixelSize(18);
     _listView = new ElaListView(this);

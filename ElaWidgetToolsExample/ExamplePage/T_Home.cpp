@@ -17,8 +17,7 @@
 #include "ElaScrollArea.h"
 #include "ElaText.h"
 #include "ElaToolTip.h"
-T_Home::T_Home(QWidget* parent)
-    : T_BasePage(parent)
+T_Home::T_Home(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     setWindowTitle("Home");
@@ -104,7 +103,8 @@ T_Home::T_Home(QWidget* parent)
     homeCard->setTitle("ElaWidgetTool");
     homeCard->setSubTitle("5.0⭐ 实用程序与工具");
     homeCard->setInteractiveTips("免费下载");
-    homeCard->setDetailedText("ElaWidgetTools致力于为QWidget用户提供一站式的外观和实用功能解决方案,只需数十MB内存和极少CPU占用以支持高效而美观的界面开发");
+    homeCard->setDetailedText("ElaWidgetTools致力于为QWidget用户提供一站式的外观和实用功能解决方案,"
+                              "只需数十MB内存和极少CPU占用以支持高效而美观的界面开发");
     homeCard->setCardFloatPixmap(QPixmap(":/Resource/Image/IARC/IARC_7+.svg.png"));
 
     ElaPopularCard* homeCard1 = new ElaPopularCard(this);
@@ -115,7 +115,8 @@ T_Home::T_Home(QWidget* parent)
     homeCard1->setSubTitle("5.0⭐ 实用程序与工具");
     homeCard1->setCardPixmap(QPixmap(":/Resource/Image/control/AutomationProperties.png"));
     homeCard1->setInteractiveTips("免费使用");
-    homeCard1->setDetailedText("使用ElaDxgiManager获取屏幕的实时数据，以QImage的形式处理数据，支持切换采集设备和输出设备。");
+    homeCard1->setDetailedText(
+        "使用ElaDxgiManager获取屏幕的实时数据，以QImage的形式处理数据，支持切换采集设备和输出设备。");
     homeCard1->setCardFloatPixmap(QPixmap(":/Resource/Image/IARC/IARC_7+.svg.png"));
 
     ElaPopularCard* homeCard2 = new ElaPopularCard(this);
@@ -137,7 +138,8 @@ T_Home::T_Home(QWidget* parent)
     homeCard3->setSubTitle("5.0⭐ 实用程序与工具");
     homeCard3->setCardPixmap(QPixmap(":/Resource/Image/control/StandardUICommand.png"));
     homeCard3->setInteractiveTips("免费使用");
-    homeCard3->setDetailedText("添加ElaBaseComponent页面中的基础组件到你的项目中以进行快捷开发，使用方便，结构整洁，API规范");
+    homeCard3->setDetailedText(
+        "添加ElaBaseComponent页面中的基础组件到你的项目中以进行快捷开发，使用方便，结构整洁，API规范");
     homeCard3->setCardFloatPixmap(QPixmap(":/Resource/Image/IARC/IARC_7+.svg.png"));
 
     ElaPopularCard* homeCard4 = new ElaPopularCard(this);
@@ -231,8 +233,7 @@ void T_Home::mouseReleaseEvent(QMouseEvent* event)
 {
     switch (event->button())
     {
-    case Qt::RightButton:
-    {
+    case Qt::RightButton: {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         _homeMenu->popup(event->globalPosition().toPoint());
 #else
@@ -240,8 +241,7 @@ void T_Home::mouseReleaseEvent(QMouseEvent* event)
 #endif
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

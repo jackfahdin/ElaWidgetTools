@@ -5,8 +5,7 @@
 
 #include "ElaTheme.h"
 #include "private/ElaTextPrivate.h"
-ElaText::ElaText(QWidget* parent)
-    : QLabel(parent), d_ptr(new ElaTextPrivate())
+ElaText::ElaText(QWidget* parent) : QLabel(parent), d_ptr(new ElaTextPrivate())
 {
     Q_D(ElaText);
     d->q_ptr = this;
@@ -25,14 +24,12 @@ ElaText::ElaText(QWidget* parent)
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaTextPrivate::onThemeChanged);
 }
 
-ElaText::ElaText(const QString& text, QWidget* parent)
-    : ElaText(parent)
+ElaText::ElaText(const QString& text, QWidget* parent) : ElaText(parent)
 {
     setText(text);
 }
 
-ElaText::ElaText(const QString& text, int pixelSize, QWidget* parent)
-    : ElaText(text, parent)
+ElaText::ElaText(const QString& text, int pixelSize, QWidget* parent) : ElaText(text, parent)
 {
     QFont font = this->font();
     font.setPixelSize(pixelSize);
@@ -100,46 +97,38 @@ void ElaText::setTextStyle(ElaTextType::TextStyle textStyle)
     d->_pTextStyle = textStyle;
     switch (textStyle)
     {
-    case ElaTextType::NoStyle:
-    {
+    case ElaTextType::NoStyle: {
         break;
     }
-    case ElaTextType::Caption:
-    {
+    case ElaTextType::Caption: {
         textFont.setPixelSize(12);
         break;
     }
-    case ElaTextType::Body:
-    {
+    case ElaTextType::Body: {
         textFont.setPixelSize(13);
         break;
     }
-    case ElaTextType::BodyStrong:
-    {
+    case ElaTextType::BodyStrong: {
         textFont.setPixelSize(13);
         textFont.setWeight(QFont::DemiBold);
         break;
     }
-    case ElaTextType::Subtitle:
-    {
+    case ElaTextType::Subtitle: {
         textFont.setPixelSize(20);
         textFont.setWeight(QFont::DemiBold);
         break;
     }
-    case ElaTextType::Title:
-    {
+    case ElaTextType::Title: {
         textFont.setPixelSize(28);
         textFont.setWeight(QFont::DemiBold);
         break;
     }
-    case ElaTextType::TitleLarge:
-    {
+    case ElaTextType::TitleLarge: {
         textFont.setPixelSize(40);
         textFont.setWeight(QFont::DemiBold);
         break;
     }
-    case ElaTextType::Display:
-    {
+    case ElaTextType::Display: {
         textFont.setPixelSize(48);
         textFont.setWeight(QFont::DemiBold);
         break;
@@ -195,7 +184,8 @@ void ElaText::paintEvent(QPaintEvent* event)
             painter.save();
             painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
             painter.setPen(ElaThemeColor(d->_themeMode, BasicText));
-            painter.drawText(rect(), Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere, text());
+            painter.drawText(rect(), Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap | Qt::TextWrapAnywhere,
+                             text());
             painter.restore();
         }
         else

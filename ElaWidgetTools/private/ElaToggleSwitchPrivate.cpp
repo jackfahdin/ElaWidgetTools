@@ -3,8 +3,7 @@
 #include <QPropertyAnimation>
 
 #include "ElaToggleSwitch.h"
-ElaToggleSwitchPrivate::ElaToggleSwitchPrivate(QObject* parent)
-    : QObject{parent}
+ElaToggleSwitchPrivate::ElaToggleSwitchPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -17,8 +16,9 @@ void ElaToggleSwitchPrivate::_startPosAnimation(qreal startX, qreal endX, bool i
     Q_Q(ElaToggleSwitch);
     QPropertyAnimation* circleAnimation = new QPropertyAnimation(q, "circleCenterX");
     connect(circleAnimation, &QPropertyAnimation::valueChanged, q, [=](const QVariant& value) {
-                this->_circleCenterX = value.toReal();
-                q->update(); });
+        this->_circleCenterX = value.toReal();
+        q->update();
+    });
     circleAnimation->setStartValue(startX);
     circleAnimation->setEndValue(endX);
     circleAnimation->setEasingCurve(QEasingCurve::InOutSine);
@@ -33,7 +33,8 @@ void ElaToggleSwitchPrivate::_startRadiusAnimation(qreal startRadius, qreal endR
     QPropertyAnimation* circleRadiusAnimation = new QPropertyAnimation(q, "circleRadius");
     connect(circleRadiusAnimation, &QPropertyAnimation::valueChanged, q, [=](const QVariant& value) {
         this->_circleRadius = value.toReal();
-        q->update(); });
+        q->update();
+    });
     circleRadiusAnimation->setEasingCurve(QEasingCurve::InOutSine);
     circleRadiusAnimation->setStartValue(startRadius);
     circleRadiusAnimation->setEndValue(endRadius);

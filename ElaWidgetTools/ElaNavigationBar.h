@@ -26,16 +26,26 @@ public:
     void setUserInfoCardTitle(const QString& title);
     void setUserInfoCardSubTitle(const QString& subTitle);
 
-    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey, const QString& targetExpanderKey, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, int keyPoints, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey, int keyPoints, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QString& footerKey, int keyPoints = 0, ElaIconType::IconName awesome = ElaIconType::None);
-    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QWidget* page, QString& footerKey, int keyPoints = 0, ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                  ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addExpanderNode(const QString& expanderTitle, QString& expanderKey,
+                                                  const QString& targetExpanderKey,
+                                                  ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page,
+                                              ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, int keyPoints,
+                                              ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey,
+                                              ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addPageNode(const QString& pageTitle, QWidget* page, const QString& targetExpanderKey,
+                                              int keyPoints, ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QString& footerKey, int keyPoints = 0,
+                                                ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addFooterNode(const QString& footerTitle, QWidget* page, QString& footerKey,
+                                                int keyPoints = 0, ElaIconType::IconName awesome = ElaIconType::None);
     ElaNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey);
-    ElaNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey, const QString& targetExpanderKey);
+    ElaNavigationType::NodeResult addCategoryNode(const QString& categoryTitle, QString& categoryKey,
+                                                  const QString& targetExpanderKey);
 
     bool getNodeIsExpanded(const QString& expanderKey) const;
     void expandNode(const QString& expanderKey);
@@ -60,7 +70,8 @@ Q_SIGNALS:
     Q_SIGNAL void pNavigationBarWidthChanged();
     Q_SIGNAL void pageOpenInNewWindow(QString nodeKey);
     Q_SIGNAL void userInfoCardClicked();
-    Q_SIGNAL void navigationNodeClicked(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey, bool isRouteBack);
+    Q_SIGNAL void navigationNodeClicked(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey,
+                                        bool isRouteBack);
     Q_SIGNAL void navigationNodeAdded(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey, QWidget* page);
     Q_SIGNAL void navigationNodeRemoved(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey);
 

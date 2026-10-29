@@ -20,8 +20,7 @@
 #include "ElaTheme.h"
 #include "ElaToolButton.h"
 Q_TAKEOVER_NATIVEEVENT_CPP(ElaColorDialog, d_func()->_appBar);
-ElaColorDialog::ElaColorDialog(QWidget* parent)
-    : QDialog{parent}, d_ptr(new ElaColorDialogPrivate())
+ElaColorDialog::ElaColorDialog(QWidget* parent) : QDialog{parent}, d_ptr(new ElaColorDialogPrivate())
 {
     Q_D(ElaColorDialog);
     d->q_ptr = this;
@@ -46,7 +45,8 @@ ElaColorDialog::ElaColorDialog(QWidget* parent)
     colorPickerTextLayout->addWidget(colorPickerText);
 
     d->_colorPicker = new ElaColorPicker(this);
-    connect(d->_colorPicker, &ElaColorPicker::selectedColorChanged, d, &ElaColorDialogPrivate::onColorPickerColorChanged);
+    connect(d->_colorPicker, &ElaColorPicker::selectedColorChanged, d,
+            &ElaColorDialogPrivate::onColorPickerColorChanged);
 
     QVBoxLayout* colorPickerLayout = new QVBoxLayout();
     colorPickerLayout->setContentsMargins(0, 0, 0, 0);
@@ -97,7 +97,8 @@ ElaColorDialog::ElaColorDialog(QWidget* parent)
     d->_modeComboBox->addItem("RGB");
     d->_modeComboBox->addItem("HSV");
     d->_modeComboBox->setCurrentIndex(0);
-    connect(d->_modeComboBox, QOverload<int>::of(&ElaComboBox::currentIndexChanged), d, &ElaColorDialogPrivate::onColorModeChanged);
+    connect(d->_modeComboBox, QOverload<int>::of(&ElaComboBox::currentIndexChanged), d,
+            &ElaColorDialogPrivate::onColorModeChanged);
     QHBoxLayout* modeLayout = new QHBoxLayout();
     modeLayout->setContentsMargins(0, 0, 0, 0);
     modeLayout->addSpacing(6);
@@ -213,12 +214,14 @@ ElaColorDialog::ElaColorDialog(QWidget* parent)
     d->_addCustomColorButton = new ElaToolButton(this);
     d->_addCustomColorButton->setIsTransparent(false);
     d->_addCustomColorButton->setElaIcon(ElaIconType::Plus);
-    connect(d->_addCustomColorButton, &ElaToolButton::clicked, d, &ElaColorDialogPrivate::onAddCustomColorButtonClicked);
+    connect(d->_addCustomColorButton, &ElaToolButton::clicked, d,
+            &ElaColorDialogPrivate::onAddCustomColorButtonClicked);
 
     d->_removeCustomColorButton = new ElaToolButton(this);
     d->_removeCustomColorButton->setIsTransparent(false);
     d->_removeCustomColorButton->setElaIcon(ElaIconType::Minus);
-    connect(d->_removeCustomColorButton, &ElaToolButton::clicked, d, &ElaColorDialogPrivate::onRemoveCustomColorButtonClicked);
+    connect(d->_removeCustomColorButton, &ElaToolButton::clicked, d,
+            &ElaColorDialogPrivate::onRemoveCustomColorButtonClicked);
 
     ElaText* customColorViewText = new ElaText("自定义颜色", this);
     customColorViewText->setTextPixelSize(14);

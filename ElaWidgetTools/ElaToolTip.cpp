@@ -10,8 +10,7 @@ ELA_PROPERTY_Q_CPP(ElaToolTip, int, BorderRadius)
 ELA_PROPERTY_Q_CPP(ElaToolTip, int, DisplayMsec)
 ELA_PROPERTY_Q_CPP(ElaToolTip, int, ShowDelayMsec)
 ELA_PROPERTY_Q_CPP(ElaToolTip, int, HideDelayMsec)
-ElaToolTip::ElaToolTip(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaToolTipPrivate())
+ElaToolTip::ElaToolTip(QWidget* parent) : QWidget{parent}, d_ptr(new ElaToolTipPrivate())
 {
     Q_D(ElaToolTip);
     d->q_ptr = this;
@@ -33,7 +32,8 @@ ElaToolTip::ElaToolTip(QWidget* parent)
     d->_toolTipText->setWordWrap(false);
     d->_toolTipText->setTextPixelSize(17);
     d->_mainLayout = new QVBoxLayout(this);
-    d->_mainLayout->setContentsMargins(d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2);
+    d->_mainLayout->setContentsMargins(d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2, d->_shadowBorderWidth * 2,
+                                       d->_shadowBorderWidth * 2);
     d->_mainLayout->addWidget(d->_toolTipText);
 
     d->_themeMode = eTheme->getThemeMode();
@@ -99,7 +99,7 @@ void ElaToolTip::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.save();
     painter.setRenderHint(QPainter::Antialiasing);
-    //阴影
+    // 阴影
     eTheme->drawEffectShadow(&painter, rect(), d->_shadowBorderWidth, d->_pBorderRadius);
     QRect foregroundRect = rect();
     foregroundRect.adjust(d->_shadowBorderWidth, d->_shadowBorderWidth, -d->_shadowBorderWidth, -d->_shadowBorderWidth);

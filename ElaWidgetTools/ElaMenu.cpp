@@ -10,8 +10,7 @@
 
 #include "ElaMenuStyle.h"
 #include "private/ElaMenuPrivate.h"
-ElaMenu::ElaMenu(QWidget* parent)
-    : QMenu(parent), d_ptr(new ElaMenuPrivate())
+ElaMenu::ElaMenu(QWidget* parent) : QMenu(parent), d_ptr(new ElaMenuPrivate())
 {
     Q_D(ElaMenu);
     d->q_ptr = this;
@@ -23,8 +22,7 @@ ElaMenu::ElaMenu(QWidget* parent)
     d->_pAnimationImagePosY = 0;
 }
 
-ElaMenu::ElaMenu(const QString& title, QWidget* parent)
-    : ElaMenu(parent)
+ElaMenu::ElaMenu(const QString& title, QWidget* parent) : ElaMenu(parent)
 {
     setTitle(title);
 }
@@ -95,7 +93,7 @@ QAction* ElaMenu::addElaIconAction(ElaIconType::IconName icon, const QString& te
 bool ElaMenu::isHasChildMenu() const
 {
     QList<QAction*> actionList = this->actions();
-    for (auto action: actionList)
+    for (auto action : actionList)
     {
         if (action->isSeparator())
         {
@@ -112,7 +110,7 @@ bool ElaMenu::isHasChildMenu() const
 bool ElaMenu::isHasIcon() const
 {
     QList<QAction*> actionList = this->actions();
-    for (auto action: actionList)
+    for (auto action : actionList)
     {
         if (action->isSeparator())
         {
@@ -135,7 +133,7 @@ void ElaMenu::showEvent(QShowEvent* event)
 {
     Q_EMIT menuShow();
     Q_D(ElaMenu);
-    //消除阴影偏移
+    // 消除阴影偏移
     move(this->pos().x() - 6, this->pos().y());
     updateGeometry();
     if (!d->_animationPix.isNull())

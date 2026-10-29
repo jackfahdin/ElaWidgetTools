@@ -10,8 +10,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 Q_TAKEOVER_NATIVEEVENT_CPP(ElaWidget, d_func()->_appBar);
-ElaWidget::ElaWidget(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaWidgetPrivate())
+ElaWidget::ElaWidget(QWidget* parent) : QWidget{parent}, d_ptr(new ElaWidgetPrivate())
 {
     Q_D(ElaWidget);
     d->q_ptr = this;
@@ -24,7 +23,8 @@ ElaWidget::ElaWidget(QWidget* parent)
     // 自定义AppBar
     d->_appBar = new ElaAppBar(this);
     d->_appBar->setIsStayTop(true);
-    d->_appBar->setWindowButtonFlags(ElaAppBarType::StayTopButtonHint | ElaAppBarType::MinimizeButtonHint | ElaAppBarType::MaximizeButtonHint | ElaAppBarType::CloseButtonHint);
+    d->_appBar->setWindowButtonFlags(ElaAppBarType::StayTopButtonHint | ElaAppBarType::MinimizeButtonHint |
+                                     ElaAppBarType::MaximizeButtonHint | ElaAppBarType::CloseButtonHint);
     connect(d->_appBar, &ElaAppBar::routeBackButtonClicked, this, &ElaWidget::routeBackButtonClicked);
     connect(d->_appBar, &ElaAppBar::navigationButtonClicked, this, &ElaWidget::navigationButtonClicked);
     connect(d->_appBar, &ElaAppBar::themeChangeButtonClicked, this, &ElaWidget::themeChangeButtonClicked);
@@ -109,7 +109,8 @@ void ElaWidget::moveToCenter()
 #else
     auto geometry = qApp->screenAt(this->geometry().center())->geometry();
 #endif
-    setGeometry((geometry.left() + geometry.right() - width()) / 2, (geometry.top() + geometry.bottom() - height()) / 2, width(), height());
+    setGeometry((geometry.left() + geometry.right() - width()) / 2, (geometry.top() + geometry.bottom() - height()) / 2,
+                width(), height());
 }
 
 void ElaWidget::setWindowButtonFlag(ElaAppBarType::ButtonType buttonFlag, bool isEnable)

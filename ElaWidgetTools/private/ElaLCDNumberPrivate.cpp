@@ -1,8 +1,7 @@
 #include "ElaLCDNumberPrivate.h"
 #include "ElaLCDNumber.h"
 #include "ElaTheme.h"
-ElaLCDNumberPrivate::ElaLCDNumberPrivate(QObject* parent)
-    : QObject(parent)
+ElaLCDNumberPrivate::ElaLCDNumberPrivate(QObject* parent) : QObject(parent)
 {
 }
 

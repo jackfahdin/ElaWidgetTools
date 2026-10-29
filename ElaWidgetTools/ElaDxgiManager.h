@@ -29,7 +29,7 @@ public:
     int getDxDeviceID() const;
     bool setOutputDeviceID(int deviceID);
     int getOutputDeviceID() const;
-    void setGrabArea(int width, int height); //从屏幕中心向外延伸
+    void setGrabArea(int width, int height); // 从屏幕中心向外延伸
     void setGrabArea(int x, int y, int width, int height);
     QRect getGrabArea() const;
     void setGrabFrameRate(int frameRateValue);
@@ -42,4 +42,3 @@ Q_SIGNALS:
 
 #endif
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_ELADXGIMANAGER_H_
-

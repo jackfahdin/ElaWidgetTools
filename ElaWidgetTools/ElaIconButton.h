@@ -25,7 +25,8 @@ public:
     ElaIconButton(const QPixmap& pix, QWidget* parent = nullptr);
     ElaIconButton(ElaIconType::IconName awesome, QWidget* parent = nullptr);
     ElaIconButton(ElaIconType::IconName awesome, int pixelSize, QWidget* parent = nullptr);
-    ElaIconButton(ElaIconType::IconName awesome, int pixelSize, int fixedWidth, int fixedHeight, QWidget* parent = nullptr);
+    ElaIconButton(ElaIconType::IconName awesome, int pixelSize, int fixedWidth, int fixedHeight,
+                  QWidget* parent = nullptr);
     ~ElaIconButton();
     void setAwesome(ElaIconType::IconName awesome);
     ElaIconType::IconName getAwesome() const;

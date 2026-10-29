@@ -10,8 +10,7 @@ ELA_PROPERTY_Q_CPP(ElaProgressRing, bool, IsTransparent)
 ELA_PROPERTY_Q_CPP(ElaProgressRing, bool, IsDisplayValue)
 ELA_PROPERTY_Q_CPP(ElaProgressRing, ElaProgressRingType::ValueDisplayMode, ValueDisplayMode)
 ELA_PROPERTY_Q_CPP(ElaProgressRing, int, ValuePixelSize)
-ElaProgressRing::ElaProgressRing(QWidget* parent)
-    : QWidget(parent), d_ptr(new ElaProgressRingPrivate())
+ElaProgressRing::ElaProgressRing(QWidget* parent) : QWidget(parent), d_ptr(new ElaProgressRingPrivate())
 {
     Q_D(ElaProgressRing);
     d->q_ptr = this;
@@ -203,7 +202,8 @@ void ElaProgressRing::paintEvent(QPaintEvent* event)
     QPainterPath basePath;
     basePath.addEllipse(ringRect);
     QPainterPath maskPath;
-    maskPath.addEllipse(ringRect.adjusted(d->_pBusyingWidth, d->_pBusyingWidth, -d->_pBusyingWidth, -d->_pBusyingWidth));
+    maskPath.addEllipse(
+        ringRect.adjusted(d->_pBusyingWidth, d->_pBusyingWidth, -d->_pBusyingWidth, -d->_pBusyingWidth));
     painter.setClipPath(basePath.subtracted(maskPath));
     painter.setPen(Qt::NoPen);
     // 底色

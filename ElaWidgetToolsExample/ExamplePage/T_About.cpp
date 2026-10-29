@@ -6,8 +6,7 @@
 
 #include "ElaImageCard.h"
 #include "ElaText.h"
-T_About::T_About(QWidget* parent)
-    : ElaDialog(parent)
+T_About::T_About(QWidget* parent) : ElaDialog(parent)
 {
     setFixedSize(400, 400);
     setWindowTitle("关于..");

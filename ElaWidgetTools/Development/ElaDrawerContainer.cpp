@@ -4,8 +4,7 @@
 
 #include <QPainter>
 #include <QPropertyAnimation>
-ElaDrawerContainer::ElaDrawerContainer(QWidget* parent)
-    : QWidget(parent)
+ElaDrawerContainer::ElaDrawerContainer(QWidget* parent) : QWidget(parent)
 {
     _pBorderRadius = 6;
     _pOpacity = 0;
@@ -21,7 +20,7 @@ ElaDrawerContainer::ElaDrawerContainer(QWidget* parent)
     _containerWidget->setObjectName("ElaDrawerContainerWidget");
     _containerWidget->setStyleSheet("#ElaDrawerContainerWidget{background-color:transparent;}");
     _containerWidget->setVisible(false);
-    
+
     _containerLayout = new QVBoxLayout(_containerWidget);
     _containerLayout->setContentsMargins(0, 0, 0, 0);
     _containerLayout->setSpacing(0);

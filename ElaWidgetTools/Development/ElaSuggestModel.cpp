@@ -1,7 +1,6 @@
 #include "ElaSuggestModel.h"
 
-ElaSuggestModel::ElaSuggestModel(QObject* parent)
-    : QAbstractListModel{parent}
+ElaSuggestModel::ElaSuggestModel(QObject* parent) : QAbstractListModel{parent}
 {
 }
 

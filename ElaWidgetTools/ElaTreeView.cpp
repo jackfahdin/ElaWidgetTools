@@ -3,15 +3,13 @@
 #include "ElaScrollBar.h"
 #include "ElaTreeViewPrivate.h"
 #include "ElaTreeViewStyle.h"
-ElaTreeView::ElaTreeView(QWidget* parent)
-    : QTreeView(parent), d_ptr(new ElaTreeViewPrivate())
+ElaTreeView::ElaTreeView(QWidget* parent) : QTreeView(parent), d_ptr(new ElaTreeViewPrivate())
 {
     Q_D(ElaTreeView);
     d->q_ptr = this;
     setObjectName("ElaTreeView");
-    setStyleSheet(
-        "#ElaTreeView{background-color:transparent;}"
-        "QHeaderView{background-color:transparent;border:0px;}");
+    setStyleSheet("#ElaTreeView{background-color:transparent;}"
+                  "QHeaderView{background-color:transparent;border:0px;}");
 
     setAnimated(true);
     setMouseTracking(true);

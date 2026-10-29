@@ -5,8 +5,7 @@
 #include "ElaListViewPrivate.h"
 #include "ElaListViewStyle.h"
 #include "ElaScrollBar.h"
-ElaListView::ElaListView(QWidget* parent)
-    : QListView(parent), d_ptr(new ElaListViewPrivate())
+ElaListView::ElaListView(QWidget* parent) : QListView(parent), d_ptr(new ElaListViewPrivate())
 {
     Q_D(ElaListView);
     d->q_ptr = this;

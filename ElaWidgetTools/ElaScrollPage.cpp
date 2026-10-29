@@ -14,25 +14,25 @@
 #include "ElaScrollBar.h"
 #include "ElaScrollPageRouteCommand.h"
 #include "private/ElaScrollPagePrivate.h"
-ElaScrollPage::ElaScrollPage(QWidget* parent)
-    : QWidget(parent), d_ptr(new ElaScrollPagePrivate())
+ElaScrollPage::ElaScrollPage(QWidget* parent) : QWidget(parent), d_ptr(new ElaScrollPagePrivate())
 {
     Q_D(ElaScrollPage);
     setProperty("ElaBaseClassName", "ElaScrollPage");
     d->q_ptr = this;
     d->_breadcrumbBar = new ElaBreadcrumbBar(this);
     d->_breadcrumbBar->setTextPixelSize(28);
-    connect(d->_breadcrumbBar, &ElaBreadcrumbBar::breadcrumbClicked, this, [=](const QString& breadcrumb, const QStringList& lastBreadcrumbList) {
-        if (d->_centralWidgetMap.contains(breadcrumb))
-        {
-            auto command = new ElaScrollPageRouteCommand(this);
-            command->setIsBreadcrumbClicked(true);
-            command->setScrollPagePrivate(d);
-            command->setUndoBreadcrumbList(lastBreadcrumbList);
-            command->setRedoBreadcrumbList(d->_breadcrumbBar->getBreadcrumbList());
-            ElaActionCommander::getInstance()->recordCommand("ElaWidgetToolsAction", command);
-        }
-    });
+    connect(d->_breadcrumbBar, &ElaBreadcrumbBar::breadcrumbClicked, this,
+            [=](const QString& breadcrumb, const QStringList& lastBreadcrumbList) {
+                if (d->_centralWidgetMap.contains(breadcrumb))
+                {
+                    auto command = new ElaScrollPageRouteCommand(this);
+                    command->setIsBreadcrumbClicked(true);
+                    command->setScrollPagePrivate(d);
+                    command->setUndoBreadcrumbList(lastBreadcrumbList);
+                    command->setRedoBreadcrumbList(d->_breadcrumbBar->getBreadcrumbList());
+                    ElaActionCommander::getInstance()->recordCommand("ElaWidgetToolsAction", command);
+                }
+            });
     d->_pageTitleLayout = new QHBoxLayout();
     d->_pageTitleLayout->setContentsMargins(0, 0, 0, 0);
     d->_pageTitleLayout->addWidget(d->_breadcrumbBar);
@@ -100,7 +100,8 @@ QWidget* ElaScrollPage::getBottomCustomWidget() const
     return d->_bottomCustomWidget;
 }
 
-void ElaScrollPage::addCentralWidget(QWidget* centralWidget, bool isWidgetResizeable, bool isVerticalGrabGesture, qreal mousePressEventDelay)
+void ElaScrollPage::addCentralWidget(QWidget* centralWidget, bool isWidgetResizeable, bool isVerticalGrabGesture,
+                                     qreal mousePressEventDelay)
 {
     Q_D(ElaScrollPage);
     if (!centralWidget)

@@ -4,8 +4,7 @@
 #include <QPainterPath>
 
 #include "ElaTheme.h"
-ElaColorPreview::ElaColorPreview(QWidget* parent)
-    : QWidget{parent}
+ElaColorPreview::ElaColorPreview(QWidget* parent) : QWidget{parent}
 {
     setFixedSize(50, 260);
     _pThemeMode = eTheme->getThemeMode();

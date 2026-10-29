@@ -28,12 +28,12 @@ ElaRadioButtonStyle::~ElaRadioButtonStyle()
 {
 }
 
-void ElaRadioButtonStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaRadioButtonStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                        const QWidget* widget) const
 {
     switch (element)
     {
-    case PE_IndicatorRadioButton:
-    {
+    case PE_IndicatorRadioButton: {
         const QStyleOptionButton* bopt = qstyleoption_cast<const QStyleOptionButton*>(option);
         if (!bopt)
         {
@@ -75,8 +75,7 @@ void ElaRadioButtonStyle::drawPrimitive(PrimitiveElement element, const QStyleOp
         painter->restore();
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -89,12 +88,10 @@ int ElaRadioButtonStyle::pixelMetric(PixelMetric metric, const QStyleOption* opt
     switch (metric)
     {
     case QStyle::PM_ExclusiveIndicatorWidth:
-    case QStyle::PM_ExclusiveIndicatorHeight:
-    {
+    case QStyle::PM_ExclusiveIndicatorHeight: {
         return widget ? widget->fontMetrics().height() : QProxyStyle::pixelMetric(metric, option, widget);
     }
-    default:
-    {
+    default: {
         break;
     }
     }

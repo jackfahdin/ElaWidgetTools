@@ -2,8 +2,7 @@
 #include <QPainter>
 
 #include "ElaTheme.h"
-ElaCalendarPickerContainer::ElaCalendarPickerContainer(QWidget* parent)
-    : QWidget{parent}
+ElaCalendarPickerContainer::ElaCalendarPickerContainer(QWidget* parent) : QWidget{parent}
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup | Qt::NoDropShadowWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);

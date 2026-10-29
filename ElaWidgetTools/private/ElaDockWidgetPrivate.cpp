@@ -4,8 +4,7 @@
 
 #include "ElaDockWidget.h"
 #include "ElaDockWidgetTitleBar.h"
-ElaDockWidgetPrivate::ElaDockWidgetPrivate(QObject* parent)
-    : QObject{parent}
+ElaDockWidgetPrivate::ElaDockWidgetPrivate(QObject* parent) : QObject{parent}
 {
 }
 

@@ -8,8 +8,7 @@
 #include <QLayout>
 #include <QPropertyAnimation>
 #include <QUuid>
-ElaSuggestion::ElaSuggestion(QObject* parent)
-    : QObject(parent)
+ElaSuggestion::ElaSuggestion(QObject* parent) : QObject(parent)
 {
     _pElaIcon = ElaIconType::None;
     _pSuggestText = "";
@@ -21,8 +20,7 @@ ElaSuggestion::~ElaSuggestion()
 {
 }
 
-ElaSuggestBoxPrivate::ElaSuggestBoxPrivate(QObject* parent)
-    : QObject{parent}
+ElaSuggestBoxPrivate::ElaSuggestBoxPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -34,7 +32,8 @@ void ElaSuggestBoxPrivate::onThemeModeChanged(ElaThemeType::ThemeMode themeMode)
 {
     _themeMode = themeMode;
     _searchEdit->removeAction(_themeMode == ElaThemeType::Light ? _darkSearchAction : _lightSearchAction);
-    _searchEdit->addAction(_themeMode == ElaThemeType::Light ? _lightSearchAction : _darkSearchAction, QLineEdit::TrailingPosition);
+    _searchEdit->addAction(_themeMode == ElaThemeType::Light ? _lightSearchAction : _darkSearchAction,
+                           QLineEdit::TrailingPosition);
     _searchEdit->update();
 }
 
@@ -47,7 +46,7 @@ void ElaSuggestBoxPrivate::onSearchEditTextEdit(const QString& searchText)
         return;
     }
     QVector<ElaSuggestion*> suggestionVector;
-    for (const auto& suggest: _suggestionVector)
+    for (const auto& suggest : _suggestionVector)
     {
         if (suggest->getSuggestText().contains(searchText, _pCaseSensitivity))
         {

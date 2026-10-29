@@ -1,7 +1,6 @@
 #include "ElaBreadcrumbBarModel.h"
 
-ElaBreadcrumbBarModel::ElaBreadcrumbBarModel(QObject* parent)
-    : QAbstractListModel{parent}
+ElaBreadcrumbBarModel::ElaBreadcrumbBarModel(QObject* parent) : QAbstractListModel{parent}
 {
 }
 

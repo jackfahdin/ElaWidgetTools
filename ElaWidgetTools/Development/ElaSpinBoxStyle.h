@@ -12,12 +12,13 @@ class ElaSpinBoxStyle : public QProxyStyle
 public:
     explicit ElaSpinBoxStyle(QStyle* style = nullptr);
     ~ElaSpinBoxStyle() override;
-    void drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget = nullptr) const override;
-    QRect subControlRect(ComplexControl cc, const QStyleOptionComplex* opt, SubControl sc, const QWidget* widget) const override;
+    void drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter,
+                            const QWidget* widget = nullptr) const override;
+    QRect subControlRect(ComplexControl cc, const QStyleOptionComplex* opt, SubControl sc,
+                         const QWidget* widget) const override;
 
 private:
     ElaThemeType::ThemeMode _themeMode;
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELASPINBOXSTYLE_H_
-

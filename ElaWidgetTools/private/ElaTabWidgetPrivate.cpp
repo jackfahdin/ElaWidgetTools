@@ -9,8 +9,7 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include <QWindow>
-ElaDragMonitor::ElaDragMonitor(QObject* parent)
-    : QObject(parent)
+ElaDragMonitor::ElaDragMonitor(QObject* parent) : QObject(parent)
 {
     _pIsInDrag = false;
 }
@@ -19,8 +18,7 @@ ElaDragMonitor::~ElaDragMonitor()
 {
 }
 
-ElaTabWidgetPrivate::ElaTabWidgetPrivate(QObject* parent)
-    : QObject{parent}
+ElaTabWidgetPrivate::ElaTabWidgetPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -34,7 +32,7 @@ void ElaTabWidgetPrivate::_addTabWidgetToList(QWidget* widget)
     {
         return;
     }
-    for (const auto& listWidget: _allTabWidgetList)
+    for (const auto& listWidget : _allTabWidgetList)
     {
         if (listWidget == widget)
         {
@@ -65,7 +63,7 @@ void ElaTabWidgetPrivate::_registerCustomTabWidget(ElaCustomTabWidget* customTab
     {
         return;
     }
-    for (const auto& listCustomTabWidget: _customTabWidgetList)
+    for (const auto& listCustomTabWidget : _customTabWidgetList)
     {
         if (listCustomTabWidget == customTabWidget)
         {
@@ -83,7 +81,7 @@ void ElaTabWidgetPrivate::_unregisterCustomTabWidget(ElaCustomTabWidget* customT
 {
     if (customTabBar)
     {
-        for (auto& widget: _allTabWidgetList)
+        for (auto& widget : _allTabWidgetList)
         {
             if (!widget)
             {
@@ -130,7 +128,8 @@ void ElaTabWidgetPrivate::onTabDragCreate(QMimeData* mimeData)
     }
     mimeData->setProperty("DragWidget", QVariant::fromValue(dragWidget));
     ElaTabBar* tabBarObject = mimeData->property("ElaTabBarObject").value<ElaTabBar*>();
-    QMouseEvent releaseEvent(QEvent::MouseButtonRelease, QPoint(-1, -1), QPoint(-1, -1), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QMouseEvent releaseEvent(QEvent::MouseButtonRelease, QPoint(-1, -1), QPoint(-1, -1), Qt::LeftButton, Qt::LeftButton,
+                             Qt::NoModifier);
     QApplication::sendEvent(tabBarObject, &releaseEvent);
     if (!floatParentWidget)
     {
@@ -191,7 +190,8 @@ void ElaTabWidgetPrivate::onTabDragCreate(QMimeData* mimeData)
             }
             else
             {
-                floatWidget->move(cursorPoint.x() - tabSize.width() / 2 - 10, cursorPoint.y() - tabSize.height() / 2 - 10);
+                floatWidget->move(cursorPoint.x() - tabSize.width() / 2 - 10,
+                                  cursorPoint.y() - tabSize.height() / 2 - 10);
             }
         }
     });
@@ -366,7 +366,7 @@ void ElaTabWidgetPrivate::onTabCloseRequested(int index)
 void ElaTabWidgetPrivate::_clearAllTabWidgetList()
 {
     Q_Q(ElaTabWidget);
-    for (auto widget: _allTabWidgetList)
+    for (auto widget : _allTabWidgetList)
     {
         if (!widget)
         {

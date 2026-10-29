@@ -4,8 +4,7 @@
 #include "ElaLineEdit.h"
 #include "ElaTheme.h"
 #include <QTimer>
-ElaLineEditPrivate::ElaLineEditPrivate(QObject* parent)
-    : QObject{parent}
+ElaLineEditPrivate::ElaLineEditPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -30,7 +29,8 @@ void ElaLineEditPrivate::onWMWindowClickedEvent(const QVariantMap& data)
     }
     else if (actionType == ElaAppBarType::WMLBUTTONUP || actionType == ElaAppBarType::WMNCLBUTTONDOWN)
     {
-        if (ElaApplication::containsCursorToItem(q) || (actionType == ElaAppBarType::WMLBUTTONUP && q->hasSelectedText()))
+        if (ElaApplication::containsCursorToItem(q) ||
+            (actionType == ElaAppBarType::WMLBUTTONUP && q->hasSelectedText()))
         {
             return;
         }
@@ -47,6 +47,7 @@ void ElaLineEditPrivate::onThemeChanged(ElaThemeType::ThemeMode themeMode)
     _themeMode = themeMode;
     QPalette palette = q->palette();
     palette.setColor(QPalette::Text, ElaThemeColor(_themeMode, BasicText));
-    palette.setColor(QPalette::PlaceholderText, _themeMode == ElaThemeType::Light ? QColor(0x00, 0x00, 0x00, 128) : QColor(0xBA, 0xBA, 0xBA));
+    palette.setColor(QPalette::PlaceholderText,
+                     _themeMode == ElaThemeType::Light ? QColor(0x00, 0x00, 0x00, 128) : QColor(0xBA, 0xBA, 0xBA));
     q->setPalette(palette);
 }

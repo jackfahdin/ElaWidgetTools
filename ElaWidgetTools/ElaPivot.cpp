@@ -10,8 +10,7 @@
 #include "ElaPivotPrivate.h"
 #include "ElaPivotStyle.h"
 #include "ElaPivotView.h"
-ElaPivot::ElaPivot(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaPivotPrivate())
+ElaPivot::ElaPivot(QWidget* parent) : QWidget{parent}, d_ptr(new ElaPivotPrivate())
 {
     Q_D(ElaPivot);
     d->q_ptr = this;

@@ -12,16 +12,14 @@
 #include <QPainter>
 #include <QPropertyAnimation>
 #include <QScroller>
-ElaRibbonBarView::ElaRibbonBarView(QWidget* parent)
-    : QListView(parent)
+ElaRibbonBarView::ElaRibbonBarView(QWidget* parent) : QListView(parent)
 {
     _ribbonBar = dynamic_cast<ElaRibbonBar*>(parent);
     _pRibbonBarModel = nullptr;
     _pRibbonBarDelegate = nullptr;
     setObjectName("ElaRibbonBarView");
-    setStyleSheet(
-        "ElaRibbonBarView{background-color: transparent;border:0px;}"
-        "ElaRibbonBarView::item{border:none;}");
+    setStyleSheet("ElaRibbonBarView{background-color: transparent;border:0px;}"
+                  "ElaRibbonBarView::item{border:none;}");
     setAutoScroll(false);
     setMouseTracking(true);
     setVerticalScrollBar(new ElaScrollBar(this));
@@ -98,11 +96,13 @@ void ElaRibbonBarView::mouseReleaseEvent(QMouseEvent* event)
             QRect indexRect = visualRect(modelIndex);
             if (groupName.isEmpty())
             {
-                actionMenu->exec(mapToGlobal(QPoint(indexRect.center().x() - menuRect.width() / 2, indexRect.bottom() - 5)));
+                actionMenu->exec(
+                    mapToGlobal(QPoint(indexRect.center().x() - menuRect.width() / 2, indexRect.bottom() - 5)));
             }
             else
             {
-                actionMenu->exec(mapToGlobal(QPoint(indexRect.center().x() - menuRect.width() / 2, indexRect.bottom() - _pRibbonBarDelegate->getBottomMargin() - 5)));
+                actionMenu->exec(mapToGlobal(QPoint(indexRect.center().x() - menuRect.width() / 2,
+                                                    indexRect.bottom() - _pRibbonBarDelegate->getBottomMargin() - 5)));
             }
         }
     }
@@ -137,7 +137,7 @@ void ElaRibbonBarView::paintEvent(QPaintEvent* event)
     // 底边绘制
     auto& groupDataList = _pRibbonBarModel->getRibbonGroupData();
     int indexRow = 0;
-    for (const auto& groupData: groupDataList)
+    for (const auto& groupData : groupDataList)
     {
         // 组名为空为根Action
         if (!groupData.groupName.isEmpty())
@@ -146,8 +146,10 @@ void ElaRibbonBarView::paintEvent(QPaintEvent* event)
             auto endIndexRect = visualRect(_pRibbonBarModel->index(indexRow + groupData.ribbonDataList.count() - 1, 0));
             // painter.setPen(ElaThemeColor(_themeMode, BasicBorder));
             // painter.setBrush(Qt::NoBrush);
-            // painter.drawRect(QRect(startIndexRect.x(), startIndexRect.y(), endIndexRect.right() - startIndexRect.x(), startIndexRect.height()));
-            auto groupRect = QRect(startIndexRect.x(), startIndexRect.bottom() - _pRibbonBarDelegate->getBottomMargin(), endIndexRect.right() - startIndexRect.x(), _pRibbonBarDelegate->getBottomMargin());
+            // painter.drawRect(QRect(startIndexRect.x(), startIndexRect.y(), endIndexRect.right() - startIndexRect.x(),
+            // startIndexRect.height()));
+            auto groupRect = QRect(startIndexRect.x(), startIndexRect.bottom() - _pRibbonBarDelegate->getBottomMargin(),
+                                   endIndexRect.right() - startIndexRect.x(), _pRibbonBarDelegate->getBottomMargin());
             painter.setPen(Qt::NoPen);
             painter.setBrush(ElaThemeColor(_themeMode, BasicBaseDeepAlpha));
             painter.drawRect(groupRect);

@@ -23,14 +23,16 @@ public:
     void setFixedSize(int w, int h);
     void setFixedHeight(int h);
 
-    struct ELA_EXPORT SuggestData {
+    struct ELA_EXPORT SuggestData
+    {
         ELA_VARIABLE(ElaIconType::IconName, ElaIcon)
         ELA_VARIABLE(QString, SuggestText)
         ELA_VARIABLE(QString, SuggestKey)
         ELA_VARIABLE(QVariantMap, SuggestData)
     public:
         explicit SuggestData();
-        explicit SuggestData(ElaIconType::IconName icon, const QString& suggestText, const QVariantMap& suggestData = {});
+        explicit SuggestData(ElaIconType::IconName icon, const QString& suggestText,
+                             const QVariantMap& suggestData = {});
         ~SuggestData();
     };
     QString addSuggestion(const QString& suggestText, const QVariantMap& suggestData = {});

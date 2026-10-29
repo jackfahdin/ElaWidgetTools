@@ -14,8 +14,7 @@
 #include "ElaNavigationStyle.h"
 #include "ElaScrollBar.h"
 #include "ElaToolTip.h"
-ElaNavigationView::ElaNavigationView(QWidget* parent)
-    : QTreeView(parent)
+ElaNavigationView::ElaNavigationView(QWidget* parent) : QTreeView(parent)
 {
     setObjectName("ElaNavigationView");
     setStyleSheet("#ElaNavigationView{background-color:transparent;}");
@@ -69,7 +68,8 @@ ElaNavigationView::ElaNavigationView(QWidget* parent)
     });
 
     setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, &ElaNavigationView::customContextMenuRequested, this, &ElaNavigationView::onCustomContextMenuRequested);
+    connect(this, &ElaNavigationView::customContextMenuRequested, this,
+            &ElaNavigationView::onCustomContextMenuRequested);
 }
 
 ElaNavigationView::~ElaNavigationView()
@@ -137,13 +137,11 @@ bool ElaNavigationView::eventFilter(QObject* watched, QEvent* event)
     switch (event->type())
     {
     case QEvent::MouseMove:
-    case QEvent::HoverMove:
-    {
+    case QEvent::HoverMove: {
         _doCompactToolTip();
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

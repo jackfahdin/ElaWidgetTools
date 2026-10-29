@@ -23,12 +23,12 @@ ElaToolButtonStyle::~ElaToolButtonStyle()
 {
 }
 
-void ElaToolButtonStyle::drawComplexControl(ComplexControl control, const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget) const
+void ElaToolButtonStyle::drawComplexControl(ComplexControl control, const QStyleOptionComplex* option,
+                                            QPainter* painter, const QWidget* widget) const
 {
     switch (control)
     {
-    case QStyle::CC_ToolButton:
-    {
+    case QStyle::CC_ToolButton: {
         // 内容绘制
         if (const QStyleOptionToolButton* bopt = qstyleoption_cast<const QStyleOptionToolButton*>(option))
         {
@@ -43,28 +43,32 @@ void ElaToolButtonStyle::drawComplexControl(ComplexControl control, const QStyle
                 toolButtonRect.adjust(1, 1, -1, -1);
             }
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                                    QPainter::SmoothPixmapTransform);
             painter->setPen(_pIsTransparent ? Qt::transparent : ElaThemeColor(_themeMode, BasicBorder));
             // 背景绘制
             if (bopt->state.testFlag(QStyle::State_Enabled))
             {
                 if (bopt->state.testFlag(QStyle::State_Sunken))
                 {
-                    painter->setBrush(_pIsTransparent ? ElaThemeColor(_themeMode, BasicPressAlpha) : ElaThemeColor(_themeMode, BasicPress));
+                    painter->setBrush(_pIsTransparent ? ElaThemeColor(_themeMode, BasicPressAlpha)
+                                                      : ElaThemeColor(_themeMode, BasicPress));
                     painter->drawRoundedRect(toolButtonRect, _pBorderRadius, _pBorderRadius);
                 }
                 else
                 {
                     if (_pIsSelected)
                     {
-                        painter->setBrush(_pIsTransparent ? ElaThemeColor(_themeMode, BasicSelectedAlpha) : ElaThemeColor(_themeMode, BasicHover));
+                        painter->setBrush(_pIsTransparent ? ElaThemeColor(_themeMode, BasicSelectedAlpha)
+                                                          : ElaThemeColor(_themeMode, BasicHover));
                         painter->drawRoundedRect(toolButtonRect, _pBorderRadius, _pBorderRadius);
                     }
                     else
                     {
                         if (bopt->state.testFlag(QStyle::State_MouseOver) || bopt->state.testFlag(QStyle::State_On))
                         {
-                            painter->setBrush(_pIsTransparent ? ElaThemeColor(_themeMode, BasicHoverAlpha) : ElaThemeColor(_themeMode, BasicHover));
+                            painter->setBrush(_pIsTransparent ? ElaThemeColor(_themeMode, BasicHoverAlpha)
+                                                              : ElaThemeColor(_themeMode, BasicHover));
                             painter->drawRoundedRect(toolButtonRect, _pBorderRadius, _pBorderRadius);
                         }
                         else
@@ -75,7 +79,10 @@ void ElaToolButtonStyle::drawComplexControl(ComplexControl control, const QStyle
                                 painter->drawRoundedRect(toolButtonRect, _pBorderRadius, _pBorderRadius);
                                 // 底边线绘制
                                 painter->setPen(ElaThemeColor(_themeMode, BasicBaseLine));
-                                painter->drawLine(toolButtonRect.x() + _pBorderRadius, toolButtonRect.y() + toolButtonRect.height(), toolButtonRect.x() + toolButtonRect.width() - _pBorderRadius, toolButtonRect.y() + toolButtonRect.height());
+                                painter->drawLine(toolButtonRect.x() + _pBorderRadius,
+                                                  toolButtonRect.y() + toolButtonRect.height(),
+                                                  toolButtonRect.x() + toolButtonRect.width() - _pBorderRadius,
+                                                  toolButtonRect.y() + toolButtonRect.height());
                             }
                         }
                     }
@@ -104,24 +111,26 @@ void ElaToolButtonStyle::drawComplexControl(ComplexControl control, const QStyle
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawComplexControl(control, option, painter, widget);
 }
 
-QSize ElaToolButtonStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const
+QSize ElaToolButtonStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                                           const QWidget* widget) const
 {
     if (type == QStyle::CT_ToolButton)
     {
         if (const QStyleOptionToolButton* bopt = qstyleoption_cast<const QStyleOptionToolButton*>(option))
         {
             QSize toolButtonSize = QProxyStyle::sizeFromContents(type, option, size, widget);
-            if (bopt->features.testFlag(QStyleOptionToolButton::HasMenu) && !bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
+            if (bopt->features.testFlag(QStyleOptionToolButton::HasMenu) &&
+                !bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
             {
-                toolButtonSize.setWidth(toolButtonSize.width() + _contentMargin + 0.65 * std::min(bopt->iconSize.width(), bopt->iconSize.height()));
+                toolButtonSize.setWidth(toolButtonSize.width() + _contentMargin +
+                                        0.65 * std::min(bopt->iconSize.width(), bopt->iconSize.height()));
             }
             return toolButtonSize;
         }
@@ -129,13 +138,15 @@ QSize ElaToolButtonStyle::sizeFromContents(ContentsType type, const QStyleOption
     return QProxyStyle::sizeFromContents(type, option, size, widget);
 }
 
-void ElaToolButtonStyle::_drawIndicator(QPainter* painter, const QStyleOptionToolButton* bopt, const QWidget* widget) const
+void ElaToolButtonStyle::_drawIndicator(QPainter* painter, const QStyleOptionToolButton* bopt,
+                                        const QWidget* widget) const
 {
     if (bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
     {
         QRect indicatorRect = subControlRect(QStyle::CC_ToolButton, bopt, QStyle::SC_ScrollBarSubLine, widget);
         // 指示器区域
-        if (bopt->state.testFlag(QStyle::State_Enabled) && bopt->activeSubControls.testFlag(QStyle::SC_ScrollBarSubLine))
+        if (bopt->state.testFlag(QStyle::State_Enabled) &&
+            bopt->activeSubControls.testFlag(QStyle::SC_ScrollBarSubLine))
         {
             painter->setBrush(ElaThemeColor(_themeMode, BasicIndicator));
             QPainterPath path;
@@ -149,7 +160,8 @@ void ElaToolButtonStyle::_drawIndicator(QPainter* painter, const QStyleOptionToo
             painter->drawPath(path);
         }
         // 指示器
-        painter->setBrush(bopt->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicText) : ElaThemeColor(_themeMode, BasicTextDisable));
+        painter->setBrush(bopt->state.testFlag(QStyle::State_Enabled) ? ElaThemeColor(_themeMode, BasicText)
+                                                                      : ElaThemeColor(_themeMode, BasicTextDisable));
         QPainterPath indicatorPath;
         qreal indicatorHeight = qCos(30 * M_PI / 180.0) * indicatorRect.width() * 0.85;
         indicatorPath.moveTo(indicatorRect.x() + indicatorRect.width() * 0.15, indicatorRect.center().y());
@@ -167,8 +179,10 @@ void ElaToolButtonStyle::_drawIndicator(QPainter* painter, const QStyleOptionToo
         QFont iconFont = QFont("ElaAwesome");
         iconFont.setPixelSize(0.75 * std::min(iconSize.width(), iconSize.height()));
         painter->setFont(iconFont);
-        int indicatorWidth = painter->fontMetrics().horizontalAdvance(QChar(static_cast<char16_t>(ElaIconType::AngleDown)));
-        QRect expandIconRect(toolButtonRect.right() - _contentMargin - indicatorWidth, toolButtonRect.y() + 1, indicatorWidth, toolButtonRect.height());
+        int indicatorWidth =
+            painter->fontMetrics().horizontalAdvance(QChar(static_cast<char16_t>(ElaIconType::AngleDown)));
+        QRect expandIconRect(toolButtonRect.right() - _contentMargin - indicatorWidth, toolButtonRect.y() + 1,
+                             indicatorWidth, toolButtonRect.height());
         painter->setPen(ElaThemeColor(_themeMode, BasicText));
         painter->translate(expandIconRect.center().x(), expandIconRect.y() + (qreal)expandIconRect.height() / 2);
         painter->rotate(_pExpandIconRotate);
@@ -178,7 +192,8 @@ void ElaToolButtonStyle::_drawIndicator(QPainter* painter, const QStyleOptionToo
     }
 }
 
-void ElaToolButtonStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QStyleOptionToolButton* bopt, const QWidget* widget) const
+void ElaToolButtonStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QStyleOptionToolButton* bopt,
+                                   const QWidget* widget) const
 {
     if (bopt->toolButtonStyle != Qt::ToolButtonTextOnly)
     {
@@ -189,35 +204,36 @@ void ElaToolButtonStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QSt
             QIcon icon = bopt->icon;
             if (!icon.isNull())
             {
-                QPixmap iconPix = icon.pixmap(iconSize,
-                                              (bopt->state & State_Enabled) ? QIcon::Normal
-                                                                            : QIcon::Disabled,
-                                              (bopt->state & State_Selected) ? QIcon::On
-                                                                             : QIcon::Off);
+                QPixmap iconPix = icon.pixmap(iconSize, (bopt->state & State_Enabled) ? QIcon::Normal : QIcon::Disabled,
+                                              (bopt->state & State_Selected) ? QIcon::On : QIcon::Off);
                 switch (bopt->toolButtonStyle)
                 {
-                case Qt::ToolButtonIconOnly:
-                {
-                    painter->drawPixmap(QRect(QPoint(iconRect.center().x() - iconSize.width() / 2.0, iconRect.center().y() - iconSize.height() / 2.0), iconSize), iconPix);
+                case Qt::ToolButtonIconOnly: {
+                    painter->drawPixmap(QRect(QPoint(iconRect.center().x() - iconSize.width() / 2.0,
+                                                     iconRect.center().y() - iconSize.height() / 2.0),
+                                              iconSize),
+                                        iconPix);
                     break;
                 }
                 case Qt::ToolButtonFollowStyle:
-                case Qt::ToolButtonTextBesideIcon:
-                {
-                    painter->drawPixmap(QRect(QPoint(iconRect.x() + _contentMargin, iconRect.center().y() - iconSize.height() / 2), iconSize), iconPix);
+                case Qt::ToolButtonTextBesideIcon: {
+                    painter->drawPixmap(
+                        QRect(QPoint(iconRect.x() + _contentMargin, iconRect.center().y() - iconSize.height() / 2),
+                              iconSize),
+                        iconPix);
                     break;
                 }
-                case Qt::ToolButtonTextUnderIcon:
-                {
-                    if (bopt->features.testFlag(QStyleOptionToolButton::HasMenu) && !bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
+                case Qt::ToolButtonTextUnderIcon: {
+                    if (bopt->features.testFlag(QStyleOptionToolButton::HasMenu) &&
+                        !bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
                     {
                         iconRect.setRight(iconRect.right() - _calculateExpandIndicatorWidth(bopt, painter));
                     }
-                    painter->drawPixmap(QRect(QPoint(iconRect.center().x() - iconSize.width() / 2, iconRect.y()), iconSize), iconPix);
+                    painter->drawPixmap(
+                        QRect(QPoint(iconRect.center().x() - iconSize.width() / 2, iconRect.y()), iconSize), iconPix);
                     break;
                 }
-                default:
-                {
+                default: {
                     break;
                 }
                 }
@@ -239,8 +255,7 @@ void ElaToolButtonStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QSt
             int iconRotate = widget->property("ElaIconRotate").toInt();
             switch (bopt->toolButtonStyle)
             {
-            case Qt::ToolButtonIconOnly:
-            {
+            case Qt::ToolButtonIconOnly: {
                 iconFont.setPixelSize(0.75 * std::min(iconSize.width(), iconSize.height()));
                 painter->setFont(iconFont);
                 if (iconRotate)
@@ -253,8 +268,7 @@ void ElaToolButtonStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QSt
                 break;
             }
             case Qt::ToolButtonFollowStyle:
-            case Qt::ToolButtonTextBesideIcon:
-            {
+            case Qt::ToolButtonTextBesideIcon: {
                 QRect adjustIconRect(iconRect.x() + _contentMargin, iconRect.y(), iconSize.width(), iconRect.height());
                 iconFont.setPixelSize(0.75 * std::min(iconSize.width(), iconSize.height()));
                 painter->setFont(iconFont);
@@ -267,13 +281,15 @@ void ElaToolButtonStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QSt
                 painter->drawText(adjustIconRect, Qt::AlignCenter, widget->property("ElaIconType").toString());
                 break;
             }
-            case Qt::ToolButtonTextUnderIcon:
-            {
-                if (bopt->features.testFlag(QStyleOptionToolButton::HasMenu) && !bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
+            case Qt::ToolButtonTextUnderIcon: {
+                if (bopt->features.testFlag(QStyleOptionToolButton::HasMenu) &&
+                    !bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
                 {
                     iconRect.setRight(iconRect.right() - _calculateExpandIndicatorWidth(bopt, painter));
                 }
-                QRect adjustIconRect(iconRect.center().x() - iconSize.width() / 2, iconRect.y() + 0.2 * std::min(iconSize.width(), iconSize.height()), iconSize.width(), iconSize.height());
+                QRect adjustIconRect(iconRect.center().x() - iconSize.width() / 2,
+                                     iconRect.y() + 0.2 * std::min(iconSize.width(), iconSize.height()),
+                                     iconSize.width(), iconSize.height());
                 iconFont.setPixelSize(0.8 * std::min(iconSize.width(), iconSize.height()));
                 painter->setFont(iconFont);
                 if (iconRotate)
@@ -285,8 +301,7 @@ void ElaToolButtonStyle::_drawIcon(QPainter* painter, QRectF iconRect, const QSt
                 painter->drawText(adjustIconRect, Qt::AlignHCenter, widget->property("ElaIconType").toString());
                 break;
             }
-            default:
-            {
+            default: {
                 break;
             }
             }
@@ -309,20 +324,20 @@ void ElaToolButtonStyle::_drawText(QPainter* painter, QRect contentRect, const Q
         }
         switch (bopt->toolButtonStyle)
         {
-        case Qt::ToolButtonTextOnly:
-        {
+        case Qt::ToolButtonTextOnly: {
             contentRect.setLeft(contentRect.left() + _contentMargin);
             painter->drawText(contentRect, Qt::AlignLeft | Qt::AlignVCenter, bopt->text);
             break;
         }
-        case Qt::ToolButtonTextBesideIcon:
-        {
-            painter->drawText(QRect(contentRect.x() + _contentMargin * 2 + bopt->iconSize.width(), contentRect.y(), contentRect.width() - bopt->iconSize.width(), contentRect.height()), Qt::AlignLeft | Qt::AlignVCenter, bopt->text);
+        case Qt::ToolButtonTextBesideIcon: {
+            painter->drawText(QRect(contentRect.x() + _contentMargin * 2 + bopt->iconSize.width(), contentRect.y(),
+                                    contentRect.width() - bopt->iconSize.width(), contentRect.height()),
+                              Qt::AlignLeft | Qt::AlignVCenter, bopt->text);
             break;
         }
-        case Qt::ToolButtonTextUnderIcon:
-        {
-            if (bopt->features.testFlag(QStyleOptionToolButton::HasMenu) && !bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
+        case Qt::ToolButtonTextUnderIcon: {
+            if (bopt->features.testFlag(QStyleOptionToolButton::HasMenu) &&
+                !bopt->features.testFlag(QStyleOptionToolButton::MenuButtonPopup))
             {
                 contentRect.setLeft(contentRect.left() + _contentMargin);
                 painter->drawText(contentRect, Qt::AlignBottom | Qt::AlignLeft, bopt->text);
@@ -333,12 +348,10 @@ void ElaToolButtonStyle::_drawText(QPainter* painter, QRect contentRect, const Q
             }
             break;
         }
-        case Qt::ToolButtonFollowStyle:
-        {
+        case Qt::ToolButtonFollowStyle: {
             break;
         }
-        default:
-        {
+        default: {
             break;
         }
         }

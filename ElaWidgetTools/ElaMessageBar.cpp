@@ -12,7 +12,8 @@
 #include "ElaTheme.h"
 #include "private/ElaMessageBarPrivate.h"
 
-ElaMessageBar::ElaMessageBar(ElaMessageBarType::PositionPolicy policy, ElaMessageBarType::MessageMode messageMode, QString& title, QString& text, int displayMsec, QWidget* parent)
+ElaMessageBar::ElaMessageBar(ElaMessageBarType::PositionPolicy policy, ElaMessageBarType::MessageMode messageMode,
+                             QString& title, QString& text, int displayMsec, QWidget* parent)
     : QWidget{parent}, d_ptr(new ElaMessageBarPrivate())
 {
     Q_D(ElaMessageBar);
@@ -31,32 +32,28 @@ ElaMessageBar::ElaMessageBar(ElaMessageBarType::PositionPolicy policy, ElaMessag
     d->_closeButton = new ElaIconButton(ElaIconType::Xmark, fontPixelSize + 3, d->_closeButtonWidth, 30, this);
     switch (d->_messageMode)
     {
-    case ElaMessageBarType::Success:
-    {
+    case ElaMessageBarType::Success: {
         d->_closeButton->setLightHoverColor(QColor(0xCA, 0xDE, 0xC8));
         d->_closeButton->setDarkHoverColor(QColor(0xCA, 0xDE, 0xC8));
         d->_closeButton->setDarkIconColor(Qt::black);
         d->_closeButton->setDarkHoverIconColor(Qt::black);
         break;
     }
-    case ElaMessageBarType::Warning:
-    {
+    case ElaMessageBarType::Warning: {
         d->_closeButton->setLightHoverColor(QColor(0xE8, 0xDE, 0xBB));
         d->_closeButton->setDarkHoverColor(QColor(0xE8, 0xDE, 0xBB));
         d->_closeButton->setDarkIconColor(Qt::black);
         d->_closeButton->setDarkHoverIconColor(Qt::black);
         break;
     }
-    case ElaMessageBarType::Information:
-    {
+    case ElaMessageBarType::Information: {
         d->_closeButton->setLightHoverColor(QColor(0xDE, 0xDE, 0xDE));
         d->_closeButton->setDarkHoverColor(QColor(0xDE, 0xDE, 0xDE));
         d->_closeButton->setDarkIconColor(Qt::black);
         d->_closeButton->setDarkHoverIconColor(Qt::black);
         break;
     }
-    case ElaMessageBarType::Error:
-    {
+    case ElaMessageBarType::Error: {
         d->_closeButton->setLightHoverColor(QColor(0xF2, 0xDD, 0xE0));
         d->_closeButton->setDarkHoverColor(QColor(0xF2, 0xDD, 0xE0));
         d->_closeButton->setDarkIconColor(Qt::black);
@@ -79,13 +76,14 @@ ElaMessageBar::~ElaMessageBar()
 {
 }
 
-void ElaMessageBar::success(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent)
+void ElaMessageBar::success(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec,
+                            QWidget* parent)
 {
     // qDebug() << QApplication::topLevelWidgets();
     if (!parent)
     {
         QList<QWidget*> widgetList = QApplication::topLevelWidgets();
-        for (auto widget: widgetList)
+        for (auto widget : widgetList)
         {
             if (widget->property("ElaBaseClassName").toString() == "ElaWindow")
             {
@@ -102,12 +100,13 @@ void ElaMessageBar::success(ElaMessageBarType::PositionPolicy policy, QString ti
     Q_UNUSED(bar);
 }
 
-void ElaMessageBar::warning(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent)
+void ElaMessageBar::warning(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec,
+                            QWidget* parent)
 {
     if (!parent)
     {
         QList<QWidget*> widgetList = QApplication::topLevelWidgets();
-        for (auto widget: widgetList)
+        for (auto widget : widgetList)
         {
             if (widget->property("ElaBaseClassName").toString() == "ElaWindow")
             {
@@ -123,12 +122,13 @@ void ElaMessageBar::warning(ElaMessageBarType::PositionPolicy policy, QString ti
     Q_UNUSED(bar);
 }
 
-void ElaMessageBar::information(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent)
+void ElaMessageBar::information(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec,
+                                QWidget* parent)
 {
     if (!parent)
     {
         QList<QWidget*> widgetList = QApplication::topLevelWidgets();
-        for (auto widget: widgetList)
+        for (auto widget : widgetList)
         {
             if (widget->property("ElaBaseClassName").toString() == "ElaWindow")
             {
@@ -144,12 +144,13 @@ void ElaMessageBar::information(ElaMessageBarType::PositionPolicy policy, QStrin
     Q_UNUSED(bar);
 }
 
-void ElaMessageBar::error(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent)
+void ElaMessageBar::error(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec,
+                          QWidget* parent)
 {
     if (!parent)
     {
         QList<QWidget*> widgetList = QApplication::topLevelWidgets();
-        for (auto widget: widgetList)
+        for (auto widget : widgetList)
         {
             if (widget->property("ElaBaseClassName").toString() == "ElaWindow")
             {
@@ -180,23 +181,19 @@ void ElaMessageBar::paintEvent(QPaintEvent* event)
     painter.setPen(d->_themeMode == ElaThemeType::Light ? QColor(0xBE, 0xBA, 0xBE) : QColor(0x52, 0x50, 0x52));
     switch (d->_messageMode)
     {
-    case ElaMessageBarType::Success:
-    {
+    case ElaMessageBarType::Success: {
         d->_drawSuccess(&painter);
         break;
     }
-    case ElaMessageBarType::Warning:
-    {
+    case ElaMessageBarType::Warning: {
         d->_drawWarning(&painter);
         break;
     }
-    case ElaMessageBarType::Information:
-    {
+    case ElaMessageBarType::Information: {
         d->_drawInformation(&painter);
         break;
     }
-    case ElaMessageBarType::Error:
-    {
+    case ElaMessageBarType::Error: {
         d->_drawError(&painter);
         break;
     }
@@ -217,7 +214,11 @@ void ElaMessageBar::paintEvent(QPaintEvent* event)
     // 正文
     font.setWeight(QFont::Light);
     painter.setFont(font);
-    painter.drawText(QRect(d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing, 0, width() - (d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing + d->_closeButtonWidth + d->_closeButtonLeftRightMargin / 2), height() - d->_timePercentHeight), textFlags, d->_text);
+    painter.drawText(QRect(d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing, 0,
+                           width() - (d->_leftPadding + d->_titleLeftSpacing + titleTextWidth + d->_textLeftSpacing +
+                                      d->_closeButtonWidth + d->_closeButtonLeftRightMargin / 2),
+                           height() - d->_timePercentHeight),
+                     textFlags, d->_text);
     painter.restore();
 }
 
@@ -228,52 +229,45 @@ bool ElaMessageBar::eventFilter(QObject* watched, QEvent* event)
     {
         switch (event->type())
         {
-        case QEvent::Resize:
-        {
+        case QEvent::Resize: {
             QResizeEvent* resizeEvent = dynamic_cast<QResizeEvent*>(event);
             QSize offsetSize = parentWidget()->size() - resizeEvent->oldSize();
             if (d->_isNormalDisplay)
             {
                 switch (d->_policy)
                 {
-                case ElaMessageBarType::Top:
-                {
+                case ElaMessageBarType::Top: {
                     this->move(parentWidget()->width() / 2 - minimumWidth() / 2, this->y());
                     break;
                 }
-                case ElaMessageBarType::Bottom:
-                {
+                case ElaMessageBarType::Bottom: {
                     this->move(parentWidget()->width() / 2 - minimumWidth() / 2, this->pos().y() + offsetSize.height());
                     break;
                 }
                 case ElaMessageBarType::Left:
-                case ElaMessageBarType::TopLeft:
-                {
+                case ElaMessageBarType::TopLeft: {
                     this->move(d->_messageBarHorizontalMargin, this->pos().y());
                     break;
                 }
-                case ElaMessageBarType::BottomLeft:
-                {
+                case ElaMessageBarType::BottomLeft: {
                     this->move(d->_messageBarHorizontalMargin, this->pos().y() + offsetSize.height());
                     break;
                 }
                 case ElaMessageBarType::Right:
-                case ElaMessageBarType::TopRight:
-                {
+                case ElaMessageBarType::TopRight: {
                     this->move(parentWidget()->width() - minimumWidth() - d->_messageBarHorizontalMargin, this->y());
                     break;
                 }
-                case ElaMessageBarType::BottomRight:
-                {
-                    this->move(parentWidget()->width() - minimumWidth() - d->_messageBarHorizontalMargin, this->pos().y() + offsetSize.height());
+                case ElaMessageBarType::BottomRight: {
+                    this->move(parentWidget()->width() - minimumWidth() - d->_messageBarHorizontalMargin,
+                               this->pos().y() + offsetSize.height());
                     break;
                 }
                 }
             }
             break;
         }
-        default:
-        {
+        default: {
             break;
         }
         }

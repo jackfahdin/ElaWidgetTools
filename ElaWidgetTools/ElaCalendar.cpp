@@ -15,8 +15,7 @@
 #include "ElaTheme.h"
 #include "ElaToolButton.h"
 ELA_PROPERTY_Q_CPP(ElaCalendar, int, BorderRaiuds)
-ElaCalendar::ElaCalendar(QWidget* parent)
-    : QWidget{parent}, d_ptr(new ElaCalendarPrivate())
+ElaCalendar::ElaCalendar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaCalendarPrivate())
 {
     Q_D(ElaCalendar);
     setFixedSize(305, 340);
@@ -105,12 +104,14 @@ ElaCalendar::~ElaCalendar()
 void ElaCalendar::setSelectedDate(QDate selectedDate)
 {
     Q_D(ElaCalendar);
-    if (!selectedDate.isValid() || selectedDate.daysTo(d->_calendarModel->getMaximumDate()) < 0 || selectedDate.daysTo(d->_calendarModel->getMinimumDate()) > 0)
+    if (!selectedDate.isValid() || selectedDate.daysTo(d->_calendarModel->getMaximumDate()) < 0 ||
+        selectedDate.daysTo(d->_calendarModel->getMinimumDate()) > 0)
     {
         return;
     }
     d->_pSelectedDate = selectedDate;
-    d->_calendarView->selectionModel()->setCurrentIndex(d->_calendarModel->getIndexFromDate(selectedDate), QItemSelectionModel::Select);
+    d->_calendarView->selectionModel()->setCurrentIndex(d->_calendarModel->getIndexFromDate(selectedDate),
+                                                        QItemSelectionModel::Select);
     Q_EMIT pSelectedDateChanged();
 }
 
@@ -118,7 +119,7 @@ QDate ElaCalendar::getSelectedDate() const
 {
     Q_D(const ElaCalendar);
     return d->_pSelectedDate;
-    //return d->_calendarModel->getDateFromIndex(d->_calendarView->selectionModel()->currentIndex());
+    // return d->_calendarModel->getDateFromIndex(d->_calendarView->selectionModel()->currentIndex());
 }
 
 void ElaCalendar::setMinimumDate(QDate minimudate)

@@ -9,8 +9,7 @@
 #include "ElaFooterModel.h"
 #include "ElaNavigationNode.h"
 #include "ElaTheme.h"
-ElaFooterDelegate::ElaFooterDelegate(QObject* parent)
-    : QStyledItemDelegate{parent}
+ElaFooterDelegate::ElaFooterDelegate(QObject* parent) : QStyledItemDelegate{parent}
 {
     _pElaListView = nullptr;
     _themeMode = eTheme->getThemeMode();
@@ -162,21 +161,23 @@ void ElaFooterDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
     painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
     itemRect = option.rect;
 
-    //顶边线绘制
+    // 顶边线绘制
     if (index.row() == 0)
     {
         painter->setPen(ElaThemeColor(_themeMode, BasicBaseLine));
         painter->drawLine(option.rect.x(), itemRect.y() + 1, option.rect.x() + option.rect.width(), itemRect.y() + 1);
     }
     // 图标绘制
-    painter->setPen(index == _pPressIndex ? ElaThemeColor(_themeMode, BasicTextPress) : ElaThemeColor(_themeMode, BasicText));
+    painter->setPen(index == _pPressIndex ? ElaThemeColor(_themeMode, BasicTextPress)
+                                          : ElaThemeColor(_themeMode, BasicText));
     if (node->getAwesome() != ElaIconType::None)
     {
         painter->save();
         QFont iconFont = QFont("ElaAwesome");
         iconFont.setPixelSize(fontPixelSize + 4);
         painter->setFont(iconFont);
-        painter->drawText(QRect(itemRect.x(), itemRect.y(), _iconAreaWidth, itemRect.height()), Qt::AlignCenter, QChar(static_cast<char16_t>(node->getAwesome())));
+        painter->drawText(QRect(itemRect.x(), itemRect.y(), _iconAreaWidth, itemRect.height()), Qt::AlignCenter,
+                          QChar(static_cast<char16_t>(node->getAwesome())));
         painter->restore();
     }
 
@@ -205,20 +206,26 @@ void ElaFooterDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
             font.setPixelSize(fontPixelSize - 1);
         }
         painter->setFont(font);
-        painter->drawText(keyPoints > 9 ? 248 : 251, itemRect.y() + itemRect.height() / 2 + 4, QString::number(keyPoints));
+        painter->drawText(keyPoints > 9 ? 248 : 251, itemRect.y() + itemRect.height() / 2 + 4,
+                          QString::number(keyPoints));
         painter->restore();
     }
 
     // 文字绘制
-    painter->setPen(index == _pPressIndex ? ElaThemeColor(_themeMode, BasicTextPress) : ElaThemeColor(_themeMode, BasicText));
+    painter->setPen(index == _pPressIndex ? ElaThemeColor(_themeMode, BasicTextPress)
+                                          : ElaThemeColor(_themeMode, BasicText));
     QRect textRect;
     if (node->getAwesome() != ElaIconType::None)
     {
-        textRect = QRect(itemRect.x() + _iconAreaWidth, itemRect.y(), itemRect.width() - _textRightSpacing - _indicatorIconAreaWidth - _iconAreaWidth, itemRect.height());
+        textRect =
+            QRect(itemRect.x() + _iconAreaWidth, itemRect.y(),
+                  itemRect.width() - _textRightSpacing - _indicatorIconAreaWidth - _iconAreaWidth, itemRect.height());
     }
     else
     {
-        textRect = QRect(itemRect.x() + _leftPadding, itemRect.y(), itemRect.width() - _textRightSpacing - _indicatorIconAreaWidth - _leftPadding, itemRect.height());
+        textRect =
+            QRect(itemRect.x() + _leftPadding, itemRect.y(),
+                  itemRect.width() - _textRightSpacing - _indicatorIconAreaWidth - _leftPadding, itemRect.height());
     }
     QString text = painter->fontMetrics().elidedText(node->getNodeTitle(), Qt::ElideRight, textRect.width());
     painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, text);
@@ -227,13 +234,17 @@ void ElaFooterDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
     {
         painter->setPen(Qt::NoPen);
         painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-        painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + _selectMarkTop, 3, itemRect.height() - _selectMarkTop - _selectMarkBottom), 1.5, 1.5);
+        painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + _selectMarkTop, 3,
+                                        itemRect.height() - _selectMarkTop - _selectMarkBottom),
+                                 1.5, 1.5);
     }
     if (node == _lastSelectedNode)
     {
         painter->setPen(Qt::NoPen);
         painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-        painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + _lastSelectMarkTop, 3, itemRect.height() - _lastSelectMarkTop - _lastSelectMarkBottom), 3, 3);
+        painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + _lastSelectMarkTop, 3,
+                                        itemRect.height() - _lastSelectMarkTop - _lastSelectMarkBottom),
+                                 3, 3);
     }
     painter->restore();
 }

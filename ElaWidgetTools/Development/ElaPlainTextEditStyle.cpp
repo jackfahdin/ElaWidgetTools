@@ -19,15 +19,15 @@ ElaPlainTextEditStyle::~ElaPlainTextEditStyle()
 {
 }
 
-void ElaPlainTextEditStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaPlainTextEditStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                        const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::CE_ShapedFrame:
-    {
+    case QStyle::CE_ShapedFrame: {
         if (const QStyleOptionFrame* fopt = qstyleoption_cast<const QStyleOptionFrame*>(option))
         {
-            //背景绘制
+            // 背景绘制
             QRect editRect = option->rect;
             painter->save();
             painter->setRenderHints(QPainter::Antialiasing);
@@ -39,7 +39,8 @@ void ElaPlainTextEditStyle::drawControl(ControlElement element, const QStyleOpti
 
             // 背景绘制
             painter->setBrush(ElaThemeColor(_themeMode, BasicBaseAlpha));
-            painter->drawRoundedRect(QRectF(editRect.x() + 1.5, editRect.y() + 1.5, editRect.width() - 3, editRect.height() - 3), 6, 6);
+            painter->drawRoundedRect(
+                QRectF(editRect.x() + 1.5, editRect.y() + 1.5, editRect.width() - 3, editRect.height() - 3), 6, 6);
 
             // 底边线绘制
             painter->setBrush(ElaThemeColor(_themeMode, BasicHemline));
@@ -52,17 +53,18 @@ void ElaPlainTextEditStyle::drawControl(ControlElement element, const QStyleOpti
             path.closeSubpath();
             painter->drawPath(path);
 
-            //焦点指示器
+            // 焦点指示器
             painter->setPen(Qt::NoPen);
             painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-            painter->drawRoundedRect(QRectF(editRect.width() / 2 - _pExpandMarkWidth, editRect.height() - 2.5, _pExpandMarkWidth * 2, 2.5), 2, 2);
+            painter->drawRoundedRect(
+                QRectF(editRect.width() / 2 - _pExpandMarkWidth, editRect.height() - 2.5, _pExpandMarkWidth * 2, 2.5),
+                2, 2);
 
             painter->restore();
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

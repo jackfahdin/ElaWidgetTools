@@ -1,8 +1,7 @@
 #include "T_TableViewModel.h"
 
 #include <QIcon>
-T_TableViewModel::T_TableViewModel(QObject* parent)
-    : QAbstractTableModel{parent}
+T_TableViewModel::T_TableViewModel(QObject* parent) : QAbstractTableModel{parent}
 {
     _header << "预览"
             << "歌名"
@@ -64,15 +63,24 @@ T_TableViewModel::T_TableViewModel(QObject* parent)
     _dataList.append(data7);
     _dataList.append(data8);
 
-    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/NaightNavigationStar.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/MaVieEnRose.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/CollapsingWorld.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/RainMan.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/DarkForest.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/Light.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/STYXHELIX.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/LASTSTARDUST.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/RunningInTheDark.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/NaightNavigationStar.jpg")
+                               .scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/MaVieEnRose.jpg")
+                               .scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/CollapsingWorld.jpg")
+                               .scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    _iconList.append(QIcon(
+        QPixmap(":/Resource/Image/Model/RainMan.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/DarkForest.jpg")
+                               .scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    _iconList.append(QIcon(
+        QPixmap(":/Resource/Image/Model/Light.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    _iconList.append(QIcon(
+        QPixmap(":/Resource/Image/Model/STYXHELIX.jpg").scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/LASTSTARDUST.jpg")
+                               .scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+    _iconList.append(QIcon(QPixmap(":/Resource/Image/Model/RunningInTheDark.jpg")
+                               .scaled(38, 38, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
 }
 
 T_TableViewModel::~T_TableViewModel()

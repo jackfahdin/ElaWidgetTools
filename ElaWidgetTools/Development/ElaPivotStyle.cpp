@@ -18,42 +18,40 @@ ElaPivotStyle::~ElaPivotStyle()
 {
 }
 
-void ElaPivotStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaPivotStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                  const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::PE_PanelItemViewRow:
-    {
+    case QStyle::PE_PanelItemViewRow: {
         return;
     }
-    case QStyle::PE_Widget:
-    {
+    case QStyle::PE_Widget: {
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
-void ElaPivotStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaPivotStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::CE_ShapedFrame:
-    {
+    case QStyle::CE_ShapedFrame: {
         // viewport视口外的其他区域背景
         return;
     }
-    case QStyle::CE_ItemViewItem:
-    {
+    case QStyle::CE_ItemViewItem: {
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
             // 内容绘制
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform |
+                                    QPainter::TextAntialiasing);
             QRect textRect = proxy()->subElementRect(SE_ItemViewItemText, vopt, widget);
             textRect.adjust(0, 0, 0, -5);
             // 文字绘制
@@ -75,8 +73,7 @@ void ElaPivotStyle::drawControl(ControlElement element, const QStyleOption* opti
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -87,12 +84,10 @@ int ElaPivotStyle::pixelMetric(PixelMetric metric, const QStyleOption* option, c
 {
     switch (metric)
     {
-    case QStyle::PM_FocusFrameHMargin:
-    {
+    case QStyle::PM_FocusFrameHMargin: {
         return _pPivotSpacing;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

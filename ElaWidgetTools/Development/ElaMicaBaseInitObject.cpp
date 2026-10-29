@@ -4,8 +4,7 @@
 
 #include "ElaApplicationPrivate.h"
 #include "ElaExponentialBlur.h"
-ElaMicaBaseInitObject::ElaMicaBaseInitObject(ElaApplicationPrivate* appPrivate, QObject* parent)
-    : QObject{parent}
+ElaMicaBaseInitObject::ElaMicaBaseInitObject(ElaApplicationPrivate* appPrivate, QObject* parent) : QObject{parent}
 {
     _appPrivate = appPrivate;
 }

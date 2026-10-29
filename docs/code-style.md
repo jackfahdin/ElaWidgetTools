@@ -6,7 +6,7 @@
 
 配置沿用现有代码习惯：C++ 使用 4 空格缩进，类型、函数和控制语句的大括号换行，指针写作 `QWidget*`，引用写作 `const QString&`，目标行宽为 120。保留现有头文件顺序；Qt 与 Ela 的声明宏单独配置，避免连续宏调用被合并排版。
 
-本次只建立工具配置，不对历史源码进行全量格式化。新建或主动修改的文件逐步遵循规则，格式整理与功能修改分别提交。现有文件可能尚未符合全部规则，格式检查报差异不等于编译失败。
+组件库和 Example 的现有 C++ 源码及 CMake 文件已统一格式，作为后续开发的格式基线。新建或主动修改的文件继续遵循规则，格式整理与功能修改分别提交。格式检查报差异不等于编译失败。
 
 | 文件 | 作用 |
 | --- | --- |
@@ -50,7 +50,7 @@ clang-format --style=file -i ElaWidgetTools/ElaPushButton.cpp
 clang-format --style=file --dry-run --Werror ElaWidgetTools/ElaPushButton.cpp
 ```
 
-`--dry-run --Werror` 在发现格式差异时返回非零退出码。只对已经整理的文件要求通过，暂不以历史代码的全仓结果作为合并门槛。自动生成的 `moc_*`、`ui_*`、`qrc_*` 及 `build/`、`install/` 中的文件不应作为格式化输入。
+`--dry-run --Werror` 在发现格式差异时返回非零退出码。提交前对本次修改的源码运行检查；当前仍不接入强制 CI 门槛。自动生成的 `moc_*`、`ui_*`、`qrc_*` 及 `build/`、`install/` 中的文件不应作为格式化输入。
 
 ## CMake 格式
 
@@ -61,7 +61,7 @@ cmake-format -c .cmake-format.yaml --check CMakeLists.txt
 cmake-format -c .cmake-format.yaml -i CMakeLists.txt
 ```
 
-第一条只检查，第二条会修改文件。按需对 `ElaWidgetTools/CMakeLists.txt`、`ElaWidgetToolsExample/CMakeLists.txt` 和 `.cmake` 文件使用相同命令；当前历史文件也可能报告格式差异。`CMakePresets.json` 是 JSON，不由 cmake-format 处理。
+第一条只检查，第二条会修改文件。按需对 `ElaWidgetTools/CMakeLists.txt`、`ElaWidgetToolsExample/CMakeLists.txt` 和 `.cmake` / `.cmake.in` 文件使用相同命令。`CMakePresets.json` 是 JSON，不由 cmake-format 处理。
 
 ## C++ 静态分析
 
@@ -90,3 +90,5 @@ clang-tidy -p build/local-linux-debug ElaWidgetTools/ElaPushButton.cpp
 按项目约定，本次不添加自动化测试。工具配置通过解析检查、代表文件的格式预览及单个翻译单元静态分析验证，实际结果随工具升级重新核对。
 
 2026-10-29 已在本机 Linux / Qt 6.12.0 验证上述固定版本：C++ 头文件、实现文件和枚举宏格式预览正常，CMake 格式输出可再次通过格式检查，clang-tidy 配置校验通过。`ElaPushButton.cpp` 分析完成，未报告项目内告警（依赖代码的 125 条告警被过滤）；这不代表全仓静态分析通过。`local-linux-debug` 配置与组件库、Example 构建通过。
+
+同日完成全仓格式基线整理：455 个 C++ 文件和 4 个 CMake 文件（含安装配置模板）全部通过格式检查，Debug / Release 组件库及 Example 重新编译通过。已核对宏、条件编译、长字符串及 CMake 差异，未执行 clang-tidy 自动修复或功能修改。

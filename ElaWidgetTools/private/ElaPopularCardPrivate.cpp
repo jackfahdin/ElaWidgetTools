@@ -5,8 +5,7 @@
 #include "ElaPopularCard.h"
 #include "ElaPopularCardFloater.h"
 
-ElaPopularCardPrivate::ElaPopularCardPrivate(QObject* parent)
-    : QObject{parent}
+ElaPopularCardPrivate::ElaPopularCardPrivate(QObject* parent) : QObject{parent}
 {
 }
 

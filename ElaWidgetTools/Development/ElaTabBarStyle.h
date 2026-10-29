@@ -12,9 +12,12 @@ class ElaTabBarStyle : public QProxyStyle
 public:
     explicit ElaTabBarStyle(QStyle* style = nullptr);
     ~ElaTabBarStyle() override;
-    void drawPrimitive(QStyle::PrimitiveElement pe, const QStyleOption* opt, QPainter* p, const QWidget* w) const override;
-    void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget = nullptr) const override;
-    QSize sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const override;
+    void drawPrimitive(QStyle::PrimitiveElement pe, const QStyleOption* opt, QPainter* p,
+                       const QWidget* w) const override;
+    void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                     const QWidget* widget = nullptr) const override;
+    QSize sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                           const QWidget* widget) const override;
     QRect subElementRect(SubElement element, const QStyleOption* option, const QWidget* widget) const override;
 
 private:
@@ -22,4 +25,3 @@ private:
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELATABBARSTYLE_H_
-

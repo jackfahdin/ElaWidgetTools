@@ -6,8 +6,7 @@
 #include "ElaScrollAreaPrivate.h"
 #include "ElaScrollBar.h"
 
-ElaScrollArea::ElaScrollArea(QWidget* parent)
-    : QScrollArea(parent), d_ptr(new ElaScrollAreaPrivate())
+ElaScrollArea::ElaScrollArea(QWidget* parent) : QScrollArea(parent), d_ptr(new ElaScrollAreaPrivate())
 {
     Q_D(ElaScrollArea);
     d->q_ptr = this;
@@ -44,14 +43,20 @@ void ElaScrollArea::setIsGrabGesture(bool isEnable, qreal mousePressEventDelay)
 void ElaScrollArea::setIsOverShoot(Qt::Orientation orientation, bool isEnable)
 {
     QScrollerProperties properties = QScroller::scroller(this->viewport())->scrollerProperties();
-    properties.setScrollMetric(orientation == Qt::Horizontal ? QScrollerProperties::HorizontalOvershootPolicy : QScrollerProperties::VerticalOvershootPolicy, isEnable ? QScrollerProperties::OvershootAlwaysOn : QScrollerProperties::OvershootAlwaysOff);
+    properties.setScrollMetric(orientation == Qt::Horizontal ? QScrollerProperties::HorizontalOvershootPolicy
+                                                             : QScrollerProperties::VerticalOvershootPolicy,
+                               isEnable ? QScrollerProperties::OvershootAlwaysOn
+                                        : QScrollerProperties::OvershootAlwaysOff);
     QScroller::scroller(this->viewport())->setScrollerProperties(properties);
 }
 
 bool ElaScrollArea::getIsOverShoot(Qt::Orientation orientation) const
 {
     QScrollerProperties properties = QScroller::scroller(this->viewport())->scrollerProperties();
-    return properties.scrollMetric(orientation == Qt::Horizontal ? QScrollerProperties::HorizontalOvershootPolicy : QScrollerProperties::VerticalOvershootPolicy).toBool();
+    return properties
+        .scrollMetric(orientation == Qt::Horizontal ? QScrollerProperties::HorizontalOvershootPolicy
+                                                    : QScrollerProperties::VerticalOvershootPolicy)
+        .toBool();
 }
 
 void ElaScrollArea::setIsAnimation(Qt::Orientation orientation, bool isAnimation)

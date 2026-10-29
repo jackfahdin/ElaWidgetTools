@@ -5,7 +5,8 @@
 #include <QAbstractListModel>
 #include <QAction>
 
-struct ElaRibbonGroupData {
+struct ElaRibbonGroupData
+{
     QString groupName{""};
     QList<QAction*> ribbonDataList;
 };
@@ -45,4 +46,4 @@ private:
     QList<ElaRibbonGroupData> _ribbonDataList;
 };
 
-#endif //ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELARIBBONBARMODEL_H_
+#endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELARIBBONBARMODEL_H_

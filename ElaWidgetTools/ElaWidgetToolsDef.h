@@ -7,23 +7,23 @@
 #define ElaDefVersion "2.0.3"
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-#define Q_BEGIN_ENUM_CREATE(CLASS) \
-    namespace CLASS                \
-    {                              \
+#define Q_BEGIN_ENUM_CREATE(CLASS)                                                                                     \
+    namespace CLASS                                                                                                    \
+    {                                                                                                                  \
     Q_NAMESPACE_EXPORT(ELA_EXPORT)
 
 #define Q_END_ENUM_CREATE(CLASS) }
 
 #define Q_ENUM_CREATE(CLASS) Q_ENUM_NS(CLASS)
 #else
-#define Q_BEGIN_ENUM_CREATE(CLASS)          \
-    class ELA_EXPORT CLASS : public QObject \
-    {                                       \
-        Q_OBJECT                            \
+#define Q_BEGIN_ENUM_CREATE(CLASS)                                                                                     \
+    class ELA_EXPORT CLASS : public QObject                                                                            \
+    {                                                                                                                  \
+        Q_OBJECT                                                                                                       \
     public:
 
-#define Q_END_ENUM_CREATE(CLASS) \
-    }                            \
+#define Q_END_ENUM_CREATE(CLASS)                                                                                       \
+    }                                                                                                                  \
     ;
 
 #define Q_ENUM_CREATE(CLASS) Q_ENUM(CLASS)

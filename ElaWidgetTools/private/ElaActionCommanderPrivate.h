@@ -21,7 +21,8 @@ class ElaActionCommanderPrivate : public QObject
     ELA_PROPERTY_D(int, MaxCommandCount)
     ELA_PROPERTY_D(bool, IsRunToCommandProcessEventEnable)
 public:
-    struct ElaActionCommandDomainData {
+    struct ElaActionCommandDomainData
+    {
         bool isBusyMode{false};
         int currentIndex{-1};
         ElaActionCommanderType::CommanderState undoState{ElaActionCommanderType::UndoInvalid};

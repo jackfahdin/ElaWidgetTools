@@ -6,8 +6,7 @@
 #include <QPropertyAnimation>
 #include <private/qtabbar_p.h>
 
-ElaTabBarPrivate::ElaTabBarPrivate(QObject* parent)
-    : QObject{parent}
+ElaTabBarPrivate::ElaTabBarPrivate(QObject* parent) : QObject{parent}
 {
     _scrollAnimation = new QPropertyAnimation(this, "pScrollOffset");
     _scrollAnimation->setDuration(200);

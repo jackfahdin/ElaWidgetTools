@@ -24,12 +24,12 @@ ElaActionCommanderViewStyle::~ElaActionCommanderViewStyle()
 {
 }
 
-void ElaActionCommanderViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaActionCommanderViewStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                                const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::PE_PanelItemViewItem:
-    {
+    case QStyle::PE_PanelItemViewItem: {
         // Item背景
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
@@ -65,8 +65,7 @@ void ElaActionCommanderViewStyle::drawPrimitive(PrimitiveElement element, const 
         }
         return;
     }
-    case QStyle::PE_IndicatorBranch:
-    {
+    case QStyle::PE_IndicatorBranch: {
         // 展开图标绘制
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
@@ -79,14 +78,16 @@ void ElaActionCommanderViewStyle::drawPrimitive(PrimitiveElement element, const 
                 iconFont.setPixelSize(eApp->getFontPixelSize() + 4);
                 painter->setFont(iconFont);
                 painter->setPen(ElaThemeColor(_themeMode, BasicText));
-                painter->drawText(indicatorRect, Qt::AlignVCenter | Qt::AlignRight, vopt->state.testFlag(QStyle::State_Open) ? QChar(static_cast<char16_t>(ElaIconType::AngleDown)) : QChar(static_cast<char16_t>(ElaIconType::AngleRight)));
+                painter->drawText(indicatorRect, Qt::AlignVCenter | Qt::AlignRight,
+                                  vopt->state.testFlag(QStyle::State_Open)
+                                      ? QChar(static_cast<char16_t>(ElaIconType::AngleDown))
+                                      : QChar(static_cast<char16_t>(ElaIconType::AngleRight)));
                 painter->restore();
             }
         }
         return;
     }
-    case QStyle::PE_IndicatorItemViewItemDrop:
-    {
+    case QStyle::PE_IndicatorItemViewItemDrop: {
         painter->save();
         painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
         painter->setPen(ElaThemeColor(_themeMode, BasicText));
@@ -103,33 +104,29 @@ void ElaActionCommanderViewStyle::drawPrimitive(PrimitiveElement element, const 
         painter->restore();
         return;
     }
-    case QStyle::PE_PanelItemViewRow:
-    {
+    case QStyle::PE_PanelItemViewRow: {
         return;
     }
-    case QStyle::PE_Widget:
-    {
+    case QStyle::PE_Widget: {
         return;
     }
-    case QStyle::PE_Frame:
-    {
+    case QStyle::PE_Frame: {
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
-void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                                              const QWidget* widget) const
 {
     int fontPixelSize = eApp->getFontPixelSize();
     switch (element)
     {
-    case QStyle::CE_ShapedFrame:
-    {
+    case QStyle::CE_ShapedFrame: {
         // viewport视口外的其他区域背景
         QRect frameRect = option->rect;
         frameRect.adjust(1, 1, -1, -1);
@@ -141,14 +138,14 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
         painter->restore();
         return;
     }
-    case QStyle::CE_HeaderLabel:
-    {
+    case QStyle::CE_HeaderLabel: {
         // 表头文字绘制
         if (const QStyleOptionHeader* hopt = qstyleoption_cast<const QStyleOptionHeader*>(option))
         {
             QRect headerRect = option->rect;
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform |
+                                    QPainter::TextAntialiasing);
             if (!hopt->text.isEmpty())
             {
                 painter->setPen(ElaThemeColor(_themeMode, BasicText));
@@ -158,8 +155,7 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
         }
         return;
     }
-    case QStyle::CE_HeaderSection:
-    {
+    case QStyle::CE_HeaderSection: {
         // 表头背景绘制
         painter->save();
         painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
@@ -169,8 +165,7 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
         painter->restore();
         return;
     }
-    case QStyle::CE_ItemViewItem:
-    {
+    case QStyle::CE_ItemViewItem: {
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
             // 背景绘制
@@ -178,7 +173,8 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
             // 内容绘制
             QRect itemRect = option->rect;
             painter->save();
-            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
+            painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform |
+                                    QPainter::TextAntialiasing);
             QRect checkRect = proxy()->subElementRect(SE_ItemViewItemCheckIndicator, vopt, widget);
             QRect iconRect = proxy()->subElementRect(SE_ItemViewItemDecoration, vopt, widget);
             QRect textRect = proxy()->subElementRect(SE_ItemViewItemText, vopt, widget);
@@ -186,7 +182,7 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
             if (checkRect.isValid())
             {
                 painter->save();
-                //图标绘制
+                // 图标绘制
                 if (vopt->checkState == Qt::Checked)
                 {
                     painter->setPen(Qt::NoPen);
@@ -204,7 +200,8 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
                     painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
                     painter->drawRoundedRect(checkRect, 2, 2);
                     painter->setPen(ElaThemeColor(ElaThemeType::Dark, BasicText));
-                    QLine checkLine(checkRect.x() + 3, checkRect.center().y(), checkRect.right() - 3, checkRect.center().y());
+                    QLine checkLine(checkRect.x() + 3, checkRect.center().y(), checkRect.right() - 3,
+                                    checkRect.center().y());
                     painter->drawLine(checkLine);
                 }
                 else
@@ -230,8 +227,7 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
                 painter->save();
                 switch (indexNode->getMessageMode())
                 {
-                case ElaMessageBarType::Success:
-                {
+                case ElaMessageBarType::Success: {
                     painter->setPen(Qt::NoPen);
                     painter->setBrush(QColor(0x01, 0xE5, 0x7B));
                     painter->drawEllipse(QPoint(textRect.x(), textRect.y() + textRect.height() / 2), 10, 10);
@@ -239,11 +235,12 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
                     iconFont.setPixelSize(fontPixelSize - 1);
                     painter->setFont(iconFont);
                     painter->setPen(Qt::black);
-                    painter->drawText(textRect.x() - 5, textRect.y(), textRect.width(), textRect.height(), Qt::AlignVCenter | Qt::AlignLeft, QChar(static_cast<char16_t>(ElaIconType::Check)));
+                    painter->drawText(textRect.x() - 5, textRect.y(), textRect.width(), textRect.height(),
+                                      Qt::AlignVCenter | Qt::AlignLeft,
+                                      QChar(static_cast<char16_t>(ElaIconType::Check)));
                     break;
                 }
-                case ElaMessageBarType::Information:
-                {
+                case ElaMessageBarType::Information: {
                     painter->setPen(Qt::NoPen);
                     painter->setBrush(QColor(0xF4, 0xF4, 0xF4));
                     painter->drawEllipse(QPoint(textRect.x(), textRect.y() + textRect.height() / 2), 10, 10);
@@ -252,11 +249,11 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
                     iconFont.setBold(true);
                     painter->setFont(iconFont);
                     painter->setPen(Qt::black);
-                    painter->drawText(textRect.x() - 2, textRect.y(), textRect.width(), textRect.height(), Qt::AlignVCenter | Qt::AlignLeft, "i");
+                    painter->drawText(textRect.x() - 2, textRect.y(), textRect.width(), textRect.height(),
+                                      Qt::AlignVCenter | Qt::AlignLeft, "i");
                     break;
                 }
-                case ElaMessageBarType::Warning:
-                {
+                case ElaMessageBarType::Warning: {
                     painter->setPen(Qt::NoPen);
                     painter->setBrush(QColor(0xFA, 0xB6, 0x00));
                     painter->drawEllipse(QPoint(textRect.x(), textRect.y() + textRect.height() / 2), 10, 10);
@@ -265,11 +262,11 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
                     iconFont.setBold(true);
                     painter->setFont(iconFont);
                     painter->setPen(Qt::black);
-                    painter->drawText(textRect.x() - 3, textRect.y(), textRect.width(), textRect.height(), Qt::AlignVCenter | Qt::AlignLeft, "!");
+                    painter->drawText(textRect.x() - 3, textRect.y(), textRect.width(), textRect.height(),
+                                      Qt::AlignVCenter | Qt::AlignLeft, "!");
                     break;
                 }
-                case ElaMessageBarType::Error:
-                {
+                case ElaMessageBarType::Error: {
                     painter->setPen(Qt::NoPen);
                     painter->setBrush(ElaThemeColor(_themeMode, StatusDanger));
                     painter->drawEllipse(QPoint(textRect.x(), textRect.y() + textRect.height() / 2), 10, 10);
@@ -277,11 +274,12 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
                     iconFont.setPixelSize(fontPixelSize);
                     painter->setFont(iconFont);
                     painter->setPen(Qt::white);
-                    painter->drawText(textRect.x() - 5, textRect.y(), textRect.width(), textRect.height(), Qt::AlignVCenter | Qt::AlignLeft, QChar(static_cast<char16_t>(ElaIconType::Xmark)));
+                    painter->drawText(textRect.x() - 5, textRect.y(), textRect.width(), textRect.height(),
+                                      Qt::AlignVCenter | Qt::AlignLeft,
+                                      QChar(static_cast<char16_t>(ElaIconType::Xmark)));
                     break;
                 }
-                default:
-                {
+                default: {
                     break;
                 }
                 }
@@ -291,72 +289,75 @@ void ElaActionCommanderViewStyle::drawControl(ControlElement element, const QSty
             bool isEnable = vopt->state.testFlag(QStyle::State_Enabled);
             if (!vopt->text.isEmpty())
             {
-                painter->setPen(isEnable ? ElaThemeColor(_themeMode, BasicText) : ElaThemeColor(_themeMode, BasicTextDisable));
+                painter->setPen(isEnable ? ElaThemeColor(_themeMode, BasicText)
+                                         : ElaThemeColor(_themeMode, BasicTextDisable));
                 painter->drawText(textRect, vopt->displayAlignment, vopt->text);
             }
             // 选中特效
             int heightOffset = itemRect.height() / 4;
             painter->setPen(Qt::NoPen);
             painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
-            if (vopt->state.testFlag(QStyle::State_Selected) && (vopt->viewItemPosition == QStyleOptionViewItem::Beginning || vopt->viewItemPosition == QStyleOptionViewItem::OnlyOne))
+            if (vopt->state.testFlag(QStyle::State_Selected) &&
+                (vopt->viewItemPosition == QStyleOptionViewItem::Beginning ||
+                 vopt->viewItemPosition == QStyleOptionViewItem::OnlyOne))
             {
-                painter->drawRoundedRect(QRectF(itemRect.x() + 3, itemRect.y() + heightOffset, 3, itemRect.height() - 2 * heightOffset), 1.5, 1.5);
+                painter->drawRoundedRect(
+                    QRectF(itemRect.x() + 3, itemRect.y() + heightOffset, 3, itemRect.height() - 2 * heightOffset), 1.5,
+                    1.5);
             }
             painter->restore();
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     QProxyStyle::drawControl(element, option, painter, widget);
 }
 
-QSize ElaActionCommanderViewStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size, const QWidget* widget) const
+QSize ElaActionCommanderViewStyle::sizeFromContents(ContentsType type, const QStyleOption* option, const QSize& size,
+                                                    const QWidget* widget) const
 {
     switch (type)
     {
-    case QStyle::CT_ItemViewItem:
-    {
+    case QStyle::CT_ItemViewItem: {
         QSize itemSize = QProxyStyle::sizeFromContents(type, option, size, widget);
         itemSize.setHeight(_pItemHeight);
         return itemSize;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     return QProxyStyle::sizeFromContents(type, option, size, widget);
 }
 
-int ElaActionCommanderViewStyle::pixelMetric(PixelMetric metric, const QStyleOption* option, const QWidget* widget) const
+int ElaActionCommanderViewStyle::pixelMetric(PixelMetric metric, const QStyleOption* option,
+                                             const QWidget* widget) const
 {
     switch (metric)
     {
-    case QStyle::PM_HeaderMargin:
-    {
+    case QStyle::PM_HeaderMargin: {
         return _pHeaderMargin;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
     return QProxyStyle::pixelMetric(metric, option, widget);
 }
 
-QRect ElaActionCommanderViewStyle::subElementRect(SubElement element, const QStyleOption* option, const QWidget* widget) const
+QRect ElaActionCommanderViewStyle::subElementRect(SubElement element, const QStyleOption* option,
+                                                  const QWidget* widget) const
 {
     switch (element)
     {
-    case QStyle::SE_ItemViewItemCheckIndicator:
-    {
+    case QStyle::SE_ItemViewItemCheckIndicator: {
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
-            if (vopt->viewItemPosition != QStyleOptionViewItem::Middle && vopt->viewItemPosition != QStyleOptionViewItem::End)
+            if (vopt->viewItemPosition != QStyleOptionViewItem::Middle &&
+                vopt->viewItemPosition != QStyleOptionViewItem::End)
             {
                 QRect indicatorRect = QProxyStyle::subElementRect(element, option, widget);
                 indicatorRect.adjust(_leftPadding, 0, _leftPadding, 0);
@@ -365,11 +366,11 @@ QRect ElaActionCommanderViewStyle::subElementRect(SubElement element, const QSty
         }
         break;
     }
-    case QStyle::SE_ItemViewItemDecoration:
-    {
+    case QStyle::SE_ItemViewItemDecoration: {
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
-            if (vopt->viewItemPosition != QStyleOptionViewItem::Middle && vopt->viewItemPosition != QStyleOptionViewItem::End)
+            if (vopt->viewItemPosition != QStyleOptionViewItem::Middle &&
+                vopt->viewItemPosition != QStyleOptionViewItem::End)
             {
                 QRect iconRect = QProxyStyle::subElementRect(element, option, widget);
                 iconRect.adjust(_leftPadding + 5, 0, _leftPadding + 5, 0);
@@ -378,11 +379,11 @@ QRect ElaActionCommanderViewStyle::subElementRect(SubElement element, const QSty
         }
         break;
     }
-    case QStyle::SE_ItemViewItemText:
-    {
+    case QStyle::SE_ItemViewItemText: {
         if (const QStyleOptionViewItem* vopt = qstyleoption_cast<const QStyleOptionViewItem*>(option))
         {
-            if (vopt->viewItemPosition != QStyleOptionViewItem::Middle && vopt->viewItemPosition != QStyleOptionViewItem::End)
+            if (vopt->viewItemPosition != QStyleOptionViewItem::Middle &&
+                vopt->viewItemPosition != QStyleOptionViewItem::End)
             {
                 QRect textRect = QProxyStyle::subElementRect(element, option, widget);
                 textRect.adjust(_leftPadding + 10, 0, 0, 0);
@@ -391,8 +392,7 @@ QRect ElaActionCommanderViewStyle::subElementRect(SubElement element, const QSty
         }
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

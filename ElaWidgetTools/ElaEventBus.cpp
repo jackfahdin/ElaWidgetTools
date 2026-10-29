@@ -7,8 +7,7 @@ ELA_SINGLETON_CPP(ElaEventBus);
 ELA_PROPERTY_Q_CPP(ElaEvent, QString, EventName);
 ELA_PROPERTY_Q_CPP(ElaEvent, QString, FunctionName);
 ELA_PROPERTY_Q_CPP(ElaEvent, Qt::ConnectionType, ConnectionType);
-ElaEvent::ElaEvent(QObject* parent)
-    : QObject{parent}, d_ptr(new ElaEventPrivate())
+ElaEvent::ElaEvent(QObject* parent) : QObject{parent}, d_ptr(new ElaEventPrivate())
 {
     Q_D(ElaEvent);
     d->q_ptr = this;
@@ -37,8 +36,7 @@ ElaEvent::~ElaEvent()
     ElaEventBus::getInstance()->d_ptr->unRegisterEvent(this);
 }
 
-ElaEventBus::ElaEventBus(QObject* parent)
-    : QObject{parent}, d_ptr(new ElaEventBusPrivate())
+ElaEventBus::ElaEventBus(QObject* parent) : QObject{parent}, d_ptr(new ElaEventBusPrivate())
 {
     Q_D(ElaEventBus);
     d->q_ptr = this;
@@ -62,7 +60,8 @@ ElaEventBusType::EventBusReturnType ElaEventBus::post(const QString& eventName, 
         {
             if (event->parent())
             {
-                QMetaObject::invokeMethod(event->parent(), event->getFunctionName().toLocal8Bit().constData(), event->getConnectionType(), Q_ARG(QVariantMap, data));
+                QMetaObject::invokeMethod(event->parent(), event->getFunctionName().toLocal8Bit().constData(),
+                                          event->getConnectionType(), Q_ARG(QVariantMap, data));
             }
         }
     }

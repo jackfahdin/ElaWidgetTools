@@ -6,8 +6,7 @@
 #include <QStyleOption>
 
 #include "ElaTheme.h"
-ElaColorDisplayDelegate::ElaColorDisplayDelegate(QObject* parent)
-    : QStyledItemDelegate{parent}
+ElaColorDisplayDelegate::ElaColorDisplayDelegate(QObject* parent) : QStyledItemDelegate{parent}
 {
     _pThemeMode = eTheme->getThemeMode();
 }
@@ -16,7 +15,8 @@ ElaColorDisplayDelegate::~ElaColorDisplayDelegate()
 {
 }
 
-void ElaColorDisplayDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void ElaColorDisplayDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
+                                    const QModelIndex& index) const
 {
     painter->save();
     painter->setRenderHints(QPainter::Antialiasing);

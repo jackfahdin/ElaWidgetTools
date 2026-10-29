@@ -1,7 +1,6 @@
 #include "ElaPivotModel.h"
 
-ElaPivotModel::ElaPivotModel(QObject* parent)
-    : QAbstractListModel{parent}
+ElaPivotModel::ElaPivotModel(QObject* parent) : QAbstractListModel{parent}
 {
 }
 

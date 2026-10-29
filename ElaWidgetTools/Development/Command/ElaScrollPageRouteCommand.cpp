@@ -3,8 +3,7 @@
 #include "ElaBreadcrumbBar.h"
 #include "ElaScrollPage.h"
 #include "ElaScrollPagePrivate.h"
-ElaScrollPageRouteCommand::ElaScrollPageRouteCommand(QObject* parent)
-    : ElaActionCommand(parent)
+ElaScrollPageRouteCommand::ElaScrollPageRouteCommand(QObject* parent) : ElaActionCommand(parent)
 {
     _pIsBreadcrumbClicked = false;
 }

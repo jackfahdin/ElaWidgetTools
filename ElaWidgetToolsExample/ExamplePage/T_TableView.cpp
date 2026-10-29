@@ -7,8 +7,7 @@
 #include "ElaTableView.h"
 #include "ElaText.h"
 #include "T_TableViewModel.h"
-T_TableView::T_TableView(QWidget* parent)
-    : T_BasePage(parent)
+T_TableView::T_TableView(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
     setWindowTitle("ElaTableView");
@@ -16,7 +15,7 @@ T_TableView::T_TableView(QWidget* parent)
     // 顶部元素
     createCustomWidget("表格视图被放置于此，可在此界面体验其效果并按需添加进项目中");
 
-    //ElaTableView
+    // ElaTableView
     ElaText* tableText = new ElaText("ElaTableView", this);
     tableText->setTextPixelSize(18);
     _tableView = new ElaTableView(this);

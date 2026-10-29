@@ -18,12 +18,12 @@ ElaLineEditStyle::~ElaLineEditStyle()
 {
 }
 
-void ElaLineEditStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget) const
+void ElaLineEditStyle::drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
+                                     const QWidget* widget) const
 {
     switch (element)
     {
-    case PE_PanelLineEdit:
-    {
+    case PE_PanelLineEdit: {
         if (const QStyleOptionFrame* fopt = qstyleoption_cast<const QStyleOptionFrame*>(option))
         {
             QRect lineEditRect = fopt->rect;
@@ -47,7 +47,9 @@ void ElaLineEditStyle::drawPrimitive(PrimitiveElement element, const QStyleOptio
             {
                 painter->setBrush(ElaThemeColor(_themeMode, BasicBaseAlpha));
             }
-            painter->drawRoundedRect(QRectF(lineEditRect.x() + 1.5, lineEditRect.y() + 1.5, lineEditRect.width() - 3, lineEditRect.height() - 3), 6, 6);
+            painter->drawRoundedRect(QRectF(lineEditRect.x() + 1.5, lineEditRect.y() + 1.5, lineEditRect.width() - 3,
+                                            lineEditRect.height() - 3),
+                                     6, 6);
 
             // 底边线绘制
             painter->setBrush(ElaThemeColor(_themeMode, BasicHemline));
@@ -63,8 +65,7 @@ void ElaLineEditStyle::drawPrimitive(PrimitiveElement element, const QStyleOptio
         }
         return;
     }
-    default:
-    {
+    default: {
         break;
     }
     }

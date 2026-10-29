@@ -6,8 +6,7 @@
 
 #include "ElaPivotStyle.h"
 #include "ElaScrollBar.h"
-ElaPivotView::ElaPivotView(QWidget* parent)
-    : QListView(parent)
+ElaPivotView::ElaPivotView(QWidget* parent) : QListView(parent)
 {
     _pMarkX = 0;
     _pMarkWidth = 30;

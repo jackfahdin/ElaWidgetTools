@@ -5,8 +5,7 @@
 #include <QtMath>
 
 #include "ElaPromotionCard.h"
-ElaPromotionCardPrivate::ElaPromotionCardPrivate(QObject* parent)
-    : QObject{parent}
+ElaPromotionCardPrivate::ElaPromotionCardPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -28,7 +27,8 @@ qreal ElaPromotionCardPrivate::_getLongestDistance(QPoint point)
 
 qreal ElaPromotionCardPrivate::_distance(QPoint point1, QPoint point2)
 {
-    return std::sqrt((point1.x() - point2.x()) * (point1.x() - point2.x()) + (point1.y() - point2.y()) * (point1.y() - point2.y()));
+    return std::sqrt((point1.x() - point2.x()) * (point1.x() - point2.x()) +
+                     (point1.y() - point2.y()) * (point1.y() - point2.y()));
 }
 
 void ElaPromotionCardPrivate::_startHoverOpacityAnimation(bool isVisible)

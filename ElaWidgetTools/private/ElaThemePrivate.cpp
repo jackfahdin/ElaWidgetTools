@@ -1,7 +1,6 @@
 #include "ElaThemePrivate.h"
 
-ElaThemePrivate::ElaThemePrivate(QObject* parent)
-    : QObject{parent}
+ElaThemePrivate::ElaThemePrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -11,11 +10,11 @@ ElaThemePrivate::~ElaThemePrivate()
 
 void ElaThemePrivate::_initThemeColor()
 {
-    //ElaScrollBar
+    // ElaScrollBar
     _lightThemeColorList[ElaThemeType::ScrollBarHandle] = QColor(0x8A, 0x8A, 0x8A);
     _darkThemeColorList[ElaThemeType::ScrollBarHandle] = QColor(0x9F, 0x9F, 0x9F);
 
-    //ElaToggleSwitch
+    // ElaToggleSwitch
     _lightThemeColorList[ElaThemeType::ToggleSwitchNoToggledCenter] = QColor(0x6A, 0x6A, 0x6A);
     _darkThemeColorList[ElaThemeType::ToggleSwitchNoToggledCenter] = QColor(0xD0, 0xD0, 0xD0);
 

@@ -2,8 +2,7 @@
 #include "ElaApplication.h"
 #include "ElaPlainTextEdit.h"
 #include "ElaTheme.h"
-ElaPlainTextEditPrivate::ElaPlainTextEditPrivate(QObject* parent)
-    : QObject{parent}
+ElaPlainTextEditPrivate::ElaPlainTextEditPrivate(QObject* parent) : QObject{parent}
 {
 }
 
@@ -24,7 +23,8 @@ void ElaPlainTextEditPrivate::onWMWindowClickedEvent(const QVariantMap& data)
     }
     else if (actionType == ElaAppBarType::WMLBUTTONUP || actionType == ElaAppBarType::WMNCLBUTTONDOWN)
     {
-        if (ElaApplication::containsCursorToItem(q) || (actionType == ElaAppBarType::WMLBUTTONUP && !q->toPlainText().isEmpty()))
+        if (ElaApplication::containsCursorToItem(q) ||
+            (actionType == ElaAppBarType::WMLBUTTONUP && !q->toPlainText().isEmpty()))
         {
             return;
         }
@@ -41,6 +41,7 @@ void ElaPlainTextEditPrivate::onThemeChanged(ElaThemeType::ThemeMode themeMode)
     _themeMode = themeMode;
     QPalette palette = q->palette();
     palette.setColor(QPalette::Text, ElaThemeColor(_themeMode, BasicText));
-    palette.setColor(QPalette::PlaceholderText, _themeMode == ElaThemeType::Light ? QColor(0x00, 0x00, 0x00, 128) : QColor(0xBA, 0xBA, 0xBA));
+    palette.setColor(QPalette::PlaceholderText,
+                     _themeMode == ElaThemeType::Light ? QColor(0x00, 0x00, 0x00, 128) : QColor(0xBA, 0xBA, 0xBA));
     q->setPalette(palette);
 }

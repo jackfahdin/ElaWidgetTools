@@ -68,8 +68,11 @@ void ElaDockWidget::paintEvent(QPaintEvent* event)
 #else
         // 背景
         painter.setPen(Qt::NoPen);
-        painter.setBrush(d->_windowDisplayMode == ElaApplicationType::WindowDisplayMode::ElaMica ? Qt::transparent : ElaThemeColor(d->_themeMode, DialogBase));
-        QRect foregroundRect(d->_shadowBorderWidth, d->_shadowBorderWidth, width() - 2 * d->_shadowBorderWidth, height() - 2 * d->_shadowBorderWidth);
+        painter.setBrush(d->_windowDisplayMode == ElaApplicationType::WindowDisplayMode::ElaMica
+                             ? Qt::transparent
+                             : ElaThemeColor(d->_themeMode, DialogBase));
+        QRect foregroundRect(d->_shadowBorderWidth, d->_shadowBorderWidth, width() - 2 * d->_shadowBorderWidth,
+                             height() - 2 * d->_shadowBorderWidth);
         painter.drawRect(rect());
 #endif
         painter.restore();
@@ -84,8 +87,7 @@ bool ElaDockWidget::event(QEvent* event)
     switch (event->type())
     {
     case QEvent::Show:
-    case QEvent::MouseButtonRelease:
-    {
+    case QEvent::MouseButtonRelease: {
         HWND hwnd = (HWND)d->_currentWinID;
         DWORD style = ::GetWindowLongPtr(hwnd, GWL_STYLE);
         ::SetWindowLongPtr(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME);
@@ -99,8 +101,7 @@ bool ElaDockWidget::event(QEvent* event)
 #endif
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
@@ -130,8 +131,7 @@ bool ElaDockWidget::nativeEvent(const QByteArray& eventType, void* message, long
     const LPARAM lParam = msg->lParam;
     switch (uMsg)
     {
-    case WM_WINDOWPOSCHANGING:
-    {
+    case WM_WINDOWPOSCHANGING: {
         WINDOWPOS* wp = reinterpret_cast<WINDOWPOS*>(lParam);
         if (wp != nullptr && (wp->flags & SWP_NOSIZE) == 0)
         {
@@ -141,13 +141,11 @@ bool ElaDockWidget::nativeEvent(const QByteArray& eventType, void* message, long
         }
         return false;
     }
-    case WM_NCACTIVATE:
-    {
+    case WM_NCACTIVATE: {
         *result = TRUE;
         return true;
     }
-    case WM_NCHITTEST:
-    {
+    case WM_NCHITTEST: {
         POINT nativeLocalPos{GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
         ::ScreenToClient(hwnd, &nativeLocalPos);
         RECT clientRect{0, 0, 0, 0};
@@ -201,8 +199,7 @@ bool ElaDockWidget::nativeEvent(const QByteArray& eventType, void* message, long
         *result = HTCLIENT;
         return true;
     }
-    case WM_NCCALCSIZE:
-    {
+    case WM_NCCALCSIZE: {
         if (wParam == FALSE)
         {
             return false;

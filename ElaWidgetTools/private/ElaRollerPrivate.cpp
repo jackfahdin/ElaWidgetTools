@@ -1,8 +1,7 @@
 #include "ElaRollerPrivate.h"
 #include <QPropertyAnimation>
 
-ElaRollerPrivate::ElaRollerPrivate(QObject* parent)
-    : QObject(parent)
+ElaRollerPrivate::ElaRollerPrivate(QObject* parent) : QObject(parent)
 {
 }
 
