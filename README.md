@@ -67,6 +67,7 @@ Qt 5 和 Qt 6.12.0 以下版本不纳入后续维护范围。使用 CMake Preset
 | [组件目录](docs/components.md) | 按功能分类浏览当前组件，直达头文件 |
 | [维护与路线图](docs/roadmap.md) | 分支定位、Qt 版本策略、平台计划与构建迁移事项 |
 | [参与贡献](docs/contributing.md) | 问题反馈、功能建议与代码贡献 |
+| [代码风格](docs/code-style.md) | 格式配置、开发工具版本与手动静态分析 |
 | [示例项目](ElaWidgetToolsExample/) | 查看组件组合与交互用法 |
 
 ## 致谢与许可

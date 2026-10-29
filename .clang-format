@@ -1,0 +1,77 @@
+# 使用 clang-format 21.1.6；规则说明见 docs/code-style.md。
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++17
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 120
+AccessModifierOffset: -4
+NamespaceIndentation: None
+PointerAlignment: Left
+ReferenceAlignment: Pointer
+DerivePointerAlignment: false
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: false
+  SplitEmptyFunction: true
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+AllowShortLambdasOnASingleLine: None
+SortIncludes:
+  Enabled: false
+SortUsingDeclarations: Never
+IncludeBlocks: Preserve
+IndentPPDirectives: None
+StatementMacros:
+  - Q_UNUSED
+  - QT_REQUIRE_VERSION
+  - Q_OBJECT
+  - Q_GADGET
+  - Q_PROPERTY
+  - Q_ENUM
+  - Q_ENUM_NS
+  - Q_FLAG
+  - Q_FLAGS
+  - Q_DECLARE_FLAGS
+  - Q_DECLARE_OPERATORS_FOR_FLAGS
+  - Q_DECLARE_METATYPE
+  - Q_DECLARE_PRIVATE
+  - Q_DECLARE_PUBLIC
+  - Q_DISABLE_COPY
+  - Q_NAMESPACE_EXPORT
+  - Q_ENUM_CREATE
+  - Q_BEGIN_ENUM_CREATE
+  - Q_END_ENUM_CREATE
+  - ELA_PROPERTY
+  - ELA_PROPERTY_Q_H
+  - ELA_PROPERTY_Q_CPP
+  - ELA_PROPERTY_D
+  - ELA_VARIABLE
+  - ELA_VARIABLE_Q_H
+  - ELA_VARIABLE_Q_CPP
+  - ELA_VARIABLE_D
+  - ELA_PIMPL_Q
+  - ELA_PIMPL_Q_CPP
+  - ELA_PIMPL_D
+  - ELA_SINGLETON
+  - ELA_SINGLETON_H
+  - ELA_SINGLETON_CPP
+AttributeMacros:
+  - Q_SIGNAL
+  - Q_SLOT
+  - Q_INVOKABLE
+  - Q_REQUIRED_RESULT
+  - ELA_EXPORT

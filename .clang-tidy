@@ -1,0 +1,16 @@
+# 手动运行，不接入默认构建；不要直接对全仓使用 --fix。
+Checks: >-
+  -*,
+  clang-analyzer-core.*,
+  clang-analyzer-cplusplus.*,
+  clang-analyzer-deadcode.DeadStores,
+  bugprone-dangling-handle,
+  bugprone-sizeof-expression,
+  bugprone-suspicious-memset-usage,
+  bugprone-use-after-move,
+  modernize-use-nullptr
+WarningsAsErrors: ''
+HeaderFilterRegex: '(^|/)(ElaWidgetTools|ElaWidgetToolsExample)/'
+ExcludeHeaderFilterRegex: '(^|/)(build|install)/'
+SystemHeaders: false
+FormatStyle: file

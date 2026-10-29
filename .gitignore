@@ -55,8 +55,8 @@ compile_commands.json
 
 # CLion
 /.idea
-*.clang-format
 /install
+/.venv-code-tools/
 
 # CMake Presets 本地配置与构建产物
 /CMakeUserPresets.json

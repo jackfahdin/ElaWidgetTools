@@ -1,0 +1,5 @@
+# 开发工具，与组件库的编译和运行依赖无关。
+clang-format==21.1.6
+clang-tidy==21.1.6
+cmakelang==0.6.13
+PyYAML==6.0.3
