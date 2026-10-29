@@ -128,7 +128,9 @@ void ElaWindow::setIsStayTop(bool isStayTop)
 {
     Q_D(ElaWindow);
     d->_appBar->setIsStayTop(isStayTop);
+#ifndef Q_OS_LINUX
     Q_EMIT pIsStayTopChanged();
+#endif
 }
 
 bool ElaWindow::getIsStayTop() const

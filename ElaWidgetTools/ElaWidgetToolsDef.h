@@ -108,7 +108,7 @@ enum ButtonType
     RouteBackButtonHint = 0x0001,
     RouteForwardButtonHint = 0x0002,
     NavigationButtonHint = 0x0004,
-    StayTopButtonHint = 0x0008,
+    StayTopButtonHint = 0x0008, // Linux 下忽略，保留枚举值供跨平台代码使用。
     ThemeChangeButtonHint = 0x0010,
     MinimizeButtonHint = 0x00020,
     MaximizeButtonHint = 0x0040,

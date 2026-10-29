@@ -56,6 +56,7 @@ class ELA_EXPORT ElaAppBar : public QWidget
 {
     Q_OBJECT
     ELA_PIMPL_Q(ElaAppBar)
+    // Linux 不提供置顶：设置被忽略，查询始终返回 false。
     ELA_PROPERTY_Q_H(bool, IsStayTop)
     ELA_PROPERTY_Q_H(bool, IsDefaultClosed)
     ELA_PROPERTY_Q_H(bool, IsOnlyAllowMinAndClose)

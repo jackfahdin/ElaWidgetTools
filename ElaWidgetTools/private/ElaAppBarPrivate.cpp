@@ -66,6 +66,7 @@ void ElaAppBarPrivate::onCloseButtonClicked()
 
 void ElaAppBarPrivate::onStayTopButtonClicked()
 {
+#ifndef Q_OS_LINUX
 #ifdef Q_OS_WIN
     HWND hwnd = (HWND)_currentWinID;
     ::SetWindowPos(hwnd, _pIsStayTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -83,6 +84,7 @@ void ElaAppBarPrivate::onStayTopButtonClicked()
 #endif
     _stayTopButton->setIsSelected(_pIsStayTop);
     _stayTopButton->update();
+#endif
 }
 
 void ElaAppBarPrivate::_changeMaxButtonAwesome(bool isMaximized)

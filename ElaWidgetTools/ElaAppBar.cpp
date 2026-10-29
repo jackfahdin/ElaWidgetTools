@@ -26,9 +26,25 @@
 #include "ElaTheme.h"
 #include "ElaWidgetToolsDef.h"
 #include "private/ElaAppBarPrivate.h"
-ELA_PROPERTY_Q_CPP(ElaAppBar, bool, IsStayTop)
 ELA_PROPERTY_Q_CPP(ElaAppBar, bool, IsDefaultClosed)
 ELA_PROPERTY_Q_CPP(ElaAppBar, bool, IsOnlyAllowMinAndClose)
+
+void ElaAppBar::setIsStayTop(const bool& isStayTop)
+{
+#ifdef Q_OS_LINUX
+    Q_UNUSED(isStayTop);
+#else
+    Q_D(ElaAppBar);
+    d->_pIsStayTop = isStayTop;
+    Q_EMIT pIsStayTopChanged();
+#endif
+}
+
+const bool& ElaAppBar::getIsStayTop() const
+{
+    Q_D(const ElaAppBar);
+    return d->_pIsStayTop;
+}
 
 ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPrivate())
 {
@@ -37,6 +53,9 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
                       ElaAppBarType::StayTopButtonHint | ElaAppBarType::ThemeChangeButtonHint |
                       ElaAppBarType::MinimizeButtonHint | ElaAppBarType::MaximizeButtonHint |
                       ElaAppBarType::CloseButtonHint;
+#ifdef Q_OS_LINUX
+    d->_buttonFlags.setFlag(ElaAppBarType::StayTopButtonHint, false);
+#endif
     window()->setAttribute(Qt::WA_Mapped);
     d->_pAppBarHeight = 45;
     d->_pRibbonHeight = 0;
@@ -91,6 +110,7 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
     connect(d->_navigationButton, &ElaToolButton::clicked, this, &ElaAppBar::navigationButtonClicked);
 
     // 设置置顶
+#ifndef Q_OS_LINUX
     d->_stayTopButton = new ElaToolButton(this);
     d->_stayTopButton->setBorderRadius(0);
     d->_stayTopButton->setElaIcon(ElaIconType::Thumbtack, 45);
@@ -99,6 +119,7 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
         this->setIsStayTop(!this->getIsStayTop());
     });
     connect(this, &ElaAppBar::pIsStayTopChanged, d, &ElaAppBarPrivate::onStayTopButtonClicked);
+#endif
 
     // 图标
     d->_iconLabel = new QLabel(this);
@@ -206,7 +227,10 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
     rightLayout->setSpacing(0);
     rightLayout->setContentsMargins(0, 0, 0, 0);
     rightLayout->setAlignment(Qt::AlignRight);
-    rightLayout->addLayout(d->_createVLayout(d->_stayTopButton));
+    if (d->_stayTopButton)
+    {
+        rightLayout->addLayout(d->_createVLayout(d->_stayTopButton));
+    }
     rightLayout->addLayout(d->_createVLayout(d->_themeChangeButton));
     rightLayout->addLayout(d->_createVLayout(d->_minButton));
     rightLayout->addLayout(d->_createVLayout(d->_maxButton));
@@ -216,7 +240,10 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
     d->_clientWidgetList.append(d->_routeBackButton);
     d->_clientWidgetList.append(d->_routeForwardButton);
     d->_clientWidgetList.append(d->_navigationButton);
-    d->_clientWidgetList.append(d->_stayTopButton);
+    if (d->_stayTopButton)
+    {
+        d->_clientWidgetList.append(d->_stayTopButton);
+    }
     d->_clientWidgetList.append(d->_themeChangeButton);
     d->_clientWidgetList.append(d->_minButton);
     d->_clientWidgetList.append(d->_maxButton);
@@ -399,13 +426,19 @@ void ElaAppBar::setWindowButtonFlag(ElaAppBarType::ButtonType buttonFlag, bool i
 void ElaAppBar::setWindowButtonFlags(ElaAppBarType::ButtonFlags buttonFlags)
 {
     Q_D(ElaAppBar);
+#ifdef Q_OS_LINUX
+    buttonFlags.setFlag(ElaAppBarType::StayTopButtonHint, false);
+#endif
     d->_buttonFlags = buttonFlags;
     if (d->_buttonFlags.testFlag(ElaAppBarType::NoneButtonHint))
     {
         d->_routeBackButton->setVisible(false);
         d->_routeForwardButton->setVisible(false);
         d->_navigationButton->setVisible(false);
-        d->_stayTopButton->setVisible(false);
+        if (d->_stayTopButton)
+        {
+            d->_stayTopButton->setVisible(false);
+        }
         d->_themeChangeButton->setVisible(false);
         d->_minButton->setVisible(false);
         d->_maxButton->setVisible(false);
@@ -416,7 +449,10 @@ void ElaAppBar::setWindowButtonFlags(ElaAppBarType::ButtonFlags buttonFlags)
         d->_routeBackButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::RouteBackButtonHint));
         d->_routeForwardButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::RouteForwardButtonHint));
         d->_navigationButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::NavigationButtonHint));
-        d->_stayTopButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::StayTopButtonHint));
+        if (d->_stayTopButton)
+        {
+            d->_stayTopButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::StayTopButtonHint));
+        }
         d->_themeChangeButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::ThemeChangeButtonHint));
         d->_minButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::MinimizeButtonHint));
         d->_maxButton->setVisible(d->_buttonFlags.testFlag(ElaAppBarType::MaximizeButtonHint));

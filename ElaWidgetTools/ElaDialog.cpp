@@ -25,7 +25,9 @@ ElaDialog::ElaDialog(QWidget* parent) : QDialog{parent}, d_ptr(new ElaDialogPriv
 #endif
     // 自定义AppBar
     d->_appBar = new ElaAppBar(this);
+#ifndef Q_OS_LINUX
     d->_appBar->setIsStayTop(true);
+#endif
     d->_appBar->setWindowButtonFlags(ElaAppBarType::StayTopButtonHint | ElaAppBarType::MinimizeButtonHint |
                                      ElaAppBarType::MaximizeButtonHint | ElaAppBarType::CloseButtonHint);
     connect(d->_appBar, &ElaAppBar::routeBackButtonClicked, this, &ElaDialog::routeBackButtonClicked);

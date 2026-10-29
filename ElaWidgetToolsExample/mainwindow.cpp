@@ -93,7 +93,9 @@ void MainWindow::initWindow()
     setUserInfoCardTitle("Ela Tool");
     setUserInfoCardSubTitle("Liniyous@gmail.com");
     setWindowTitle("ElaWidgetTools");
+#ifdef Q_OS_WIN
     // setIsStayTop(true);
+#endif
     // setUserInfoCardVisible(false);
     // setNavigationBarWidth(260);
     ElaText* centralStack = new ElaText("这是一个主窗口堆栈页面", this);

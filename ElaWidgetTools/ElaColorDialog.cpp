@@ -33,7 +33,9 @@ ElaColorDialog::ElaColorDialog(QWidget* parent) : QDialog{parent}, d_ptr(new Ela
     d->_appBar = new ElaAppBar(this);
     d->_appBar->setAppBarHeight(30);
     d->_appBar->setIsFixedSize(true);
+#ifndef Q_OS_LINUX
     d->_appBar->setIsStayTop(true);
+#endif
     d->_appBar->setWindowButtonFlags(ElaAppBarType::CloseButtonHint);
 
     // 颜色选择器

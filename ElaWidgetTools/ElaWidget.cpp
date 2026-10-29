@@ -22,7 +22,9 @@ ElaWidget::ElaWidget(QWidget* parent) : QWidget{parent}, d_ptr(new ElaWidgetPriv
 #endif
     // 自定义AppBar
     d->_appBar = new ElaAppBar(this);
+#ifndef Q_OS_LINUX
     d->_appBar->setIsStayTop(true);
+#endif
     d->_appBar->setWindowButtonFlags(ElaAppBarType::StayTopButtonHint | ElaAppBarType::MinimizeButtonHint |
                                      ElaAppBarType::MaximizeButtonHint | ElaAppBarType::CloseButtonHint);
     connect(d->_appBar, &ElaAppBar::routeBackButtonClicked, this, &ElaWidget::routeBackButtonClicked);
