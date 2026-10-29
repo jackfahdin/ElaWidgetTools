@@ -43,8 +43,8 @@ ElaWidgetTools 是基于 **C++ / Qt Widgets** 的桌面界面组件库，提供 
     <th width="50%">深色主题</th>
   </tr>
   <tr>
-    <td><img src="doc/preview/ElaWidgetTools_Light.png" alt="ElaWidgetTools 浅色主题示例" width="100%"></td>
-    <td><img src="doc/preview/ElaWidgetTools_Dark.png" alt="ElaWidgetTools 深色主题示例" width="100%"></td>
+    <td><img src="docs/preview/ElaWidgetTools_Light.png" alt="ElaWidgetTools 浅色主题示例" width="100%"></td>
+    <td><img src="docs/preview/ElaWidgetTools_Dark.png" alt="ElaWidgetTools 深色主题示例" width="100%"></td>
   </tr>
 </table>
 
