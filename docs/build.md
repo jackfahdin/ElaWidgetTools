@@ -11,7 +11,7 @@
 | 构建工具 | Ninja |
 | 编译器 | 支持 C++17，且与所用 Qt 工具链兼容 |
 
-当前仓库提供 **Linux** 预设。已验证环境为 Ubuntu 26.04.1 x86_64、Qt 6.12.0、GCC 15.2.0、CMake 4.3.3、Ninja 1.12.1。Windows 和 macOS 尚未完成这次迁移后的验证。
+仓库提供 **Linux、Windows、macOS** 的 Ninja 预设。已验证环境为 Ubuntu 26.04.1 x86_64、Qt 6.12.0、GCC 15.2.0、CMake 4.3.3、Ninja 1.12.1。Windows 和 macOS 的验证入口已接入 CI，实际结果以推送后的工作流为准。
 
 CMake 中的 `find_package(Qt6 6.12.0 ...)` 表示最低版本要求，未使用 `EXACT`，也未设置 Qt 6 版本上限。后续 Qt 6.13、6.14 等版本同样属于维护范围；下方的 6.12.0 路径只是本机安装示例，可以换成更新版本的工具链目录。
 
@@ -39,6 +39,14 @@ cmake --build --preset linux-release --parallel 6
 ```
 
 两个预设默认构建动态组件库和完整示例。可根据机器内存调整并行数。构建和安装目录按预设隔离，编译数据库位于对应目录的 `compile_commands.json`。
+
+| 平台 | 调试 | 发布 | 其他 |
+| --- | --- | --- | --- |
+| Linux | `linux-debug` | `linux-release` | `linux-static`：静态组件库及 Example |
+| Windows | `windows-debug` | `windows-release` | 在 MSVC 开发者终端使用 Ninja |
+| macOS | `macos-debug` | `macos-release` | 详见 [macOS 适配说明](macos.md) |
+
+其他平台同样通过 `QT_ROOT` 指定 SDK 后，执行对应的配置与构建预设。无需使用 Visual Studio 或 Xcode 项目生成器。
 
 ## 本机用户预设
 
@@ -160,7 +168,7 @@ Linux 安装使用相对路径定位同一安装前缀中的组件库，并保�
 - 独立项目通过 `find_package(ElaWidgetTools)` 使用安装后的动态库和静态库，验证资源、图标、主题切换、选项卡绘制与正常退出。
 - Qt 6.11.1 会在配置阶段被拒绝，符合最低版本策略。
 
-已新增可选的 QtTest 和安装消费检查，运行方式见[测试指南](testing.md)。这些验证不等于完整 GUI 交互回归。Windows 的 DXGI 示例仅在 Windows 注册，macOS 适配仍在计划中。
+已新增可选的 QtTest 和安装消费检查，运行方式见[测试指南](testing.md)。这些验证不等于完整 GUI 交互回归。Windows 的 DXGI 示例仅在 Windows 注册；macOS 为实验性适配，原生交互仍需 CI 和真实设备验证。
 
 ## 常见提示
 

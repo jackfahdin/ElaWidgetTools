@@ -1,6 +1,6 @@
 # macOS 实验性支持
 
-[返回首页](../README.md) · [编译指南](build.md)
+[返回首页](../README.md) · [编译指南](build.md) · [CI](ci.md)
 
 本分支已准备 macOS 的 Ninja 预设、窗口状态同步、标题栏菜单处理和 `.app` 部署。开发主机为 Linux，没有本地 Mac 设备；当前状态是**实验性适配，等待 macOS CI 实际验证**，不声明完整桌面兼容性。
 

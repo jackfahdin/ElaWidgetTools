@@ -15,7 +15,7 @@
 | [`.clang-tidy`](../.clang-tidy) | 手动静态分析，先关注空指针、对象生命周期、移动后使用等问题，并提供 `nullptr` 改进建议 |
 | [`.cmake-format.yaml`](../.cmake-format.yaml) | CMake 排版，命令小写、关键字大写，保留注释文字和列表顺序 |
 
-这些文件需要对应工具或编辑器插件读取，不会自行运行。普通 CMake / Ninja 构建不依赖它们，当前也不接入提交钩子或强制 CI 检查。静态分析不替代编译、运行检查或未来的测试。
+这些文件需要对应工具或编辑器插件读取。普通 CMake / Ninja 构建不依赖它们，不接入提交钩子；CI 使用固定版本执行格式检查，clang-tidy 保留为独立手动工作流。静态分析不替代编译、运行检查或 QtTest。
 
 ## 工具版本与安装
 
@@ -50,7 +50,7 @@ clang-format --style=file -i ElaWidgetTools/ElaPushButton.cpp
 clang-format --style=file --dry-run --Werror ElaWidgetTools/ElaPushButton.cpp
 ```
 
-`--dry-run --Werror` 在发现格式差异时返回非零退出码。提交前对本次修改的源码运行检查；当前仍不接入强制 CI 门槛。自动生成的 `moc_*`、`ui_*`、`qrc_*` 及 `build/`、`install/` 中的文件不应作为格式化输入。
+`--dry-run --Werror` 在发现格式差异时返回非零退出码。提交前对本次修改的源码运行检查，CI 对仓库源码执行同一检查。自动生成的 `moc_*`、`ui_*`、`qrc_*` 及 `build/`、`install/` 中的文件不应作为格式化输入。
 
 ## CMake 格式
 
@@ -87,7 +87,7 @@ clang-tidy -p build/local-linux-debug ElaWidgetTools/ElaPushButton.cpp
 - CMake 格式工具选择 cmake-format，加载根目录 `.cmake-format.yaml`。
 - 保存时自动格式化由开发者自行开启；首次编辑历史文件时先检查差异，避免混入大范围排版修改。
 
-按项目约定，本次不添加自动化测试。工具配置通过解析检查、代表文件的格式预览及单个翻译单元静态分析验证，实际结果随工具升级重新核对。
+工具初次接入时通过解析检查、代表文件的格式预览及单个翻译单元静态分析验证。现在另有可选的 [QtTest 回归测试](testing.md) 和 [CI](ci.md)，验证范围随功能和工具版本继续更新。
 
 2026-10-29 已在本机 Linux / Qt 6.12.0 验证上述固定版本：C++ 头文件、实现文件和枚举宏格式预览正常，CMake 格式输出可再次通过格式检查，clang-tidy 配置校验通过。`ElaPushButton.cpp` 分析完成，未报告项目内告警（依赖代码的 125 条告警被过滤）；这不代表全仓静态分析通过。`local-linux-debug` 配置与组件库、Example 构建通过。
 

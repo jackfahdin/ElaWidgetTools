@@ -1,6 +1,6 @@
 # QtTest 回归测试
 
-[返回首页](../README.md) · [编译指南](build.md)
+[返回首页](../README.md) · [编译指南](build.md) · [CI](ci.md)
 
 测试独立于 Example，默认关闭。只使用组件库时不需要安装 Qt Test；开启测试才会查找同一 SDK 的 `Qt6::Test`，测试依赖不会写入组件库的安装导出。
 

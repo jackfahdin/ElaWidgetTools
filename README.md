@@ -4,7 +4,7 @@
 
 **为 Qt Widgets 桌面应用打造的 Fluent 风格组件库**
 
-基于上游独立演进 · 面向 Qt 6.12.0 及以上版本 · 规划支持 macOS
+基于上游独立演进 · 面向 Qt 6.12.0 及以上版本 · macOS 实验性适配
 
 ![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C?style=flat-square)
 [![许可证：MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
@@ -21,7 +21,7 @@ ElaWidgetTools 是基于 **C++ / Qt Widgets** 的桌面界面组件库，提供 
 
 本仓库基于 [Liniyous/ElaWidgetTools](https://github.com/Liniyous/ElaWidgetTools) 开始独立维护，后续功能、版本策略与发布节奏由本仓库单独推进。
 
-> **维护方向**：后续仅维护 **Qt 6.12.0 及以上版本**，并计划适配 **macOS**。已完成本机 Linux / Qt 6.12.0 的构建与基础运行验证，其他平台及后续 Qt 版本按实际验证逐步更新。详见[编译指南](docs/build.md)与[维护路线图](docs/roadmap.md)。
+> **维护方向**：后续仅维护 **Qt 6.12.0 及以上版本**。已完成本机 Linux 的构建与基础运行验证，提供跨平台 CI、可选 QtTest 和 macOS 实验性适配；Windows、macOS 的实际验证状态以 Actions 结果为准。详见[编译指南](docs/build.md)与[维护路线图](docs/roadmap.md)。
 
 ## 能力一览
 
@@ -53,9 +53,9 @@ ElaWidgetTools 是基于 **C++ / Qt Widgets** 的桌面界面组件库，提供 
 | 项目 | 维护方向 | 当前状态 |
 | --- | --- | --- |
 | Qt | 仅维护 Qt 6.12.0 及以上版本 | 已迁移，当前验证版本为 6.12.0 |
-| Windows | 继续维护 | 已有上游实现，待验证 Qt 6.12 构建 |
+| Windows | 继续维护 | 已接入 MSVC / Qt 6.12 CI，等待云端实际验证 |
 | Linux | 继续维护 | 已验证 Qt 6.12.0 构建、安装与基础运行 |
-| macOS | 计划支持 | 尚未完成适配与验证 |
+| macOS | 实验性适配 | 已准备构建、测试及部署 CI，等待云端实际验证 |
 
 Qt 5 和 Qt 6.12.0 以下版本不纳入后续维护范围。使用 CMake Presets 构建，具体步骤见[编译指南](docs/build.md)。
 
@@ -68,6 +68,9 @@ Qt 5 和 Qt 6.12.0 以下版本不纳入后续维护范围。使用 CMake Preset
 | [维护与路线图](docs/roadmap.md) | 分支定位、Qt 版本策略、平台计划与构建迁移事项 |
 | [参与贡献](docs/contributing.md) | 问题反馈、功能建议与代码贡献 |
 | [代码风格](docs/code-style.md) | 格式配置、开发工具版本与手动静态分析 |
+| [测试指南](docs/testing.md) | QtTest、CTest 与安装消费验证 |
+| [持续集成](docs/ci.md) | GitHub Actions 矩阵、检查规则与产物 |
+| [macOS 适配](docs/macos.md) | 实验性构建、部署与待验证范围 |
 | [示例项目](ElaWidgetToolsExample/) | 查看组件组合与交互用法 |
 
 ## 致谢与许可

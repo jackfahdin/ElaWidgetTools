@@ -1,0 +1,47 @@
+name: 手动静态分析
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: 安装分析工具和依赖
+        run: |
+          python -m pip install -r tools/requirements-code-tools.txt
+          sudo apt-get update
+          sudo apt-get install -y ninja-build libgl1-mesa-dev libxkbcommon-dev
+      - uses: jurplel/install-qt-action@v4
+        id: qt
+        with:
+          version: '6.12.0'
+          arch: linux_gcc_64
+          archives: qtbase qttools
+          cache: true
+          cache-key-prefix: qt-base-tools-v1
+          install-deps: false
+      - name: 生成编译数据库和 Qt 头文件
+        env:
+          QT_ROOT: ${{ steps.qt.outputs.qt-root-dir }}
+        run: |
+          cmake --preset linux-debug -DELAWIDGETTOOLS_BUILD_EXAMPLE=OFF
+          cmake --build --preset linux-debug --parallel 3
+      - name: 分析平台和标题栏相关实现
+        run: |
+          set -o pipefail
+          clang-tidy --verify-config
+          clang-tidy -p build/linux-debug ElaWidgetTools/ElaAppBar.cpp ElaWidgetTools/ElaMenuBar.cpp ElaWidgetTools/ElaApplication.cpp 2>&1 | tee clang-tidy.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: clang-tidy-report
+          path: clang-tidy.log
