@@ -44,22 +44,27 @@ jobs:
             preset: linux-debug
             host: linux
             arch: linux_gcc_64
+            archives: qtbase qttools icu
           - os: ubuntu-24.04
             preset: linux-release
             host: linux
             arch: linux_gcc_64
+            archives: qtbase qttools icu
           - os: ubuntu-24.04
             preset: linux-static
             host: linux
             arch: linux_gcc_64
+            archives: qtbase qttools icu
           - os: windows-2022
             preset: windows-release
             host: windows
             arch: win64_msvc2022_64
+            archives: qtbase qttools
           - os: macos-15
             preset: macos-release
             host: mac
             arch: clang_64
+            archives: qtbase qttools
     defaults:
       run:
         shell: bash
@@ -83,7 +88,9 @@ jobs:
           host: ${{ matrix.host }}
           target: desktop
           arch: ${{ matrix.arch }}
-          archives: qtbase qttools
+          archives: ${{ matrix.archives }}
+          # aqtinstall 3.3.0 尚不支持 Qt 6.11+ 的 Windows 仓库目录，固定到上游修复提交。
+          aqtsource: ${{ runner.os == 'Windows' && 'git+https://github.com/miurahr/aqtinstall.git@7e5a5c3d95cf962cfc2f36c86ffa0d2c07f1a0d4' || '' }}
           install-deps: false
           cache: true
           cache-key-prefix: qt-base-tools-v1
