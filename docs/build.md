@@ -97,6 +97,7 @@ cmake --build --preset local-linux-debug
 | `QT_SDK_DIR` | 从预设的 `QT_ROOT` 环境变量读取 | 指定 Qt 工具链目录；留空时使用 CMake 标准查找路径 |
 | `ELAWIDGETTOOLS_BUILD_EXAMPLE` | `ON` | 是否构建示例 |
 | `ELAWIDGETTOOLS_BUILD_STATIC_LIB` | `OFF` | 是否构建静态组件库 |
+| `ELAWIDGETTOOLS_BUILD_TESTS` | `OFF` | 是否查找 Qt Test 并构建独立回归测试 |
 
 例如，以仓库 Release 预设为基础，在单独目录构建静态库：
 
@@ -159,7 +160,7 @@ Linux 安装使用相对路径定位同一安装前缀中的组件库，并保�
 - 独立项目通过 `find_package(ElaWidgetTools)` 使用安装后的动态库和静态库，验证资源、图标、主题切换、选项卡绘制与正常退出。
 - Qt 6.11.1 会在配置阶段被拒绝，符合最低版本策略。
 
-这些验证不等于完整 GUI 交互回归。Windows 的 DXGI 示例仅在 Windows 注册，macOS 适配仍在计划中。
+已新增可选的 QtTest 和安装消费检查，运行方式见[测试指南](testing.md)。这些验证不等于完整 GUI 交互回归。Windows 的 DXGI 示例仅在 Windows 注册，macOS 适配仍在计划中。
 
 ## 常见提示
 
