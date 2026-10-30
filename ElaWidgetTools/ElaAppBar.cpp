@@ -797,6 +797,10 @@ bool ElaAppBar::eventFilter(QObject* obj, QEvent* event)
     Q_D(ElaAppBar);
     switch (event->type())
     {
+    case QEvent::WindowStateChange: {
+        d->_changeMaxButtonAwesome(window()->isMaximized());
+        break;
+    }
     case QEvent::Resize: {
         QSize size = parentWidget()->size();
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 3) && QT_VERSION <= QT_VERSION_CHECK(6, 6, 1))

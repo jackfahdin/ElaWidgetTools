@@ -10,10 +10,12 @@
 ElaMenuBar::ElaMenuBar(QWidget* parent) : QMenuBar(parent)
 {
     setMouseTracking(true);
+    // QMenuBar 默认 MinimumExpanding 不允许布局收缩，无法触发溢出菜单。
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     setObjectName("ElaMenuBar");
     setStyle(new ElaMenuBarStyle(style()));
     QToolButton* tool = this->findChild<QToolButton*>();
-    if (tool->objectName() == "qt_menubar_ext_button")
+    if (tool && tool->objectName() == "qt_menubar_ext_button")
     {
         QMenu* oldMenu = tool->menu();
         ElaMenu* menu = new ElaMenu(this);

@@ -40,9 +40,6 @@ void ElaAppBarPrivate::onMaxButtonClicked()
     Q_Q(ElaAppBar);
     bool isMaximized = q->window()->isMaximized();
     isMaximized ? q->window()->showNormal() : q->window()->showMaximized();
-#ifndef Q_OS_WIM
-    _changeMaxButtonAwesome(!isMaximized);
-#endif
 }
 
 void ElaAppBarPrivate::onCloseButtonClicked()
