@@ -34,8 +34,14 @@ set_target_properties(
     ${PROJECT_NAME}
     PROPERTIES MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
                MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+               MACOSX_BUNDLE_GUI_IDENTIFIER io.github.jackfahdin.ElaWidgetToolsExample
                MACOSX_BUNDLE TRUE
                WIN32_EXECUTABLE TRUE)
+if(APPLE)
+    set_target_properties(
+        ${PROJECT_NAME} PROPERTIES INSTALL_RPATH
+                                   "@executable_path/../Frameworks;@executable_path/../../../${CMAKE_INSTALL_LIBDIR}")
+endif()
 qt_finalize_executable(${PROJECT_NAME})
 
 install(
@@ -43,7 +49,7 @@ install(
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-if(WIN32)
+if(WIN32 OR APPLE)
     qt_generate_deploy_app_script(TARGET ${PROJECT_NAME} OUTPUT_SCRIPT deploy_script NO_TRANSLATIONS)
     install(SCRIPT ${deploy_script})
 endif()

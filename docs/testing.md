@@ -17,7 +17,7 @@ xvfb-run -a ctest --preset linux-debug
 
 已有桌面会话时可以直接运行 `ctest --preset linux-debug`。无显示服务器时需安装 Xvfb，不将 `offscreen` 的结果当作桌面窗口行为验证。
 
-Release 或静态库分别换用 `linux-release`、`linux-static`。
+Release 或静态库分别换用 `linux-release`、`linux-static`。Windows 在 MSVC 开发者终端执行 `windows-release` 预设；macOS 使用 `macos-release`，两者直接运行对应的 `ctest --preset ...`。
 
 本机用户预设也可开启测试：
 
@@ -36,7 +36,7 @@ Test presets 设置了失败输出、超时和“没有测试时报错”。单�
 | `appbar` | 三个区域的索引与越界处理、控件替换和非法复用、标题同步与居中、菜单折叠后恢复、外部最大化状态同步、拦截关闭、Linux 置顶功能移除 |
 | `controls` | 开关状态和信号次数、点击与禁用状态、主题切换的信号参数 |
 | `navigation` | 页面跳转、无效及已删除页面、命令撤回与重做、撤回后录入新命令清除后续历史 |
-| `resources` | 内置字体和图像链接、图标实际绘制 |
+| `resources` | 内置字体和图像链接、图标实际绘制、非 Windows 平台保留应用默认字体 |
 
 测试使用 `QSignalSpy`、QtTest 输入事件和 `QTRY_*` 等待条件成立，不依赖截图逐像素比对或固定休眠。标题布局允许整数像素舍入差异。窗口状态测试由 Qt API 触发，无法代替真实窗口管理器操作、多显示器或原生全屏验证。
 

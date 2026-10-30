@@ -32,6 +32,9 @@ option(ELAWIDGETTOOLS_BUILD_TESTS "构建 QtTest 回归测试" OFF)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(CMAKE_INSTALL_RPATH "$ORIGIN;$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+elseif(APPLE)
+    # 库按安装前缀定位相邻库；.app 的独立加载路径在示例目标上设置。
+    set(CMAKE_INSTALL_RPATH "@loader_path;@loader_path/../${CMAKE_INSTALL_LIBDIR}")
 endif()
 
 add_subdirectory(ElaWidgetTools)

@@ -1,5 +1,6 @@
 ﻿#include <QApplication>
 #include <QScreen>
+#include <QTimer>
 
 #include "ElaApplication.h"
 #include "ElaLog.h"
@@ -24,6 +25,11 @@ int main(int argc, char* argv[])
     // ElaLog::getInstance()->initMessageLog(true);
     MainWindow w;
     w.show();
+    // 用于 CI 的启动检查：进入真实事件循环并正常退出。
+    if (a.arguments().contains("--smoke-test"))
+    {
+        QTimer::singleShot(1000, &a, &QCoreApplication::quit);
+    }
 #ifdef Q_OS_WIN
 //    HWND handle = FindWindowA(NULL, "ElaWidgetTool");
 //    if (handle != NULL)

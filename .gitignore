@@ -57,6 +57,7 @@ compile_commands.json
 /.idea
 /install
 /.venv-code-tools/
+__pycache__/
 
 # CMake Presets 本地配置与构建产物
 /CMakeUserPresets.json

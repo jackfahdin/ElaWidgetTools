@@ -8,10 +8,21 @@
 class ResourcesTest : public QObject
 {
     Q_OBJECT
+    QStringList _originalFontFamilies;
 private Q_SLOTS:
     void initTestCase()
     {
+        _originalFontFamilies = qApp->font().families();
         eApp->init();
+    }
+
+    void nonWindowsKeepsApplicationFont()
+    {
+#ifndef Q_OS_WIN
+        QCOMPARE(qApp->font().families(), _originalFontFamilies);
+#else
+        QSKIP("Windows 保留原有默认字体");
+#endif
     }
 
     void fontsAndImagesAreLinked()

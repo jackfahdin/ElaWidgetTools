@@ -299,6 +299,7 @@ void MainWindow::initEdgeLayout()
 {
     // 菜单栏
     ElaMenuBar* menuBar = new ElaMenuBar(this);
+    menuBar->setNativeMenuBar(false);
     menuBar->setFixedHeight(30);
     QWidget* customWidget = new QWidget(this);
     // 按菜单内容决定宽度，空间不足时允许收缩，由菜单栏折叠溢出项。
