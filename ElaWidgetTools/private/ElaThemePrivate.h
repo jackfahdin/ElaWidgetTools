@@ -3,6 +3,7 @@
 
 #include "ElaPropertyMacro.h"
 #include <QColor>
+#include <array>
 #include <QMap>
 #include <QObject>
 
@@ -18,8 +19,12 @@ public:
 
 private:
     ElaThemeType::ThemeMode _themeMode{ElaThemeType::Light};
-    QColor _lightThemeColorList[43];
-    QColor _darkThemeColorList[43];
+    bool _followSystemTheme{false};
+    QMetaObject::Connection _systemThemeConnection;
+    std::array<QColor, ElaThemeType::Win10BorderInactive + 1> _lightThemeColorList;
+    std::array<QColor, ElaThemeType::Win10BorderInactive + 1> _darkThemeColorList;
+    void _applyThemeMode(ElaThemeType::ThemeMode mode);
+    bool _setAccentColor(ElaThemeType::ThemeMode mode, const QColor& color);
     void _initThemeColor();
 };
 

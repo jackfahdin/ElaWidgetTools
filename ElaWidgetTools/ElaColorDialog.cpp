@@ -251,13 +251,17 @@ ElaColorDialog::ElaColorDialog(QWidget* parent) : QDialog{parent}, d_ptr(new Ela
     // 确定取消按钮
     d->_overButton = new ElaPushButton("确定", this);
     d->_overButton->setBorderRadius(6);
-    d->_overButton->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
-    d->_overButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
-    d->_overButton->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
+    auto refreshAccent = [=]() {
+        d->_overButton->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
+        d->_overButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
+        d->_overButton->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
+        d->_overButton->setDarkDefaultColor(ElaThemeColor(ElaThemeType::Dark, PrimaryNormal));
+        d->_overButton->setDarkHoverColor(ElaThemeColor(ElaThemeType::Dark, PrimaryHover));
+        d->_overButton->setDarkPressColor(ElaThemeColor(ElaThemeType::Dark, PrimaryPress));
+    };
+    refreshAccent();
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, refreshAccent);
     d->_overButton->setLightTextColor(Qt::white);
-    d->_overButton->setDarkDefaultColor(ElaThemeColor(ElaThemeType::Dark, PrimaryNormal));
-    d->_overButton->setDarkHoverColor(ElaThemeColor(ElaThemeType::Dark, PrimaryHover));
-    d->_overButton->setDarkPressColor(ElaThemeColor(ElaThemeType::Dark, PrimaryPress));
     d->_overButton->setDarkTextColor(Qt::white);
     connect(d->_overButton, &ElaPushButton::clicked, this, [=]() {
         Q_EMIT colorSelected(d->_pCurrentColor);

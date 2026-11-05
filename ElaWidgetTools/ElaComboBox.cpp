@@ -58,6 +58,12 @@ ElaComboBox::ElaComboBox(QWidget* parent) : QComboBox(parent), d_ptr(new ElaComb
     }
     QComboBox::setMaxVisibleItems(5);
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaComboBoxPrivate::onThemeChanged);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, [=](ElaThemeType::ThemeMode mode) {
+        if (mode == eTheme->getThemeMode())
+        {
+            d->onThemeChanged(mode);
+        }
+    });
 }
 
 ElaComboBox::~ElaComboBox()

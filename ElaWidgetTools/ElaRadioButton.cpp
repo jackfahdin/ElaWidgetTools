@@ -16,6 +16,12 @@ ElaRadioButton::ElaRadioButton(QWidget* parent) : QRadioButton(parent), d_ptr(ne
     setStyle(new ElaRadioButtonStyle(style()));
     d->onThemeChanged(eTheme->getThemeMode());
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaRadioButtonPrivate::onThemeChanged);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, [=](ElaThemeType::ThemeMode mode) {
+        if (mode == eTheme->getThemeMode())
+        {
+            d->onThemeChanged(mode);
+        }
+    });
 }
 
 ElaRadioButton::ElaRadioButton(const QString& text, QWidget* parent) : ElaRadioButton(parent)

@@ -30,6 +30,12 @@ ElaPlainTextEdit::ElaPlainTextEdit(QWidget* parent) : QPlainTextEdit(parent), d_
     setStyle(d->_style);
     d->onThemeChanged(eTheme->getThemeMode());
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaPlainTextEditPrivate::onThemeChanged);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, [=](ElaThemeType::ThemeMode mode) {
+        if (mode == eTheme->getThemeMode())
+        {
+            d->onThemeChanged(mode);
+        }
+    });
 }
 
 ElaPlainTextEdit::ElaPlainTextEdit(const QString& text, QWidget* parent) : ElaPlainTextEdit(parent)

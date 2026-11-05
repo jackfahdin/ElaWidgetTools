@@ -7,26 +7,96 @@
 #include "ElaTheme.h"
 #include "private/ElaPushButtonPrivate.h"
 ELA_PROPERTY_Q_CPP(ElaPushButton, int, BorderRadius)
-ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, LightDefaultColor)
-ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, DarkDefaultColor)
-ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, LightHoverColor)
-ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, DarkHoverColor)
-ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, LightPressColor)
-ELA_PROPERTY_Q_CPP(ElaPushButton, QColor, DarkPressColor)
+void ElaPushButton::setLightDefaultColor(const QColor& color)
+{
+    Q_D(ElaPushButton);
+    d->_pLightDefaultColor = color;
+    update();
+    Q_EMIT pLightDefaultColorChanged();
+}
+
+const QColor& ElaPushButton::getLightDefaultColor() const
+{
+    Q_D(const ElaPushButton);
+    return d->_pLightDefaultColor.isValid() ? d->_pLightDefaultColor : ElaThemeColor(ElaThemeType::Light, BasicBase);
+}
+
+void ElaPushButton::setDarkDefaultColor(const QColor& color)
+{
+    Q_D(ElaPushButton);
+    d->_pDarkDefaultColor = color;
+    update();
+    Q_EMIT pDarkDefaultColorChanged();
+}
+
+const QColor& ElaPushButton::getDarkDefaultColor() const
+{
+    Q_D(const ElaPushButton);
+    return d->_pDarkDefaultColor.isValid() ? d->_pDarkDefaultColor : ElaThemeColor(ElaThemeType::Dark, BasicBase);
+}
+
+void ElaPushButton::setLightHoverColor(const QColor& color)
+{
+    Q_D(ElaPushButton);
+    d->_pLightHoverColor = color;
+    update();
+    Q_EMIT pLightHoverColorChanged();
+}
+
+const QColor& ElaPushButton::getLightHoverColor() const
+{
+    Q_D(const ElaPushButton);
+    return d->_pLightHoverColor.isValid() ? d->_pLightHoverColor : ElaThemeColor(ElaThemeType::Light, BasicHover);
+}
+
+void ElaPushButton::setDarkHoverColor(const QColor& color)
+{
+    Q_D(ElaPushButton);
+    d->_pDarkHoverColor = color;
+    update();
+    Q_EMIT pDarkHoverColorChanged();
+}
+
+const QColor& ElaPushButton::getDarkHoverColor() const
+{
+    Q_D(const ElaPushButton);
+    return d->_pDarkHoverColor.isValid() ? d->_pDarkHoverColor : ElaThemeColor(ElaThemeType::Dark, BasicHover);
+}
+
+void ElaPushButton::setLightPressColor(const QColor& color)
+{
+    Q_D(ElaPushButton);
+    d->_pLightPressColor = color;
+    update();
+    Q_EMIT pLightPressColorChanged();
+}
+
+const QColor& ElaPushButton::getLightPressColor() const
+{
+    Q_D(const ElaPushButton);
+    return d->_pLightPressColor.isValid() ? d->_pLightPressColor : ElaThemeColor(ElaThemeType::Light, BasicPress);
+}
+
+void ElaPushButton::setDarkPressColor(const QColor& color)
+{
+    Q_D(ElaPushButton);
+    d->_pDarkPressColor = color;
+    update();
+    Q_EMIT pDarkPressColorChanged();
+}
+
+const QColor& ElaPushButton::getDarkPressColor() const
+{
+    Q_D(const ElaPushButton);
+    return d->_pDarkPressColor.isValid() ? d->_pDarkPressColor : ElaThemeColor(ElaThemeType::Dark, BasicPress);
+}
+
 ElaPushButton::ElaPushButton(QWidget* parent) : QPushButton(parent), d_ptr(new ElaPushButtonPrivate())
 {
     Q_D(ElaPushButton);
     d->q_ptr = this;
     d->_pBorderRadius = 3;
     d->_themeMode = eTheme->getThemeMode();
-    d->_pLightDefaultColor = ElaThemeColor(ElaThemeType::Light, BasicBase);
-    d->_pDarkDefaultColor = ElaThemeColor(ElaThemeType::Dark, BasicBase);
-    d->_pLightHoverColor = ElaThemeColor(ElaThemeType::Light, BasicHover);
-    d->_pDarkHoverColor = ElaThemeColor(ElaThemeType::Dark, BasicHover);
-    d->_pLightPressColor = ElaThemeColor(ElaThemeType::Light, BasicPress);
-    d->_pDarkPressColor = ElaThemeColor(ElaThemeType::Dark, BasicPress);
-    d->_lightTextColor = ElaThemeColor(ElaThemeType::Light, BasicText);
-    d->_darkTextColor = ElaThemeColor(ElaThemeType::Dark, BasicText);
     setMouseTracking(true);
     setFixedHeight(30);
     QFont font = this->font();
@@ -52,24 +122,26 @@ void ElaPushButton::setLightTextColor(const QColor& color)
 {
     Q_D(ElaPushButton);
     d->_lightTextColor = color;
+    update();
 }
 
 const QColor& ElaPushButton::getLightTextColor() const
 {
     Q_D(const ElaPushButton);
-    return d->_lightTextColor;
+    return d->_lightTextColor.isValid() ? d->_lightTextColor : ElaThemeColor(ElaThemeType::Light, BasicText);
 }
 
 void ElaPushButton::setDarkTextColor(const QColor& color)
 {
     Q_D(ElaPushButton);
     d->_darkTextColor = color;
+    update();
 }
 
 const QColor& ElaPushButton::getDarkTextColor() const
 {
     Q_D(const ElaPushButton);
-    return d->_darkTextColor;
+    return d->_darkTextColor.isValid() ? d->_darkTextColor : ElaThemeColor(ElaThemeType::Dark, BasicText);
 }
 
 void ElaPushButton::mousePressEvent(QMouseEvent* event)
@@ -98,15 +170,15 @@ void ElaPushButton::paintEvent(QPaintEvent* event)
     if (d->_themeMode == ElaThemeType::Light)
     {
         painter.setPen(ElaThemeColor(ElaThemeType::Light, BasicBorder));
-        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pLightPressColor
-                                                     : (underMouse() ? d->_pLightHoverColor : d->_pLightDefaultColor)
+        painter.setBrush(isEnabled() ? d->_isPressed ? getLightPressColor()
+                                                     : (underMouse() ? getLightHoverColor() : getLightDefaultColor())
                                      : ElaThemeColor(d->_themeMode, BasicDisable));
     }
     else
     {
         painter.setPen(Qt::NoPen);
-        painter.setBrush(isEnabled() ? d->_isPressed ? d->_pDarkPressColor
-                                                     : (underMouse() ? d->_pDarkHoverColor : d->_pDarkDefaultColor)
+        painter.setBrush(isEnabled() ? d->_isPressed ? getDarkPressColor()
+                                                     : (underMouse() ? getDarkHoverColor() : getDarkDefaultColor())
                                      : ElaThemeColor(d->_themeMode, BasicDisable));
     }
     painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
@@ -118,7 +190,7 @@ void ElaPushButton::paintEvent(QPaintEvent* event)
                          foregroundRect.width() - d->_pBorderRadius, height() - 1);
     }
     // 文字绘制
-    painter.setPen(isEnabled() ? d->_themeMode == ElaThemeType::Light ? d->_lightTextColor : d->_darkTextColor
+    painter.setPen(isEnabled() ? d->_themeMode == ElaThemeType::Light ? getLightTextColor() : getDarkTextColor()
                                : ElaThemeColor(d->_themeMode, BasicTextDisable));
     painter.drawText(foregroundRect, Qt::AlignCenter, text());
     painter.restore();

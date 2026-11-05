@@ -24,6 +24,12 @@ ElaLCDNumber::ElaLCDNumber(QWidget* parent) : QLCDNumber(parent), d_ptr(new ElaL
 
     d->onThemeModeChanged(eTheme->getThemeMode());
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaLCDNumberPrivate::onThemeModeChanged);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, [=](ElaThemeType::ThemeMode mode) {
+        if (mode == eTheme->getThemeMode())
+        {
+            d->onThemeModeChanged(mode);
+        }
+    });
 }
 
 ElaLCDNumber::ElaLCDNumber(uint numDigits, QWidget* parent) : ElaLCDNumber(parent)

@@ -35,6 +35,12 @@ ElaKeyBinder::ElaKeyBinder(QWidget* parent) : QLabel(parent), d_ptr(new ElaKeyBi
     });
     d->onThemeChanged(eTheme->getThemeMode());
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaKeyBinderPrivate::onThemeChanged);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, [=](ElaThemeType::ThemeMode mode) {
+        if (mode == eTheme->getThemeMode())
+        {
+            d->onThemeChanged(mode);
+        }
+    });
 }
 
 ElaKeyBinder::~ElaKeyBinder()

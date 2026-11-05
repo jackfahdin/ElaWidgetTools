@@ -27,13 +27,17 @@ ElaPopularCardFloater::ElaPopularCardFloater(ElaPopularCard* card, ElaPopularCar
     _opacityEffect->setOpacity(1);
     _overButton->setGraphicsEffect(_opacityEffect);
     _overButton->move(0, 0);
-    _overButton->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
-    _overButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
-    _overButton->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
+    auto refreshAccent = [=]() {
+        _overButton->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
+        _overButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
+        _overButton->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
+        _overButton->setDarkDefaultColor(ElaThemeColor(ElaThemeType::Dark, PrimaryNormal));
+        _overButton->setDarkHoverColor(ElaThemeColor(ElaThemeType::Dark, PrimaryHover));
+        _overButton->setDarkPressColor(ElaThemeColor(ElaThemeType::Dark, PrimaryPress));
+    };
+    refreshAccent();
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, refreshAccent);
     _overButton->setLightTextColor(Qt::white);
-    _overButton->setDarkDefaultColor(ElaThemeColor(ElaThemeType::Dark, PrimaryNormal));
-    _overButton->setDarkHoverColor(ElaThemeColor(ElaThemeType::Dark, PrimaryHover));
-    _overButton->setDarkPressColor(ElaThemeColor(ElaThemeType::Dark, PrimaryPress));
     _overButton->setDarkTextColor(Qt::white);
     _overButton->setMinimumSize(0, 0);
     _overButton->setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));

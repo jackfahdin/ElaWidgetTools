@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 
 #include "ElaMenuStyle.h"
+#include "ElaTheme.h"
 #include "private/ElaMenuPrivate.h"
 ElaMenu::ElaMenu(QWidget* parent) : QMenu(parent), d_ptr(new ElaMenuPrivate())
 {
@@ -20,6 +21,13 @@ ElaMenu::ElaMenu(QWidget* parent) : QMenu(parent), d_ptr(new ElaMenuPrivate())
     d->_menuStyle = new ElaMenuStyle(style());
     setStyle(d->_menuStyle);
     d->_pAnimationImagePosY = 0;
+    // 展开动画缓存了整张菜单图像，主题更新后立即丢弃旧配色快照。
+    auto invalidateThemeSnapshot = [=]() {
+        d->_animationPix = QPixmap();
+        update();
+    };
+    connect(eTheme, &ElaTheme::themeModeChanged, this, invalidateThemeSnapshot);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, invalidateThemeSnapshot);
 }
 
 ElaMenu::ElaMenu(const QString& title, QWidget* parent) : ElaMenu(parent)

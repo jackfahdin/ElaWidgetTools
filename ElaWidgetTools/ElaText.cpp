@@ -22,6 +22,12 @@ ElaText::ElaText(QWidget* parent) : QLabel(parent), d_ptr(new ElaTextPrivate())
     d->_themeMode = eTheme->getThemeMode();
     d->onThemeChanged(eTheme->getThemeMode());
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaTextPrivate::onThemeChanged);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, [=](ElaThemeType::ThemeMode mode) {
+        if (mode == eTheme->getThemeMode())
+        {
+            d->onThemeChanged(mode);
+        }
+    });
 }
 
 ElaText::ElaText(const QString& text, QWidget* parent) : ElaText(parent)

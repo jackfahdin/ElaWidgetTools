@@ -17,12 +17,14 @@ ElaDockWidgetTitleBar::ElaDockWidgetTitleBar(QWidget* parent) : QWidget{parent}
     _titleLabel->setTextPixelSize(13);
 
     _floatButton = new ElaIconButton(ElaIconType::WindowRestore, 13, 32, 26, this);
-    _floatButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, BasicHoverAlpha));
-    _floatButton->setDarkHoverColor(ElaThemeColor(ElaThemeType::Dark, BasicHoverAlpha));
     connect(_floatButton, &ElaIconButton::clicked, this, &ElaDockWidgetTitleBar::onFloatButtonClicked);
     _closeButton = new ElaIconButton(ElaIconType::Xmark, 17, 32, 26, this);
-    _closeButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, StatusDanger));
-    _closeButton->setDarkHoverColor(ElaThemeColor(ElaThemeType::Dark, StatusDanger));
+    auto refreshCloseColor = [=]() {
+        _closeButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, StatusDanger));
+        _closeButton->setDarkHoverColor(ElaThemeColor(ElaThemeType::Dark, StatusDanger));
+    };
+    refreshCloseColor();
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, refreshCloseColor);
     connect(_closeButton, &ElaIconButton::clicked, this, &ElaDockWidgetTitleBar::onCloseButtonClicked);
 
     _setVisibleFromFeatures(_dockWidget->features());

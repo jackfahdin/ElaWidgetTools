@@ -37,6 +37,12 @@ ElaLineEdit::ElaLineEdit(QWidget* parent) : QLineEdit(parent), d_ptr(new ElaLine
     setStyleSheet("#ElaLineEdit{background-color:transparent;padding-left: 10px;}");
     d->onThemeChanged(eTheme->getThemeMode());
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaLineEditPrivate::onThemeChanged);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, [=](ElaThemeType::ThemeMode mode) {
+        if (mode == eTheme->getThemeMode())
+        {
+            d->onThemeChanged(mode);
+        }
+    });
     QWidget::setVisible(true);
 }
 

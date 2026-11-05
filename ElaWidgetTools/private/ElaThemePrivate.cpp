@@ -1,4 +1,5 @@
 #include "ElaThemePrivate.h"
+#include "ElaTheme.h"
 
 ElaThemePrivate::ElaThemePrivate(QObject* parent) : QObject{parent}
 {
@@ -116,4 +117,29 @@ void ElaThemePrivate::_initThemeColor()
     _darkThemeColorList[ElaThemeType::Win10BorderActive] = QColor(0x33, 0x33, 0x33);
     _lightThemeColorList[ElaThemeType::Win10BorderInactive] = QColor(0xA7, 0xA7, 0xA7);
     _darkThemeColorList[ElaThemeType::Win10BorderInactive] = QColor(0x3D, 0x3D, 0x3D);
+}
+
+void ElaThemePrivate::_applyThemeMode(ElaThemeType::ThemeMode mode)
+{
+    Q_Q(ElaTheme);
+    if (_themeMode == mode)
+    {
+        return;
+    }
+    _themeMode = mode;
+    Q_EMIT q->themeModeChanged(mode);
+}
+
+bool ElaThemePrivate::_setAccentColor(ElaThemeType::ThemeMode mode, const QColor& color)
+{
+    auto& colors = mode == ElaThemeType::Light ? _lightThemeColorList : _darkThemeColorList;
+    // 浅色主题交互态逐渐变亮，深色主题逐渐变暗。
+    const QColor hover = mode == ElaThemeType::Light ? color.lighter(110) : color.darker(110);
+    const QColor press = mode == ElaThemeType::Light ? color.lighter(120) : color.darker(120);
+    const bool changed = colors[ElaThemeType::PrimaryNormal] != color || colors[ElaThemeType::PrimaryHover] != hover ||
+                         colors[ElaThemeType::PrimaryPress] != press;
+    colors[ElaThemeType::PrimaryNormal] = color;
+    colors[ElaThemeType::PrimaryHover] = hover;
+    colors[ElaThemeType::PrimaryPress] = press;
+    return changed;
 }

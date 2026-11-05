@@ -21,6 +21,12 @@ ElaDoubleSpinBox::ElaDoubleSpinBox(QWidget* parent) : QDoubleSpinBox(parent), d_
     lineEdit()->setStyleSheet("background-color:transparent;padding-left:10px;padding-bottom:3px;");
     d->onThemeChanged(eTheme->getThemeMode());
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaDoubleSpinBoxPrivate::onThemeChanged);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, [=](ElaThemeType::ThemeMode mode) {
+        if (mode == eTheme->getThemeMode())
+        {
+            d->onThemeChanged(mode);
+        }
+    });
 }
 
 ElaDoubleSpinBox::~ElaDoubleSpinBox()
