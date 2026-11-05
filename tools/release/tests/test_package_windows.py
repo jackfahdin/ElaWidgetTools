@@ -17,6 +17,14 @@ class WindowsPackageTest(unittest.TestCase):
             asset = package(stage, root / 'out', 'Continuous-Build', SHA)
             with zipfile.ZipFile(asset) as archive:
                 self.assertIn('ElaWidgetTools-Continuous-Build-windows-x86_64/bin/ElaWidgetTools.dll', archive.namelist())
-            (stage / 'bin/platforms/qwindows.dll').unlink()
+            (stage / 'plugins/platforms/qwindows.dll').unlink()
             with self.assertRaises(ValueError):
                 package(stage, root / 'other', 'Continuous-Build', SHA)
+
+    def test_missing_qt_configuration_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stage = installation(root / 'stage', 'windows-x86_64')
+            (stage / 'bin/qt.conf').unlink()
+            with self.assertRaises(ValueError):
+                package(stage, root / 'out', 'Continuous-Build', SHA)
