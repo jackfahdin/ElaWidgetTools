@@ -3,9 +3,14 @@
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QSignalBlocker>
 
 #include "ElaApplication.h"
 #include "ElaComboBox.h"
+#include "ElaColorDialog.h"
+#include "ElaPushButton.h"
+#include "ElaCheckBox.h"
+#include "ElaSlider.h"
 #include "ElaLog.h"
 #include "ElaRadioButton.h"
 #include "ElaScrollPageArea.h"
@@ -27,6 +32,7 @@ T_Setting::T_Setting(QWidget* parent) : T_BasePage(parent)
     _themeComboBox = new ElaComboBox(this);
     _themeComboBox->addItem("日间模式");
     _themeComboBox->addItem("夜间模式");
+    _themeComboBox->addItem("跟随系统");
     ElaScrollPageArea* themeSwitchArea = new ElaScrollPageArea(this);
     QHBoxLayout* themeSwitchLayout = new QHBoxLayout(themeSwitchArea);
     ElaText* themeSwitchText = new ElaText("主题切换", this);
@@ -36,27 +42,73 @@ T_Setting::T_Setting(QWidget* parent) : T_BasePage(parent)
     themeSwitchLayout->addStretch();
     themeSwitchLayout->addWidget(_themeComboBox);
     connect(_themeComboBox, QOverload<int>::of(&ElaComboBox::currentIndexChanged), this, [=](int index) {
-        if (index == 0)
+        if (index == 2)
         {
-            eTheme->setThemeMode(ElaThemeType::Light);
+            eTheme->setFollowSystemTheme(true);
         }
         else
         {
-            eTheme->setThemeMode(ElaThemeType::Dark);
+            eTheme->setThemeMode(index == 0 ? ElaThemeType::Light : ElaThemeType::Dark);
         }
     });
-    connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
-        _themeComboBox->blockSignals(true);
-        if (themeMode == ElaThemeType::Light)
-        {
-            _themeComboBox->setCurrentIndex(0);
-        }
-        else
-        {
-            _themeComboBox->setCurrentIndex(1);
-        }
-        _themeComboBox->blockSignals(false);
+    auto syncThemeSelection = [=]() {
+        const QSignalBlocker blocker(_themeComboBox);
+        _themeComboBox->setCurrentIndex(eTheme->getFollowSystemTheme()                  ? 2
+                                        : eTheme->getThemeMode() == ElaThemeType::Light ? 0
+                                                                                        : 1);
+    };
+    syncThemeSelection();
+    connect(eTheme, &ElaTheme::themeModeChanged, this, syncThemeSelection);
+    connect(eTheme, &ElaTheme::followSystemThemeChanged, this, syncThemeSelection);
+
+    ElaScrollPageArea* accentArea = new ElaScrollPageArea(this);
+    QHBoxLayout* accentLayout = new QHBoxLayout(accentArea);
+    ElaText* accentText = new ElaText("强调色", 15, this);
+    ElaPushButton* accentButton = new ElaPushButton(this);
+    ElaPushButton* resetColorsButton = new ElaPushButton("恢复默认配色", this);
+    accentLayout->addWidget(accentText);
+    accentLayout->addStretch();
+    accentLayout->addWidget(accentButton);
+    accentLayout->addWidget(resetColorsButton);
+    auto syncAccent = [=]() {
+        accentButton->setText("选择颜色 · " + eTheme->getAccentColor(eTheme->getThemeMode()).name());
+    };
+    syncAccent();
+    connect(eTheme, &ElaTheme::themeModeChanged, this, syncAccent);
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, syncAccent);
+    connect(accentButton, &ElaPushButton::clicked, this, [=]() {
+        auto* dialog = new ElaColorDialog(this);
+        dialog->setAttribute(Qt::WA_DeleteOnClose);
+        dialog->setCurrentColor(eTheme->getAccentColor(eTheme->getThemeMode()));
+        connect(dialog, &ElaColorDialog::colorSelected, this, [](const QColor& color) {
+            eTheme->setAccentColor(color);
+        });
+        dialog->open();
     });
+    connect(resetColorsButton, &ElaPushButton::clicked, eTheme, &ElaTheme::resetThemeColors);
+
+    ElaScrollPageArea* themePreviewArea = new ElaScrollPageArea(this);
+    QHBoxLayout* previewLayout = new QHBoxLayout(themePreviewArea);
+    ElaText* previewText = new ElaText("实时预览", 15, this);
+    ElaCheckBox* previewCheckBox = new ElaCheckBox("选中状态", this);
+    previewCheckBox->setChecked(true);
+    ElaSlider* previewSlider = new ElaSlider(Qt::Horizontal, this);
+    previewSlider->setFixedWidth(130);
+    previewSlider->setValue(65);
+    previewSlider->setAccessibleName("强调色预览滑块");
+    ElaToggleSwitch* previewSwitch = new ElaToggleSwitch(this);
+    previewSwitch->setIsToggled(true);
+    previewSwitch->setAccessibleName("主题预览开关");
+    previewSwitch->setToolTip("按 Tab 聚焦，按空格切换");
+    previewLayout->addWidget(previewText);
+    previewLayout->addStretch();
+    previewLayout->addWidget(previewCheckBox);
+    previewLayout->addSpacing(16);
+    previewLayout->addWidget(previewSlider);
+    previewLayout->addSpacing(16);
+    previewLayout->addWidget(previewSwitch);
+    ElaText* themeHint = new ElaText("可用 Tab 和空格操作开关；跟随系统时，标题栏的主题按钮可切回手动模式。", 13, this);
+
     ElaText* windowPaintText = new ElaText("主窗口绘制设置", this);
     windowPaintText->setWordWrap(false);
     windowPaintText->setTextPixelSize(15);
@@ -259,6 +311,9 @@ T_Setting::T_Setting(QWidget* parent) : T_BasePage(parent)
     centerLayout->addWidget(themeText);
     centerLayout->addSpacing(10);
     centerLayout->addWidget(themeSwitchArea);
+    centerLayout->addWidget(accentArea);
+    centerLayout->addWidget(themePreviewArea);
+    centerLayout->addWidget(themeHint);
     centerLayout->addSpacing(15);
     centerLayout->addWidget(helperText);
     centerLayout->addSpacing(10);
