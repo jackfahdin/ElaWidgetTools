@@ -45,3 +45,5 @@ python tools/check-format.py
 ## 自动发布
 
 常规 CI 还会执行发布辅助脚本单元测试。稳定标签与每日 Continuous Build 由独立的 `release.yml` 编排，Linux、Windows、macOS 各自有单独的工作流和打包脚本；全部平台完成归档解压、安装消费及示例验证后才公开 Release。下载内容、触发规则和维护步骤见[版本发布说明](releases.md)。
+
+首次完整发布链路已在提交 `91c7811` 的[自动发布运行](https://github.com/jackfahdin/ElaWidgetTools/actions/runs/41984031758)通过，包括三个平台的成品归档验证和 GitHub Release 上传后摘要复核。

@@ -46,13 +46,22 @@
 
 - [x] 文档明确预编译包使用 Qt 6.12.0、库依赖 Qt 私有 ABI；支持 Qt 6.12+ 表示可重建源码。写清 Linux 环境依赖、Windows 部署包和 macOS 未签名/未公证边界。
 - [x] 检查本地 Markdown 链接、归档必要内容及许可文本；本机仅做 Linux 原生打包验证和跨平台静态检查。
-- [ ] 分类中文提交，快进 main 并推送；手动触发 `gh workflow run release.yml --ref main`。
-- [ ] 查询新运行，修复实际失败；成功后核对 Release 的源提交、三个资产及 SHA256SUMS。记录运行链接，不创建稳定版标签。
+- [x] 分类中文提交，快进 main 并推送；手动触发 `gh workflow run release.yml --ref main`。
+- [x] 查询新运行，修复实际失败；成功后核对 Release 的源提交、三个资产及 SHA256SUMS。记录运行链接，不创建稳定版标签。
 
 ## 本地验证记录
 
-- Python 发布脚本 21 项测试通过；旧任务回退用例已先失败、后通过。
+- Python 发布脚本 22 项测试通过；旧任务回退用例已先失败、后通过。
 - actionlint 1.7.12、固定版本格式检查、Python 编译检查及文档链接检查通过。
 - Linux Qt 6.12.0 Release 构建和 4 组 QtTest 通过。
 - 本机原生 Linux 安装树经过 RPATH 清理、打包、解压后，消费项目构建/测试与 Example `--smoke-test` 均通过。
 - Windows 和 macOS 没有在本机交叉编译；平台实际打包和启动由发布 CI 验证。
+
+## 云端验证记录
+
+- 首次发布运行发现 Windows 插件检查路径与 Qt CMake 部署布局不一致；按部署日志将检查改为 `plugins/platforms/qwindows.dll`，同时要求 `bin/qt.conf` 存在，提交 `91c7811`。
+- [自动发布运行 41984031758](https://github.com/jackfahdin/ElaWidgetTools/actions/runs/41984031758) 全部通过：准备、Linux x86_64、Windows x64、macOS ARM64 和最终发布。
+- [常规 CI 运行 41984031156](https://github.com/jackfahdin/ElaWidgetTools/actions/runs/41984031156) 全部通过。
+- [Continuous Build](https://github.com/jackfahdin/ElaWidgetTools/releases/tag/continuous-build) 已公开，首包源提交为 `91c781170073cb990037e5ef0462ebbc4d9d29bb`，包含三平台归档、构建元数据和 SHA256SUMS。
+- 发布后独立读取 GitHub 资产摘要并下载元数据/校验清单，验证三个包的文件大小、摘要和源提交全部一致。
+- 在相同源提交运行准备脚本，真实返回 `changed=false`，确认每日无变更跳过；没有创建稳定标签或稳定 Release。
