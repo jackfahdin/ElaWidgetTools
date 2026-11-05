@@ -1,0 +1,101 @@
+name: 发布包 · Linux x86_64
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        description: 本次构建固定的完整源提交
+        required: true
+        type: string
+      release_label:
+        description: 版本号或 Continuous-Build
+        required: true
+        type: string
+      release_mode:
+        description: stable 或 nightly
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: '3'
+      CTEST_PARALLEL_LEVEL: '2'
+      RELEASE_LABEL: ${{ inputs.release_label }}
+      SOURCE_SHA: ${{ inputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: 安装 Linux 依赖
+        run: |
+          test "$(uname -m)" = x86_64
+          sudo apt-get update
+          sudo apt-get install -y ninja-build patchelf xvfb libgl1-mesa-dev libxkbcommon-dev libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-keysyms1 libxcb-shape0 libxcb-xinerama0
+      - name: 安装 Qt 基线 SDK
+        uses: jurplel/install-qt-action@v4
+        id: qt
+        with:
+          version: '6.12.0'
+          host: linux
+          arch: linux_gcc_64
+          archives: qtbase qttools icu
+          install-deps: false
+          cache: true
+          cache-key-prefix: qt-base-tools-v1
+      - name: 配置 Release 和 QtTest
+        env:
+          QT_ROOT: ${{ steps.qt.outputs.qt-root-dir }}
+        run: cmake --preset linux-release -DELAWIDGETTOOLS_BUILD_TESTS=ON
+      - name: 编译
+        run: cmake --build --preset linux-release
+      - name: 运行 QtTest
+        run: xvfb-run -a ctest --preset linux-release --output-junit "$GITHUB_WORKSPACE/qt-test-results.xml"
+      - name: 安装开发包并移除 CI 主机路径
+        run: |
+          cmake --install build/linux-release
+          # Linux 首版是开发包；Qt 由用户安装，归档内只保留相对库搜索路径。
+          patchelf --set-rpath '$ORIGIN' install/linux-release/lib/libElaWidgetTools.so
+          patchelf --set-rpath '$ORIGIN/../lib' install/linux-release/bin/ElaWidgetToolsExample
+          cp LICENSE install/linux-release/
+          cp docs/releases.md install/linux-release/发布说明.md
+      - name: 生成 Linux 发布归档
+        run: python tools/release/package_linux.py --stage install/linux-release --output packages --label "$RELEASE_LABEL" --sha "$SOURCE_SHA"
+      - name: 解压成品并验证安装消费与示例
+        env:
+          QT_ROOT: ${{ steps.qt.outputs.qt-root-dir }}
+        run: |
+          mkdir -p unpacked
+          tar -xzf "packages/ElaWidgetTools-$RELEASE_LABEL-linux-x86_64.tar.gz" -C unpacked
+          package_root="$GITHUB_WORKSPACE/unpacked/ElaWidgetTools-$RELEASE_LABEL-linux-x86_64"
+          cmake -S tests/consumer -B build/release-consumer -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$package_root;$QT_ROOT"
+          cmake --build build/release-consumer
+          xvfb-run -a ctest --test-dir build/release-consumer --output-on-failure --no-tests=error
+          LD_LIBRARY_PATH="$QT_ROOT/lib" xvfb-run -a "$package_root/bin/ElaWidgetToolsExample" --smoke-test
+      - name: 上传已验证的 Linux 包
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-package-linux
+          path: packages/*
+          if-no-files-found: error
+      - name: 保存 Linux 验证日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-logs-linux
+          path: |
+            build/linux-release/Testing/
+            build/release-consumer/Testing/
+            qt-test-results.xml

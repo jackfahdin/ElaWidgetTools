@@ -1,0 +1,113 @@
+name: 发布包 · Windows x64
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        description: 本次构建固定的完整源提交
+        required: true
+        type: string
+      release_label:
+        description: 版本号或 Continuous-Build
+        required: true
+        type: string
+      release_mode:
+        description: stable 或 nightly
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: '3'
+      CTEST_PARALLEL_LEVEL: '2'
+      RELEASE_LABEL: ${{ inputs.release_label }}
+      SOURCE_SHA: ${{ inputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: 初始化 MSVC x64
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: 安装 Qt 基线 SDK
+        uses: jurplel/install-qt-action@v4
+        id: qt
+        with:
+          version: '6.12.0'
+          host: windows
+          arch: win64_msvc2022_64
+          archives: qtbase qttools
+          # Qt 6.11+ 的 Windows 仓库路径需要此 aqtinstall 修复。
+          aqtsource: git+https://github.com/miurahr/aqtinstall.git@7e5a5c3d95cf962cfc2f36c86ffa0d2c07f1a0d4
+          install-deps: false
+          cache: true
+          cache-key-prefix: qt-base-tools-v1
+      - name: 配置 Release 和 QtTest
+        env:
+          QT_ROOT: ${{ steps.qt.outputs.qt-root-dir }}
+        run: cmake --preset windows-release -DELAWIDGETTOOLS_BUILD_TESTS=ON
+      - name: 编译
+        run: cmake --build --preset windows-release
+      - name: 运行 QtTest
+        run: ctest --preset windows-release --output-junit "$env:GITHUB_WORKSPACE/qt-test-results.xml"
+      - name: 安装并部署 Qt 依赖
+        run: |
+          cmake --install build/windows-release
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item LICENSE install/windows-release/
+          Copy-Item docs/releases.md install/windows-release/发布说明.md
+      - name: 生成 Windows 发布归档
+        run: python tools/release/package_windows.py --stage install/windows-release --output packages --label "$env:RELEASE_LABEL" --sha "$env:SOURCE_SHA"
+      - name: 解压成品并验证安装消费
+        env:
+          QT_ROOT: ${{ steps.qt.outputs.qt-root-dir }}
+        run: |
+          Expand-Archive "packages/ElaWidgetTools-$env:RELEASE_LABEL-windows-x86_64.zip" unpacked
+          $packageRoot = "$env:GITHUB_WORKSPACE/unpacked/ElaWidgetTools-$env:RELEASE_LABEL-windows-x86_64"
+          cmake -S tests/consumer -B build/release-consumer -G Ninja -DCMAKE_BUILD_TYPE=Release "-DCMAKE_PREFIX_PATH=$packageRoot;$env:QT_ROOT"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cmake --build build/release-consumer
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ctest --test-dir build/release-consumer --output-on-failure --no-tests=error
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: 脱离 SDK 搜索路径启动部署后的示例
+        env:
+          QT_ROOT: ${{ steps.qt.outputs.qt-root-dir }}
+        run: |
+          $packageRoot = "$env:GITHUB_WORKSPACE/unpacked/ElaWidgetTools-$env:RELEASE_LABEL-windows-x86_64"
+          $qtPrefix = [IO.Path]::GetFullPath($env:QT_ROOT)
+          $env:PATH = (($env:PATH -split ';') | Where-Object { $_ -and -not [IO.Path]::GetFullPath($_).StartsWith($qtPrefix, [StringComparison]::OrdinalIgnoreCase) }) -join ';'
+          Get-ChildItem Env: | Where-Object { $_.Name -match '^(QT_|QML|QTDIR)' } | ForEach-Object { Remove-Item "Env:$($_.Name)" }
+          # GUI 子系统程序必须显式等待，才能获取真实退出码和超时结果。
+          $process = Start-Process "$packageRoot/bin/ElaWidgetToolsExample.exe" -ArgumentList '--smoke-test' -PassThru -WorkingDirectory $env:RUNNER_TEMP
+          if (-not $process.WaitForExit(30000)) { $process.Kill(); throw '部署后的示例启动超时' }
+          if ($process.ExitCode -ne 0) { throw "部署后的示例失败：$($process.ExitCode)" }
+      - name: 上传已验证的 Windows 包
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-package-windows
+          path: packages/*
+          if-no-files-found: error
+      - name: 保存 Windows 验证日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-logs-windows
+          path: |
+            build/windows-release/Testing/
+            build/release-consumer/Testing/
+            qt-test-results.xml

@@ -1,0 +1,119 @@
+name: 自动发布
+run-name: ${{ github.event_name == 'push' && github.ref_name || 'Continuous Build' }}
+
+on:
+  push:
+    tags: ['v*']
+  schedule:
+    # UTC 16:00 即北京时间次日 00:00；GitHub 调度可能延迟。
+    - cron: '0 16 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 不取消正在更新资产的任务。稳定版和预览版串行，避免混用草稿。
+concurrency:
+  group: release-publication
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.event_name == 'push' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      mode: ${{ steps.metadata.outputs.mode }}
+      sha: ${{ steps.metadata.outputs.sha }}
+      version: ${{ steps.metadata.outputs.version }}
+      label: ${{ steps.metadata.outputs.label }}
+      changed: ${{ steps.metadata.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 排队后的预览从当前 main 解析一次；后续平台只能检出输出的完整 SHA。
+          ref: ${{ github.event_name == 'push' && github.sha || 'main' }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: tools/requirements-code-tools.txt
+      - name: 检查格式与发布脚本
+        run: |
+          python -m pip install -r tools/requirements-code-tools.txt
+          python tools/check-format.py
+          python -m unittest discover -s tools/release/tests -v
+      - name: 固定发布输入并检查是否需要构建
+        id: metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_MODE: ${{ github.event_name == 'push' && 'stable' || 'nightly' }}
+          RELEASE_REF: ${{ github.ref_name }}
+        run: |
+          args=()
+          if [[ "$GITHUB_EVENT_NAME" == workflow_dispatch ]]; then args+=(--force); fi
+          python tools/release/prepare.py --mode "$RELEASE_MODE" --ref "$RELEASE_REF" --repository "$GITHUB_REPOSITORY" "${args[@]}"
+
+  linux:
+    needs: prepare
+    if: needs.prepare.outputs.changed == 'true'
+    uses: ./.github/workflows/release-linux.yml
+    with:
+      source_sha: ${{ needs.prepare.outputs.sha }}
+      release_label: ${{ needs.prepare.outputs.label }}
+      release_mode: ${{ needs.prepare.outputs.mode }}
+
+  windows:
+    needs: prepare
+    if: needs.prepare.outputs.changed == 'true'
+    uses: ./.github/workflows/release-windows.yml
+    with:
+      source_sha: ${{ needs.prepare.outputs.sha }}
+      release_label: ${{ needs.prepare.outputs.label }}
+      release_mode: ${{ needs.prepare.outputs.mode }}
+
+  macos:
+    needs: prepare
+    if: needs.prepare.outputs.changed == 'true'
+    uses: ./.github/workflows/release-macos.yml
+    with:
+      source_sha: ${{ needs.prepare.outputs.sha }}
+      release_label: ${{ needs.prepare.outputs.label }}
+      release_mode: ${{ needs.prepare.outputs.mode }}
+
+  publish:
+    needs: [prepare, linux, windows, macos]
+    if: needs.prepare.outputs.changed == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    # 只有通过所有平台验证后，这个任务才拿到 Release 写权限。
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-package-*
+          path: artifacts
+      - name: 核对所有平台并生成校验清单
+        env:
+          RELEASE_VERSION: ${{ needs.prepare.outputs.version }}
+          RELEASE_LABEL: ${{ needs.prepare.outputs.label }}
+          RELEASE_MODE: ${{ needs.prepare.outputs.mode }}
+          SOURCE_SHA: ${{ needs.prepare.outputs.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: >-
+          python tools/release/assemble.py --artifacts artifacts --output release-assets
+          --version "$RELEASE_VERSION" --label "$RELEASE_LABEL" --mode "$RELEASE_MODE"
+          --sha "$SOURCE_SHA" --run-url "$RUN_URL"
+      - name: 上传资产、复核远端摘要并公开 Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/release/publish.py --repository "$GITHUB_REPOSITORY" --directory release-assets

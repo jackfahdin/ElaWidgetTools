@@ -1,0 +1,97 @@
+name: 发布包 · macOS ARM64
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        description: 本次构建固定的完整源提交
+        required: true
+        type: string
+      release_label:
+        description: 版本号或 Continuous-Build
+        required: true
+        type: string
+      release_mode:
+        description: stable 或 nightly
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-15
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: '3'
+      CTEST_PARALLEL_LEVEL: '2'
+      RELEASE_LABEL: ${{ inputs.release_label }}
+      SOURCE_SHA: ${{ inputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: 确认原生 Apple Silicon 运行器
+        run: test "$(uname -m)" = arm64
+      - name: 安装 Qt 基线 SDK
+        uses: jurplel/install-qt-action@v4
+        id: qt
+        with:
+          version: '6.12.0'
+          host: mac
+          arch: clang_64
+          archives: qtbase qttools
+          install-deps: false
+          cache: true
+          cache-key-prefix: qt-base-tools-v1
+      - name: 配置 Release 和 QtTest
+        env:
+          QT_ROOT: ${{ steps.qt.outputs.qt-root-dir }}
+        run: cmake --preset macos-release -DELAWIDGETTOOLS_BUILD_TESTS=ON
+      - name: 编译
+        run: cmake --build --preset macos-release
+      - name: 运行 QtTest
+        run: ctest --preset macos-release --output-junit "$GITHUB_WORKSPACE/qt-test-results.xml"
+      - name: 安装并部署应用
+        run: |
+          cmake --install build/macos-release
+          cp LICENSE install/macos-release/
+          cp docs/releases.md install/macos-release/发布说明.md
+      - name: 生成 macOS 发布归档
+        run: python tools/release/package_macos.py --stage install/macos-release --output packages --label "$RELEASE_LABEL" --sha "$SOURCE_SHA"
+      - name: 解压成品并验证安装消费
+        env:
+          QT_ROOT: ${{ steps.qt.outputs.qt-root-dir }}
+        run: |
+          # 用 ditto 解压，保留 framework 符号链接和应用权限。
+          ditto -x -k "packages/ElaWidgetTools-$RELEASE_LABEL-macos-arm64.zip" unpacked
+          package_root="$GITHUB_WORKSPACE/unpacked/ElaWidgetTools-$RELEASE_LABEL-macos-arm64"
+          cmake -S tests/consumer -B build/release-consumer -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$package_root;$QT_ROOT"
+          cmake --build build/release-consumer
+          ctest --test-dir build/release-consumer --output-on-failure --no-tests=error
+          # 检查的是最终压缩包内的应用，而非尚未归档的构建目录。
+          python tools/check-macos-bundle.py "$package_root/ElaWidgetToolsExample.app"
+      - name: 上传已验证的 macOS 包
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-package-macos
+          path: packages/*
+          if-no-files-found: error
+      - name: 保存 macOS 验证日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-logs-macos
+          path: |
+            build/macos-release/Testing/
+            build/release-consumer/Testing/
+            qt-test-results.xml
+            macos-smoke.log
