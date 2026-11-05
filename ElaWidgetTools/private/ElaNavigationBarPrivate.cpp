@@ -1,4 +1,7 @@
 ﻿#include "ElaNavigationBarPrivate.h"
+#include <QPersistentModelIndex>
+#include <QPointer>
+#include <QScopedValueRollback>
 #include "ElaActionCommander.h"
 #include "ElaApplication.h"
 #include "ElaBaseListView.h"
@@ -33,13 +36,26 @@ ElaNavigationBarPrivate::~ElaNavigationBarPrivate()
 void ElaNavigationBarPrivate::onNavigationOpenNewWindow(const QString& nodeKey)
 {
     Q_Q(ElaNavigationBar);
-    const QMetaObject* meta = _pageMetaMap.value(nodeKey);
-    if (!meta)
+    const auto keepAlive = q->d_ptr;
+    QPointer<ElaNavigationBar> alive(q);
+    if (_isCreatingWindow)
     {
         return;
     }
-    QWidget* widget = dynamic_cast<QWidget*>(meta->newInstance());
-    if (widget)
+    QScopedValueRollback<bool> creating(_isCreatingWindow, true);
+    const QMetaObject* meta = _pageMetaMap.value(nodeKey);
+    const auto factory = _pageFactories.value(nodeKey);
+    if (!meta && !factory)
+    {
+        return;
+    }
+    QWidget* widget = factory ? factory(q) : dynamic_cast<QWidget*>(meta->newInstance());
+    if (!alive)
+    {
+        return;
+    }
+    if (widget && widget != q && !widget->isAncestorOf(q) && (!widget->parentWidget() || widget->parentWidget() == q) &&
+        widget->property("ElaPageKey").toString().isEmpty())
     {
         widget->setProperty("ElaPageKey", nodeKey);
         widget->setProperty("IsMetaWidget", true);
@@ -52,20 +68,28 @@ void ElaNavigationBarPrivate::onNavigationOpenNewWindow(const QString& nodeKey)
     }
 }
 
-void ElaNavigationBarPrivate::onTreeViewClicked(const QModelIndex& index, bool isLogRoute, bool isRouteBack)
+bool ElaNavigationBarPrivate::onTreeViewClicked(const QModelIndex& index, bool isLogRoute, bool isRouteBack)
 {
     Q_Q(ElaNavigationBar);
+    const auto keepAlive = q->d_ptr;
+    QPointer<ElaNavigationBar> alive(q);
+    if (_isNavigating || !index.isValid())
+    {
+        return false;
+    }
+    QScopedValueRollback<bool> navigating(_isNavigating, true);
+    const QPersistentModelIndex persistent(index);
     if (index.isValid())
     {
         ElaNavigationNode* node = static_cast<ElaNavigationNode*>(index.internalPointer());
         if (!node)
         {
-            return;
+            return false;
         }
         if (node->getIsCategoryNode())
         {
             Q_EMIT q->navigationNodeClicked(ElaNavigationType::CategoryNode, node->getNodeKey(), isRouteBack);
-            return;
+            return true;
         }
         if (node->getIsExpanderNode())
         {
@@ -73,6 +97,15 @@ void ElaNavigationBarPrivate::onTreeViewClicked(const QModelIndex& index, bool i
         }
         else
         {
+            const auto guard = _navigationGuard;
+            if (guard && !guard(node->getNodeKey()))
+            {
+                return false;
+            }
+            if (!alive || !persistent.isValid())
+            {
+                return false;
+            }
             if (node->getKeyPoints())
             {
                 node->setKeyPoints(0);
@@ -138,7 +171,7 @@ void ElaNavigationBarPrivate::onTreeViewClicked(const QModelIndex& index, bool i
                         {
                             _navigationModel->setSelectedNode(node);
                             _resetNodeSelected();
-                            return;
+                            return true;
                         }
                         _navigationModel->setSelectedExpandedNode(originNode);
                         postData.insert("SelectedNode", QVariant::fromValue(originNode));
@@ -158,12 +191,34 @@ void ElaNavigationBarPrivate::onTreeViewClicked(const QModelIndex& index, bool i
         }
         _resetNodeSelected();
     }
+    return true;
 }
 
-void ElaNavigationBarPrivate::onFooterViewClicked(const QModelIndex& index, bool isLogRoute, bool isRouteBack)
+bool ElaNavigationBarPrivate::onFooterViewClicked(const QModelIndex& index, bool isLogRoute, bool isRouteBack)
 {
     Q_Q(ElaNavigationBar);
+    const auto keepAlive = q->d_ptr;
+    QPointer<ElaNavigationBar> alive(q);
+    if (_isNavigating || !index.isValid())
+    {
+        return false;
+    }
+    QScopedValueRollback<bool> navigating(_isNavigating, true);
+    const QPersistentModelIndex persistent(index);
     ElaNavigationNode* node = index.data(Qt::UserRole).value<ElaNavigationNode*>();
+    if (!node)
+    {
+        return false;
+    }
+    const auto guard = _navigationGuard;
+    if (node->getIsHasFooterPage() && guard && !guard(node->getNodeKey()))
+    {
+        return false;
+    }
+    if (!alive || !persistent.isValid())
+    {
+        return false;
+    }
     if (node->getKeyPoints())
     {
         node->setKeyPoints(0);
@@ -223,6 +278,7 @@ void ElaNavigationBarPrivate::onFooterViewClicked(const QModelIndex& index, bool
             _footerModel->setSelectedNode(node);
         }
     }
+    return true;
 }
 
 bool ElaNavigationBarPrivate::eventFilter(QObject* watched, QEvent* event)
@@ -421,14 +477,15 @@ void ElaNavigationBarPrivate::_raiseNavigationBar()
 
 void ElaNavigationBarPrivate::_smoothScrollNavigationView(const QModelIndex& index)
 {
+    const QPersistentModelIndex persistent(index);
     QTimer::singleShot(200, this, [=]() {
-        if (_currentDisplayMode == ElaNavigationType::Compact)
+        if (!persistent.isValid() || _currentDisplayMode == ElaNavigationType::Compact)
         {
             return;
         }
         auto vScrollBar = _navigationView->verticalScrollBar();
         int startValue = vScrollBar->value();
-        _navigationView->scrollTo(index, QAbstractItemView::PositionAtCenter);
+        _navigationView->scrollTo(persistent, QAbstractItemView::PositionAtCenter);
         int endValue = vScrollBar->value();
         QPropertyAnimation* scrollAnimation = new QPropertyAnimation(vScrollBar, "value");
         scrollAnimation->setEasingCurve(QEasingCurve::OutSine);

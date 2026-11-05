@@ -6,6 +6,7 @@
 #include "ElaWidgetToolsDef.h"
 #include <QMap>
 #include <QObject>
+#include <functional>
 class QLayout;
 class ElaMenu;
 class QVBoxLayout;
@@ -39,8 +40,8 @@ public:
     Q_SLOT void onNavigationOpenNewWindow(const QString& nodeKey);
 
     // 核心跳转逻辑
-    void onTreeViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
-    void onFooterViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
+    bool onTreeViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
+    bool onFooterViewClicked(const QModelIndex& index, bool isLogRoute = true, bool isRouteBack = false);
 
 protected:
     bool eventFilter(QObject* watched, QEvent* event) override;
@@ -48,6 +49,10 @@ protected:
 private:
     friend class ElaNavigationView;
     friend class ElaNavigationStyle;
+    std::function<bool(const QString&)> _navigationGuard;
+    QMap<QString, std::function<QWidget*(QWidget*)>> _pageFactories;
+    bool _isNavigating{false};
+    bool _isCreatingWindow{false};
     ElaThemeType::ThemeMode _themeMode;
     QList<ElaSuggestBox::SuggestData> _suggestDataList;
     QMap<QString, const QMetaObject*> _pageMetaMap;

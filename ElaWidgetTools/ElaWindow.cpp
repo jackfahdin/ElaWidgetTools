@@ -49,6 +49,9 @@ ElaWindow::ElaWindow(QWidget* parent) : QMainWindow{parent}, d_ptr(new ElaWindow
     connect(d->_appBar, &ElaAppBar::closeButtonClicked, this, &ElaWindow::closeButtonClicked);
     // 导航栏
     d->_navigationBar = new ElaNavigationBar(this);
+    d->_navigationBar->setNavigationGuard([d](const QString& key) {
+        return d->_prepareNavigation(key);
+    });
     // 返回按钮状态变更
     connect(ElaActionCommander::getInstance(), &ElaActionCommander::commanderStateChanged, d,
             &ElaWindowPrivate::onNavigationRouterStateChanged);
@@ -548,6 +551,11 @@ int ElaWindow::getPageOpenInNewWindowCount(const QString& nodeKey) const
 void ElaWindow::backtrackNavigationNode(const QString& nodeKey)
 {
     Q_D(ElaWindow);
+    if (d->_pageFactories.contains(nodeKey))
+    {
+        d->_createLazyPage(nodeKey, true);
+        return;
+    }
     const QMetaObject* meta = d->_pageMetaMap.value(nodeKey);
     if (!meta)
     {
@@ -607,10 +615,7 @@ int ElaWindow::getCurrentNavigationIndex() const
 QString ElaWindow::getCurrentNavigationPageKey() const
 {
     Q_D(const ElaWindow);
-    return d->_navigationCenterStackedWidget->getContainerStackedWidget()
-        ->currentWidget()
-        ->property("ElaPageKey")
-        .toString();
+    return d->_routeMap.value(d->_navigationTargetKey) ? d->_navigationTargetKey : QString();
 }
 
 const QList<ElaSuggestBox::SuggestData>& ElaWindow::getNavigationSuggestDataList() const

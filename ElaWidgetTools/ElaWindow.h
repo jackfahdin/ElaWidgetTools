@@ -3,6 +3,7 @@
 
 #include "ElaPropertyMacro.h"
 #include <QMainWindow>
+#include <functional>
 
 #include "ElaAppBar.h"
 #include "ElaWidgetToolsDef.h"
@@ -97,6 +98,15 @@ public:
     void setNavigationNodeTitle(const QString& nodeKey, const QString& nodeTitle);
     QString getNavigationNodeTitle(const QString& nodeKey) const;
 
+    using PageFactory = std::function<QWidget*(QWidget*)>;
+    using NavigationGuard = std::function<bool(const QString&, const QString&)>;
+    ElaNavigationType::NodeResult addLazyPageNode(const QString& title, QString& pageKey, const PageFactory& factory,
+                                                  ElaIconType::IconName awesome = ElaIconType::None);
+    ElaNavigationType::NodeResult addLazyPageNode(const QString& title, QString& pageKey, const PageFactory& factory,
+                                                  const QString& targetExpanderKey,
+                                                  ElaIconType::IconName awesome = ElaIconType::None);
+    QWidget* getNavigationPage(const QString& pageKey) const;
+    void setNavigationGuard(const NavigationGuard& guard);
     void navigation(const QString& pageKey);
     int getCurrentNavigationIndex() const;
     QString getCurrentNavigationPageKey() const;
@@ -139,8 +149,11 @@ Q_SIGNALS:
     Q_SIGNAL void centralCustomWidgetChanged();
     Q_SIGNAL void customMenuChanged();
     Q_SIGNAL void pageOpenInNewWindow(QString nodeKey);
+    Q_SIGNAL void navigationPageCreated(const QString& pageKey, QWidget* page);
+    Q_SIGNAL void navigationPageCreationFailed(const QString& pageKey);
 
 protected:
+    void showEvent(QShowEvent* event) override;
     virtual bool eventFilter(QObject* watched, QEvent* event) override;
     virtual QMenu* createPopupMenu() override;
     virtual void paintEvent(QPaintEvent* event) override;

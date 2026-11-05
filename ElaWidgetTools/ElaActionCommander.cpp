@@ -206,6 +206,11 @@ void ElaActionCommander::clearCommand(const QString& domainName)
         return;
     }
     auto& commandData = d->_commandDomainMap[domainName];
+    // 守卫可能进入嵌套事件循环；不能删除正在执行的命令。
+    if (commandData.isExecuting)
+    {
+        return;
+    }
     auto& commandList = commandData.commandList;
     commandData.currentIndex = -1;
     for (const auto command : commandList)
@@ -264,7 +269,7 @@ void ElaActionCommander::runToCommand(const QString& domainName, int commandInde
     Q_D(ElaActionCommander);
     auto& commandData = d->_commandDomainMap[domainName];
     auto& commandList = commandData.commandList;
-    if (commandData.isBusyMode || commandIndex >= commandList.count())
+    if (commandData.isBusyMode || commandData.isExecuting || commandIndex >= commandList.count())
     {
         ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", d->_pMessageDisplayMesc,
                                nullptr);
@@ -278,7 +283,13 @@ void ElaActionCommander::runToCommand(const QString& domainName, int commandInde
         int runCount = commandIndex - commandData.currentIndex;
         for (int i = 0; i < runCount; i++)
         {
+            const int previousIndex = commandData.currentIndex;
             d->_redoCommand(domainName, false);
+            if (previousIndex == commandData.currentIndex)
+            {
+                commandData.isBusyMode = false;
+                return;
+            }
             QString percent = QString::number(100 * (i + 1) / static_cast<qreal>(runCount), 'f', 1);
             d->_commanderBusyRingValue->setText(QString("%1%").arg(percent));
             if (d->_pIsRunToCommandProcessEventEnable)
@@ -294,7 +305,13 @@ void ElaActionCommander::runToCommand(const QString& domainName, int commandInde
         int runCount = commandData.currentIndex - commandIndex + 1;
         for (int i = 0; i < runCount; i++)
         {
+            const int previousIndex = commandData.currentIndex;
             d->_undoCommand(domainName, false);
+            if (previousIndex == commandData.currentIndex)
+            {
+                commandData.isBusyMode = false;
+                return;
+            }
             QString percent = QString::number(100 * (i + 1) / static_cast<qreal>(runCount), 'f', 1);
             d->_commanderBusyRingValue->setText(QString("%1%").arg(percent));
             if (d->_pIsRunToCommandProcessEventEnable)
@@ -340,4 +357,16 @@ QWidget* ElaActionCommander::getCommanderDesign() const
 {
     Q_D(const ElaActionCommander);
     return d->_commanderDesign;
+}
+
+bool ElaActionCommand::tryUndo()
+{
+    undo();
+    return true;
+}
+
+bool ElaActionCommand::tryRedo()
+{
+    redo();
+    return true;
 }

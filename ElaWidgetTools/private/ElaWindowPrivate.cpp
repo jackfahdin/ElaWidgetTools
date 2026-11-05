@@ -196,6 +196,7 @@ void ElaWindowPrivate::onNavigationNodeClicked(ElaNavigationType::NavigationNode
         // 页脚没有绑定页面
         return;
     }
+    _navigationTargetKey = nodeKey;
     int nodeIndex = _navigationCenterStackedWidget->getContainerStackedWidget()->indexOf(page);
     if (_navigationTargetIndex == nodeIndex ||
         _navigationCenterStackedWidget->getContainerStackedWidget()->count() <= nodeIndex)
@@ -217,6 +218,10 @@ void ElaWindowPrivate::onNavigationNodeAdded(ElaNavigationType::NavigationNodeTy
     if (page)
     {
         _navigationCenterStackedWidget->getContainerStackedWidget()->addWidget(page);
+        if (_navigationTargetKey.isEmpty())
+        {
+            _navigationTargetKey = nodeKey;
+        }
     }
 }
 
@@ -229,12 +234,27 @@ void ElaWindowPrivate::onNavigationNodeRemoved(ElaNavigationType::NavigationNode
     }
     QWidget* page = _routeMap.value(nodeKey);
     _routeMap.remove(nodeKey);
+    _pageFactories.remove(nodeKey);
+    _pendingPageKeys.remove(nodeKey);
     _pageMetaMap.remove(nodeKey);
-    _navigationCenterStackedWidget->getContainerStackedWidget()->removeWidget(page);
+    if (page)
+    {
+        _navigationCenterStackedWidget->getContainerStackedWidget()->removeWidget(page);
+        page->hide();
+    }
     QWidget* currentWidget = _navigationCenterStackedWidget->getContainerStackedWidget()->currentWidget();
     if (currentWidget)
     {
-        q->navigation(currentWidget->property("ElaPageKey").toString());
+        _navigationTargetIndex = _navigationCenterStackedWidget->getContainerStackedWidget()->currentIndex();
+        _navigationCenterStackedWidget->setLastTargetIndex(_navigationTargetIndex);
+        _navigationTargetKey = currentWidget->property("ElaPageKey").toString();
+        q->navigation(_navigationTargetKey);
+    }
+    else
+    {
+        _navigationTargetKey.clear();
+        _navigationTargetIndex = -1;
+        _navigationCenterStackedWidget->setLastTargetIndex(-1);
     }
 }
 

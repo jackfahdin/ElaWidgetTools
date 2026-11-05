@@ -1,4 +1,5 @@
 #include "ElaActionCommanderPrivate.h"
+#include <QScopedValueRollback>
 
 #include "ElaActionCommander.h"
 #include "ElaActionCommanderModel.h"
@@ -49,7 +50,7 @@ bool ElaActionCommanderPrivate::_executeCommand(const QString& domainName, ElaAc
 {
     Q_Q(ElaActionCommander);
     auto& commandData = _commandDomainMap[domainName];
-    if (commandData.isBusyMode)
+    if (commandData.isBusyMode || commandData.isExecuting)
     {
         ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", _pMessageDisplayMesc,
                                command->getMessageWidget());
@@ -73,7 +74,7 @@ bool ElaActionCommanderPrivate::_recordCommand(const QString& domainName, ElaAct
 {
     Q_Q(ElaActionCommander);
     auto& commandData = _commandDomainMap[domainName];
-    if (commandData.isBusyMode)
+    if (commandData.isBusyMode || commandData.isExecuting)
     {
         ElaMessageBar::warning(ElaMessageBarType::TopRight, "警告", "任务管理器繁忙中!", _pMessageDisplayMesc,
                                command->getMessageWidget());
@@ -158,12 +159,22 @@ void ElaActionCommanderPrivate::_undoCommand(const QString& domainName, bool isS
 {
     Q_Q(ElaActionCommander);
     auto& commandData = _commandDomainMap[domainName];
+    if (commandData.isExecuting)
+    {
+        return;
+    }
     if (commandData.undoState == ElaActionCommanderType::UndoInvalid)
     {
         return;
     }
     auto& commandList = commandData.commandList;
     if (commandList.isEmpty())
+    {
+        return;
+    }
+    auto command = commandList[commandData.currentIndex];
+    QScopedValueRollback<bool> executing(commandData.isExecuting, true);
+    if (!command->tryUndo())
     {
         return;
     }
@@ -177,8 +188,6 @@ void ElaActionCommanderPrivate::_undoCommand(const QString& domainName, bool isS
         commandData.redoState = ElaActionCommanderType::RedoValid;
         Q_EMIT q->commanderStateChanged(domainName, ElaActionCommanderType::RedoValid);
     }
-    auto command = commandList[commandData.currentIndex];
-    command->undo();
     commandData.currentIndex -= 1;
     auto commandModel = commandData.commanderModel;
     commandModel->updateCommand(command, false);
@@ -196,12 +205,22 @@ void ElaActionCommanderPrivate::_redoCommand(const QString& domainName, bool isS
 {
     Q_Q(ElaActionCommander);
     auto& commandData = _commandDomainMap[domainName];
+    if (commandData.isExecuting)
+    {
+        return;
+    }
     auto& commandList = commandData.commandList;
     if (commandData.redoState == ElaActionCommanderType::RedoInvalid)
     {
         return;
     }
     if (commandList.isEmpty())
+    {
+        return;
+    }
+    auto command = commandList[commandData.currentIndex + 1];
+    QScopedValueRollback<bool> executing(commandData.isExecuting, true);
+    if (!command->tryRedo())
     {
         return;
     }
@@ -219,8 +238,6 @@ void ElaActionCommanderPrivate::_redoCommand(const QString& domainName, bool isS
     {
         commandData.currentIndex += 1;
     }
-    auto command = commandList[commandData.currentIndex];
-    command->redo();
     auto commandModel = commandData.commanderModel;
     commandModel->updateCommand(command, true);
     _commanderView->viewport()->update();

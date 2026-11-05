@@ -2,6 +2,7 @@
 #define ELAWORKSPACE_ELAWIDGETTOOLS_ELANAVIGATIONBAR_H_
 
 #include <QWidget>
+#include <functional>
 
 #include "ElaWidgetToolsDef.h"
 #include "ElaWidgetToolsExport.h"
@@ -59,6 +60,8 @@ public:
     QString getNodeTitle(const QString& nodeKey) const;
 
     void navigation(const QString& pageKey, bool isLogClicked = true, bool isRouteBack = false);
+    bool tryNavigation(const QString& pageKey, bool isLogClicked = true, bool isRouteBack = false);
+    void setNavigationGuard(const std::function<bool(const QString&)>& guard);
     void setDisplayMode(ElaNavigationType::NavigationDisplayMode displayMode, bool isAnimation = true);
     ElaNavigationType::NavigationDisplayMode getDisplayMode() const;
 
@@ -74,6 +77,10 @@ Q_SIGNALS:
                                         bool isRouteBack);
     Q_SIGNAL void navigationNodeAdded(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey, QWidget* page);
     Q_SIGNAL void navigationNodeRemoved(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey);
+
+private:
+    friend class ElaWindow;
+    void _setPageFactory(const QString& key, const std::function<QWidget*(QWidget*)>& factory);
 
 protected:
     virtual void paintEvent(QPaintEvent* event) override;

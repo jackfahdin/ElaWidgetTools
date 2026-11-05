@@ -1,4 +1,6 @@
 #include "ElaNavigationBar.h"
+#include <QPersistentModelIndex>
+#include <QPointer>
 
 #include "ElaBaseListView.h"
 #include "ElaFooterDelegate.h"
@@ -457,12 +459,14 @@ void ElaNavigationBar::removeNode(const QString& nodeKey)
             d->_initNodeModelIndex(QModelIndex());
             for (const auto& removeKey : removeKeyList)
             {
+                d->_pageFactories.remove(removeKey);
                 d->_pageMetaMap.remove(removeKey);
                 d->_pageNewWindowCountMap.remove(removeKey);
                 Q_EMIT navigationNodeRemoved(ElaNavigationType::PageNode, removeKey);
             }
         }
     }
+    d->_pageFactories.remove(nodeKey);
     for (int i = 0; i < d->_suggestDataList.count(); i++)
     {
         auto& suggestData = d->_suggestDataList[i];
@@ -553,27 +557,46 @@ QString ElaNavigationBar::getNodeTitle(const QString& nodeKey) const
 
 void ElaNavigationBar::navigation(const QString& pageKey, bool isLogClicked, bool isRouteBack)
 {
+    tryNavigation(pageKey, isLogClicked, isRouteBack);
+}
+
+void ElaNavigationBar::setNavigationGuard(const std::function<bool(const QString&)>& guard)
+{
+    Q_D(ElaNavigationBar);
+    d->_navigationGuard = guard;
+}
+
+void ElaNavigationBar::_setPageFactory(const QString& key, const std::function<QWidget*(QWidget*)>& factory)
+{
+    Q_D(ElaNavigationBar);
+    d->_pageFactories.insert(key, factory);
+}
+
+bool ElaNavigationBar::tryNavigation(const QString& pageKey, bool isLogClicked, bool isRouteBack)
+{
     Q_D(ElaNavigationBar);
     ElaNavigationNode* node = d->_navigationModel->getNavigationNode(pageKey);
     if (!node)
     {
         node = d->_footerModel->getNavigationNode(pageKey);
     }
-    if (node)
+    if (!node || node->getIsExpanderNode())
     {
-        if (node->getIsFooterNode())
-        {
-            d->onFooterViewClicked(node->getModelIndex(), isLogClicked, isRouteBack);
-        }
-        else
-        {
-            if (!node->getIsExpanderNode())
-            {
-                d->onTreeViewClicked(node->getModelIndex(), isLogClicked, isRouteBack);
-                d->_smoothScrollNavigationView(node->getModelIndex());
-            }
-        }
+        return false;
     }
+    if (node->getIsFooterNode())
+    {
+        return d->onFooterViewClicked(node->getModelIndex(), isLogClicked, isRouteBack);
+    }
+    const auto keepAlive = d_ptr;
+    const QPointer<ElaNavigationBar> alive(this);
+    const QPersistentModelIndex index(node->getModelIndex());
+    const bool accepted = d->onTreeViewClicked(index, isLogClicked, isRouteBack);
+    if (accepted && alive && index.isValid())
+    {
+        d->_smoothScrollNavigationView(index);
+    }
+    return accepted;
 }
 
 void ElaNavigationBar::setDisplayMode(ElaNavigationType::NavigationDisplayMode displayMode, bool isAnimation)

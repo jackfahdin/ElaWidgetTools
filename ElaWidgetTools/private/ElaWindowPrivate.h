@@ -7,6 +7,9 @@
 #include <QMap>
 #include <QMovie>
 #include <QObject>
+#include <QPointer>
+#include <QSet>
+#include <functional>
 
 class ElaEvent;
 class ElaWindow;
@@ -64,7 +67,14 @@ private:
 
     ElaNavigationType::NavigationDisplayMode _currentNavigationBarDisplayMode{ElaNavigationType::Maximal};
     QMap<QString, const QMetaObject*> _pageMetaMap;
-    QMap<QString, QWidget*> _routeMap; // key__nodeKey title可以一致  value__Page
+    QMap<QString, QPointer<QWidget>> _routeMap; // key__nodeKey title可以一致  value__Page
+    QMap<QString, std::function<QWidget*(QWidget*)>> _pageFactories;
+    QSet<QString> _pendingPageKeys;
+    QSet<QString> _creatingPageKeys;
+    std::function<bool(const QString&, const QString&)> _navigationGuard;
+    QString _navigationTargetKey;
+    bool _prepareNavigation(const QString& key);
+    bool _createLazyPage(const QString& key, bool recreate = false);
     int _navigationTargetIndex{0};
     qreal _distance(QPoint point1, QPoint point2);
     void _resetWindowLayout(bool isAnimation);

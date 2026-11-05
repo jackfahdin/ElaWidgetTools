@@ -24,6 +24,7 @@ public:
     struct ElaActionCommandDomainData
     {
         bool isBusyMode{false};
+        bool isExecuting{false};
         int currentIndex{-1};
         ElaActionCommanderType::CommanderState undoState{ElaActionCommanderType::UndoInvalid};
         ElaActionCommanderType::CommanderState redoState{ElaActionCommanderType::RedoInvalid};
