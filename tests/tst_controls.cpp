@@ -4,7 +4,7 @@
 
 #include <QSignalSpy>
 #include <QtTest>
-#include <QPushButton>
+#include <QLineEdit>
 #include <QVBoxLayout>
 
 class ControlsTest : public QObject
@@ -75,9 +75,10 @@ private Q_SLOTS:
     {
         QWidget window;
         auto* layout = new QVBoxLayout(&window);
-        auto* before = new QPushButton("前一个控件", &window);
+        // macOS 可按系统设置跳过原生按钮；文本框作为跨平台焦点参照。
+        auto* before = new QLineEdit(&window);
         auto* toggle = new ElaToggleSwitch(&window);
-        auto* after = new QPushButton("后一个控件", &window);
+        auto* after = new QLineEdit(&window);
         layout->addWidget(before);
         layout->addWidget(toggle);
         layout->addWidget(after);
