@@ -4,6 +4,8 @@
 
 #include <QSignalSpy>
 #include <QtTest>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 class ControlsTest : public QObject
 {
@@ -44,6 +46,104 @@ private Q_SLOTS:
         QTest::mouseClick(&toggle, Qt::LeftButton);
         QVERIFY(toggle.getIsToggled());
         QCOMPARE(changed.count(), 1);
+    }
+
+    void switchIgnoresRightClick()
+    {
+        ElaToggleSwitch toggle;
+        toggle.show();
+        QSignalSpy changed(&toggle, &ElaToggleSwitch::toggled);
+        QTest::mouseClick(&toggle, Qt::RightButton);
+        QVERIFY(!toggle.getIsToggled());
+        QCOMPARE(changed.count(), 0);
+    }
+
+    void switchRespondsToSpace()
+    {
+        ElaToggleSwitch toggle;
+        toggle.show();
+        QSignalSpy changed(&toggle, &ElaToggleSwitch::toggled);
+        QTest::keyPress(&toggle, Qt::Key_Space);
+        QVERIFY(!toggle.getIsToggled());
+        QTest::keyRelease(&toggle, Qt::Key_Space);
+        QVERIFY(toggle.getIsToggled());
+        QCOMPARE(changed.count(), 1);
+        QCOMPARE(toggle.focusPolicy(), Qt::StrongFocus);
+    }
+
+    void switchParticipatesInTabFocus()
+    {
+        QWidget window;
+        auto* layout = new QVBoxLayout(&window);
+        auto* before = new QPushButton("前一个控件", &window);
+        auto* toggle = new ElaToggleSwitch(&window);
+        auto* after = new QPushButton("后一个控件", &window);
+        layout->addWidget(before);
+        layout->addWidget(toggle);
+        layout->addWidget(after);
+        window.show();
+        window.activateWindow();
+        before->setFocus();
+        QTRY_VERIFY(before->hasFocus());
+        QTest::keyClick(before, Qt::Key_Tab);
+        QTRY_VERIFY(toggle->hasFocus());
+        QTest::keyClick(toggle, Qt::Key_Space);
+        QVERIFY(toggle->getIsToggled());
+        QTest::keyClick(toggle, Qt::Key_Tab);
+        QTRY_VERIFY(after->hasFocus());
+    }
+
+    void switchCancelsInterruptedKeyboardPress()
+    {
+        ElaToggleSwitch toggle;
+        toggle.show();
+        QSignalSpy changed(&toggle, &ElaToggleSwitch::toggled);
+        QTest::keyPress(&toggle, Qt::Key_Space);
+        QKeyEvent repeatPress(QEvent::KeyPress, Qt::Key_Space, Qt::NoModifier, QString(), true);
+        QKeyEvent repeatRelease(QEvent::KeyRelease, Qt::Key_Space, Qt::NoModifier, QString(), true);
+        QApplication::sendEvent(&toggle, &repeatRelease);
+        QApplication::sendEvent(&toggle, &repeatPress);
+        QCOMPARE(changed.count(), 0);
+        QTest::keyRelease(&toggle, Qt::Key_Space);
+        QCOMPARE(changed.count(), 1);
+        QTest::keyPress(&toggle, Qt::Key_Space);
+        QFocusEvent lostFocus(QEvent::FocusOut);
+        QApplication::sendEvent(&toggle, &lostFocus);
+        QTest::keyRelease(&toggle, Qt::Key_Space);
+        QCOMPARE(changed.count(), 1);
+        QTest::keyPress(&toggle, Qt::Key_Space);
+        toggle.setEnabled(false);
+        QTest::keyRelease(&toggle, Qt::Key_Space);
+        toggle.setEnabled(true);
+        QTest::keyRelease(&toggle, Qt::Key_Space);
+        QCOMPARE(changed.count(), 1);
+    }
+
+    void switchDragToSameStateDoesNotNotify()
+    {
+        ElaToggleSwitch toggle;
+        toggle.show();
+        QSignalSpy changed(&toggle, &ElaToggleSwitch::toggled);
+        QTest::mousePress(&toggle, Qt::LeftButton, Qt::NoModifier, QPoint(11, 11));
+        QMouseEvent move(QEvent::MouseMove, QPointF(12, 11), QPointF(toggle.mapToGlobal(QPoint(12, 11))), Qt::NoButton,
+                         Qt::LeftButton, Qt::NoModifier);
+        QApplication::sendEvent(&toggle, &move);
+        QTest::mouseRelease(&toggle, Qt::LeftButton, Qt::NoModifier, QPoint(12, 11));
+        QVERIFY(!toggle.getIsToggled());
+        QCOMPARE(changed.count(), 0);
+    }
+
+    void switchCancelsMouseReleaseOutside()
+    {
+        ElaToggleSwitch toggle;
+        toggle.show();
+        QSignalSpy changed(&toggle, &ElaToggleSwitch::toggled);
+        QTest::mousePress(&toggle, Qt::LeftButton);
+        QTest::mouseRelease(&toggle, Qt::LeftButton, Qt::NoModifier, QPoint(-10, -10));
+        QVERIFY(!toggle.getIsToggled());
+        QCOMPARE(changed.count(), 0);
+        QTest::mouseRelease(&toggle, Qt::LeftButton);
+        QCOMPARE(changed.count(), 0);
     }
 
     void themeChangeEmitsSelectedMode()

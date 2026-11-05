@@ -2,6 +2,7 @@
 
 #include <QEvent>
 #include <QMouseEvent>
+#include <QKeyEvent>
 #include <QPainter>
 #include <QPainterPath>
 
@@ -13,6 +14,7 @@ ElaToggleSwitch::ElaToggleSwitch(QWidget* parent) : QWidget{parent}, d_ptr(new E
     d->q_ptr = this;
     setObjectName("ElaToggleSwitch");
     setMouseTracking(true);
+    setFocusPolicy(Qt::StrongFocus);
     setFixedSize(44, 22);
     d->_circleCenterX = -1;
     d->_isToggled = false;
@@ -55,6 +57,24 @@ bool ElaToggleSwitch::event(QEvent* event)
     Q_D(ElaToggleSwitch);
     switch (event->type())
     {
+    case QEvent::FocusIn: {
+        update();
+        break;
+    }
+    case QEvent::FocusOut:
+    case QEvent::EnabledChange: {
+        d->_isSpacePressed = false;
+        if (d->_isLeftButtonPress)
+        {
+            d->_isLeftButtonPress = false;
+            d->_isMousePressMove = false;
+            d->_startPosAnimation(d->_circleCenterX,
+                                  d->_isToggled ? width() - height() / 2 - d->_margin * 2 : height() / 2,
+                                  d->_isToggled);
+        }
+        update();
+        break;
+    }
     case QEvent::Enter: {
         if (isEnabled())
         {
@@ -83,18 +103,37 @@ bool ElaToggleSwitch::event(QEvent* event)
 void ElaToggleSwitch::mousePressEvent(QMouseEvent* event)
 {
     Q_D(ElaToggleSwitch);
+    if (event->button() != Qt::LeftButton || !isEnabled() || d->_isSpacePressed)
+    {
+        event->ignore();
+        return;
+    }
     d->_adjustCircleCenterX();
+    d->_isMousePressMove = false;
     d->_isLeftButtonPress = true;
     d->_lastMouseX = event->pos().x();
     d->_startRadiusAnimation(d->_circleRadius, height() * 0.25);
-    QWidget::mousePressEvent(event);
+    event->accept();
 }
 
 void ElaToggleSwitch::mouseReleaseEvent(QMouseEvent* event)
 {
     Q_D(ElaToggleSwitch);
+    if (event->button() != Qt::LeftButton || !isEnabled() || !d->_isLeftButtonPress)
+    {
+        event->ignore();
+        return;
+    }
     d->_isLeftButtonPress = false;
-    QWidget::mouseReleaseEvent(event);
+    event->accept();
+    if (!rect().contains(event->position().toPoint()))
+    {
+        d->_isMousePressMove = false;
+        d->_startPosAnimation(d->_circleCenterX, d->_isToggled ? width() - height() / 2 - d->_margin * 2 : height() / 2,
+                              d->_isToggled);
+        d->_startRadiusAnimation(d->_circleRadius, height() * 0.3);
+        return;
+    }
     if (d->_isMousePressMove)
     {
         d->_isMousePressMove = false;
@@ -133,6 +172,37 @@ void ElaToggleSwitch::mouseMoveEvent(QMouseEvent* event)
         d->_adjustCircleCenterX();
     }
     QWidget::mouseMoveEvent(event);
+}
+
+void ElaToggleSwitch::keyPressEvent(QKeyEvent* event)
+{
+    Q_D(ElaToggleSwitch);
+    if (event->key() == Qt::Key_Space && isEnabled())
+    {
+        if (!event->isAutoRepeat() && !d->_isLeftButtonPress)
+        {
+            d->_isSpacePressed = true;
+        }
+        event->accept();
+        return;
+    }
+    QWidget::keyPressEvent(event);
+}
+
+void ElaToggleSwitch::keyReleaseEvent(QKeyEvent* event)
+{
+    Q_D(ElaToggleSwitch);
+    if (event->key() == Qt::Key_Space && isEnabled())
+    {
+        if (!event->isAutoRepeat() && d->_isSpacePressed)
+        {
+            d->_isSpacePressed = false;
+            setIsToggled(!d->_isToggled);
+        }
+        event->accept();
+        return;
+    }
+    QWidget::keyReleaseEvent(event);
 }
 
 void ElaToggleSwitch::paintEvent(QPaintEvent* event)
@@ -180,6 +250,12 @@ void ElaToggleSwitch::paintEvent(QPaintEvent* event)
             d->_circleCenterX = d->_isToggled ? width() - height() / 2 - d->_margin * 2 : height() / 2;
         }
         painter.drawEllipse(QPointF(d->_circleCenterX, height() / 2), d->_circleRadius, d->_circleRadius);
+    }
+    if (hasFocus() && isEnabled())
+    {
+        painter.setBrush(Qt::NoBrush);
+        painter.setPen(QPen(ElaThemeColor(d->_themeMode, BasicText), 1, Qt::DotLine));
+        painter.drawRoundedRect(QRectF(rect()).adjusted(2, 2, -2, -2), height() / 2.0 - 2, height() / 2.0 - 2);
     }
     painter.restore();
 }

@@ -21,6 +21,7 @@ private:
     qreal _circleCenterX{0};
     qreal _circleRadius{0};
     bool _isLeftButtonPress{false};
+    bool _isSpacePressed{false};
     bool _isMousePressMove{false};
     int _lastMouseX{0};
     ElaThemeType::ThemeMode _themeMode;

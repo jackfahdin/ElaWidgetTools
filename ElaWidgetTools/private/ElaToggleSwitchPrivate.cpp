@@ -23,8 +23,11 @@ void ElaToggleSwitchPrivate::_startPosAnimation(qreal startX, qreal endX, bool i
     circleAnimation->setEndValue(endX);
     circleAnimation->setEasingCurve(QEasingCurve::InOutSine);
     circleAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-    _isToggled = isToggle;
-    Q_EMIT q->toggled(isToggle);
+    if (_isToggled != isToggle)
+    {
+        _isToggled = isToggle;
+        Q_EMIT q->toggled(isToggle);
+    }
 }
 
 void ElaToggleSwitchPrivate::_startRadiusAnimation(qreal startRadius, qreal endRadius)
