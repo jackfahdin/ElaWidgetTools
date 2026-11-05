@@ -9,7 +9,7 @@
 ![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C?style=flat-square)
 [![许可证：MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
 
-[编译指南](docs/build.md) · [组件目录](docs/components.md) · [维护与路线图](docs/roadmap.md) · [参与贡献](docs/contributing.md) · [示例源码](ElaWidgetToolsExample/)
+[下载版本](https://github.com/jackfahdin/ElaWidgetTools/releases) · [编译指南](docs/build.md) · [组件目录](docs/components.md) · [维护与路线图](docs/roadmap.md) · [参与贡献](docs/contributing.md) · [示例源码](ElaWidgetToolsExample/)
 
 </div>
 
@@ -69,6 +69,7 @@ Qt 5 和 Qt 6.12.0 以下版本不纳入后续维护范围。使用 CMake Preset
 | [参与贡献](docs/contributing.md) | 问题反馈、功能建议与代码贡献 |
 | [代码风格](docs/code-style.md) | 格式配置、开发工具版本与手动静态分析 |
 | [测试指南](docs/testing.md) | QtTest、CTest 与安装消费验证 |
+| [版本发布](docs/releases.md) | 稳定版、每日 Continuous Build、平台下载包与校验 |
 | [持续集成](docs/ci.md) | GitHub Actions 矩阵、检查规则与产物 |
 | [macOS 适配](docs/macos.md) | 实验性构建、部署与设备验证范围 |
 | [示例项目](ElaWidgetToolsExample/) | 查看组件组合与交互用法 |

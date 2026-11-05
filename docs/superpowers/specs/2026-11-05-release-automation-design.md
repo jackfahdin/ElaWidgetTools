@@ -2,7 +2,7 @@
 
 ## 目标
 
-为 ElaWidgetTools 建立可审计的 GitHub Release 自动发布流程。稳定版由版本标签触发，开发版由每日定时任务和手动任务更新固定的 `continuous-build` 预览 Release。Linux、Windows、macOS 的构建和打包逻辑分别放在独立文件中，平台之间只通过明确的工作流输入和 GitHub Artifact 传递结果。
+为 ElaWidgetTools 建立可审计的 GitHub Release 自动发布流程。稳定版由版本标签触发，开发版由每日北京时间 00:00（UTC 16:00，GitHub 可能延迟）的定时任务和手动任务更新固定的 `continuous-build` 预览 Release。Linux、Windows、macOS 的构建和打包逻辑分别放在独立文件中，平台之间只通过明确的工作流输入和 GitHub Artifact 传递结果。
 
 第一阶段发布开发包和示例程序包，不在组件库中加入应用内更新器。发布流程只负责构建、测试、打包、校验和 GitHub Release，不改变库的运行时行为。
 
@@ -67,7 +67,7 @@ GitHub 自动提供的源码压缩包继续保留。第一阶段不生成 `.deb`
 - `release-windows.yml` 使用 Windows Server、MSVC、Qt Windows SDK、Ninja 和 PowerShell。
 - `release-macos.yml` 使用 macOS 15 Apple Silicon、Qt macOS SDK、Ninja、Bash 和 `ditto`。
 
-平台工作流执行顺序固定为：检出 `source_sha`、安装平台依赖、配置对应 Preset、编译、运行 QtTest、安装到临时目录、检查安装树、生成平台资产、上传 GitHub Artifact。任何测试或资产检查失败都会阻止发布任务。
+平台工作流执行顺序固定为：检出 `source_sha`、安装平台依赖、配置对应 Preset、编译、运行 QtTest、安装到临时目录、检查安装树、生成平台资产、解压归档并运行安装消费和 Example 启动检查、上传 GitHub Artifact。任何测试或资产检查失败都会阻止发布任务。
 
 ### 发布编排工作流
 
@@ -97,7 +97,8 @@ tools/release/
     ├── test_common.py
     ├── test_package_linux.py
     ├── test_package_windows.py
-    └── test_package_macos.py
+    ├── test_package_macos.py
+    └── test_release.py         # 发布恢复、标签移动、摘要失败与回退保护
 ```
 
 `common.py` 只定义版本解析、稳定标签校验、文件摘要、资产元数据和安全文件名校验，不读取平台环境变量，也不执行平台命令。三个 `package_*.py` 只接收输入目录、输出目录、标签和源提交，分别实现自己的归档格式和目录检查。`publish.py` 只处理 GitHub API 和 Release 状态，不负责编译或理解平台目录结构。
@@ -107,6 +108,7 @@ tools/release/
 ## 错误处理和安全边界
 
 - 稳定标签与 CMake 版本不一致时，在平台构建前失败。
+- 旧运行重试发布前比较滚动标签的提交关系，只接受同一提交或后续提交，阻止 Continuous Build 回退；上传期间标签被其他操作修改则保持草稿。
 - 稳定标签已指向其他提交、已存在公开 Release 或资产摘要不一致时，拒绝覆盖。
 - 任何平台缺少安装目录、Example、库文件或压缩包时，汇总任务失败。
 - 发布前重新计算所有资产的大小和 SHA-256，发布后通过 GitHub API 读取远端资产摘要进行复核。

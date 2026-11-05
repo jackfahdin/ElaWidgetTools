@@ -41,3 +41,7 @@ python tools/check-format.py
 跨平台改动在本地只做静态检查，各平台的实际编译、测试和部署启动验证交给对应的 CI runner。
 
 本地 actionlint 检查只能验证工作流结构与部分命令问题。后续提交的 Windows、macOS 实际构建与运行状态仍以对应的 Actions 结果为准；工作流写好不表示云端任务已经通过。
+
+## 自动发布
+
+常规 CI 还会执行发布辅助脚本单元测试。稳定标签与每日 Continuous Build 由独立的 `release.yml` 编排，Linux、Windows、macOS 各自有单独的工作流和打包脚本；全部平台完成归档解压、安装消费及示例验证后才公开 Release。下载内容、触发规则和维护步骤见[版本发布说明](releases.md)。
