@@ -3,8 +3,7 @@
 
 #include <QAbstractListModel>
 
-#include "ElaWidgetToolsDef.h"
-class ElaSuggestion;
+#include "ElaSuggestBox.h"
 class ElaSuggestModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -13,12 +12,12 @@ public:
     ~ElaSuggestModel();
     int rowCount(const QModelIndex& parent) const;
     QVariant data(const QModelIndex& index, int role) const;
-    void setSearchSuggestion(const QVector<ElaSuggestion*>& suggestionVector);
+    void setSearchSuggestion(const QList<ElaSuggestBox::SuggestData>& suggestions);
     void clearSearchNode();
-    ElaSuggestion* getSearchSuggestion(int row);
+    const ElaSuggestBox::SuggestData* getSearchSuggestion(int row) const;
 
 private:
-    QVector<ElaSuggestion*> _suggestionVector; // 符合搜索的节点
+    QList<ElaSuggestBox::SuggestData> _suggestions; // 模型持有结果副本，删除本地建议不会留下悬空指针。
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELASUGGESTMODEL_H_

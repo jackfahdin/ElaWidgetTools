@@ -2,31 +2,17 @@
 
 #include "ElaBaseListView.h"
 #include "ElaLineEdit.h"
-#include "ElaSuggestBox.h"
 #include "ElaSuggestBoxSearchViewContainer.h"
 #include "ElaSuggestModel.h"
 #include <QLayout>
 #include <QPropertyAnimation>
-#include <QUuid>
-ElaSuggestion::ElaSuggestion(QObject* parent) : QObject(parent)
-{
-    _pElaIcon = ElaIconType::None;
-    _pSuggestText = "";
-    _pSuggestKey = QUuid::createUuid().toString().remove("{").remove("}").remove("-");
-    _pSuggestData = QVariantMap();
-}
-
-ElaSuggestion::~ElaSuggestion()
-{
-}
+#include <QSignalBlocker>
+#include <QTimer>
 
 ElaSuggestBoxPrivate::ElaSuggestBoxPrivate(QObject* parent) : QObject{parent}
 {
 }
-
-ElaSuggestBoxPrivate::~ElaSuggestBoxPrivate()
-{
-}
+ElaSuggestBoxPrivate::~ElaSuggestBoxPrivate() = default;
 
 void ElaSuggestBoxPrivate::onThemeModeChanged(ElaThemeType::ThemeMode themeMode)
 {
@@ -37,134 +23,142 @@ void ElaSuggestBoxPrivate::onThemeModeChanged(ElaThemeType::ThemeMode themeMode)
     _searchEdit->update();
 }
 
+void ElaSuggestBoxPrivate::_publishPending()
+{
+    Q_Q(ElaSuggestBox);
+    const bool pending = _activeRequestId != 0;
+    if (_pendingNotified != pending)
+    {
+        _pendingNotified = pending;
+        Q_EMIT q->searchPendingChanged(pending);
+    }
+}
+
+bool ElaSuggestBoxPrivate::_cancelRequest()
+{
+    Q_Q(ElaSuggestBox);
+    const auto keepAlive = q->d_ptr;
+    const QPointer<ElaSuggestBox> alive(q);
+    const quint64 revision = _queryRevision;
+    _searchTimer->stop();
+    const quint64 id = _activeRequestId;
+    const bool dispatched = _requestDispatched;
+    _activeRequestId = 0;
+    _requestDispatched = false;
+    if (id)
+    {
+        if (dispatched)
+        {
+            Q_EMIT q->searchCancelled(id);
+            if (!alive || revision != _queryRevision)
+            {
+                return false;
+            }
+        }
+    }
+    _publishPending();
+    return alive && revision == _queryRevision;
+}
+
 void ElaSuggestBoxPrivate::onSearchEditTextEdit(const QString& searchText)
 {
     Q_Q(ElaSuggestBox);
-    if (searchText.isEmpty())
+    const QString query = searchText;
+    ++_queryRevision;
+    if (!_cancelRequest())
+    {
+        return;
+    }
+    if (query.isEmpty())
+    {
+        _showSuggestions({});
+        return;
+    }
+    if (_asyncSearchEnabled)
+    {
+        _showSuggestions({});
+        _activeRequestId = ++_nextRequestId;
+        _searchTimer->start(_debounceInterval);
+        _publishPending();
+        return;
+    }
+    QList<ElaSuggestBox::SuggestData> matches;
+    for (const auto& suggestion : _suggestions)
+    {
+        if (suggestion.getSuggestText().contains(query, _pCaseSensitivity))
+        {
+            matches.append(suggestion);
+        }
+    }
+    _showSuggestions(matches);
+}
+
+void ElaSuggestBoxPrivate::_showSuggestions(const QList<ElaSuggestBox::SuggestData>& suggestions)
+{
+    Q_Q(ElaSuggestBox);
+    _searchModel->setSearchSuggestion(suggestions);
+    _searchView->setCurrentIndex({});
+    if (suggestions.isEmpty())
     {
         _startCloseAnimation();
         return;
     }
-    QVector<ElaSuggestion*> suggestionVector;
-    for (const auto& suggest : _suggestionVector)
-    {
-        if (suggest->getSuggestText().contains(searchText, _pCaseSensitivity))
-        {
-            suggestionVector.append(suggest);
-        }
-    }
-    if (!suggestionVector.isEmpty())
-    {
-        _searchModel->setSearchSuggestion(suggestionVector);
-        int rowCount = suggestionVector.count();
-        if (rowCount > 4)
-        {
-            rowCount = 4;
-        }
-        if (!_searchViewBaseWidget->isVisible())
-        {
-            q->raise();
-            _searchViewBaseWidget->show();
-            _searchViewBaseWidget->raise();
-            QPoint cyclePoint = q->mapTo(q->window(), QPoint(-5, q->height()));
-            _searchViewBaseWidget->move(cyclePoint);
-            _startSizeAnimation(QSize(q->width() + 10, 0), QSize(q->width() + 10, 40 * rowCount + 16));
-            _searchView->move(_searchView->x(), -(40 * rowCount + 16));
-        }
-        else
-        {
-            _startSizeAnimation(_searchViewBaseWidget->size(), QSize(q->width() + 12, 40 * rowCount + 16));
-        }
-        _startExpandAnimation();
-    }
-    else
-    {
-        _startCloseAnimation();
-    }
+    const int rows = qMin(4, suggestions.count());
+    const QSize target(q->width() + 12, 40 * rows + 16);
+    const bool visible = _searchViewBaseWidget->isVisible();
+    _searchViewBaseWidget->move(q->mapTo(q->window(), QPoint(-5, q->height())));
+    _shadowLayout->setContentsMargins(8, 8, 8, 8);
+    _searchViewBaseWidget->show();
+    _searchViewBaseWidget->raise();
+    _startSizeAnimation(visible ? _searchViewBaseWidget->size() : QSize(target.width(), 0), target);
 }
 
 void ElaSuggestBoxPrivate::onSearchViewClicked(const QModelIndex& index)
 {
     Q_Q(ElaSuggestBox);
-    _searchView->clearSelection();
-    if (!index.isValid())
+    const auto* suggestion = index.isValid() ? _searchModel->getSearchSuggestion(index.row()) : nullptr;
+    if (!suggestion)
     {
         return;
     }
-    ElaSuggestion* suggest = _searchModel->getSearchSuggestion(index.row());
-    _searchEdit->setText(suggest->getSuggestText());
-    ElaSuggestBox::SuggestData data(suggest->getElaIcon(), suggest->getSuggestText(), suggest->getSuggestData());
-    data.setSuggestKey(suggest->getSuggestKey());
-    Q_EMIT q->suggestionClicked(data);
-    _startCloseAnimation();
+    // 模型重置前复制数据；设置选中文字不应触发另一轮搜索。
+    const auto data = *suggestion;
+    {
+        const QSignalBlocker blocker(_searchEdit);
+        _searchEdit->setText(data.getSuggestText());
+    }
+    const QPointer<ElaSuggestBox> alive(q);
+    q->cancelSearch();
+    if (alive)
+    {
+        Q_EMIT q->suggestionClicked(data);
+    }
 }
 
 void ElaSuggestBoxPrivate::_startSizeAnimation(QSize oldSize, QSize newSize)
 {
-    if (_lastSize.isValid() && _lastSize == newSize)
+    Q_Q(ElaSuggestBox);
+    if (_sizeAnimation)
     {
-        return;
+        _sizeAnimation->stop();
+        _sizeAnimation->deleteLater();
     }
-    _shadowLayout->removeWidget(_searchView);
-    QPropertyAnimation* expandAnimation = new QPropertyAnimation(_searchViewBaseWidget, "size");
-    connect(expandAnimation, &QPropertyAnimation::valueChanged, this, [=]() {
-        _searchView->resize(_searchViewBaseWidget->size());
-    });
-    connect(expandAnimation, &QPropertyAnimation::finished, this, [=]() {
-        _shadowLayout->addWidget(_searchView);
-    });
-    expandAnimation->setDuration(300);
-    expandAnimation->setEasingCurve(QEasingCurve::InOutSine);
-    expandAnimation->setStartValue(oldSize);
-    expandAnimation->setEndValue(newSize);
-    expandAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-    _lastSize = newSize;
-}
-
-void ElaSuggestBoxPrivate::_startExpandAnimation()
-{
-    if (!_isExpandAnimationFinished)
-    {
-        return;
-    }
-    _isCloseAnimationFinished = true;
-    _isExpandAnimationFinished = false;
-    QPropertyAnimation* expandAnimation = new QPropertyAnimation(_searchView, "pos");
-    connect(expandAnimation, &QPropertyAnimation::finished, this, [=]() {
-        _isExpandAnimationFinished = true;
-        _searchView->clearSelection();
-    });
-    expandAnimation->setDuration(300);
-    expandAnimation->setEasingCurve(QEasingCurve::InOutSine);
-    expandAnimation->setStartValue(_searchView->pos());
-    expandAnimation->setEndValue(QPoint(8, 8));
-    expandAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+    _sizeAnimation = new QPropertyAnimation(_searchViewBaseWidget, "size", q);
+    _sizeAnimation->setDuration(200);
+    _sizeAnimation->setEasingCurve(QEasingCurve::InOutSine);
+    _sizeAnimation->setStartValue(oldSize);
+    _sizeAnimation->setEndValue(newSize);
+    _sizeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void ElaSuggestBoxPrivate::_startCloseAnimation()
 {
-    if (!_isCloseAnimationFinished)
+    if (!_searchViewBaseWidget->isVisible())
     {
         return;
     }
-    _isExpandAnimationFinished = true;
-    _isCloseAnimationFinished = false;
-    QPropertyAnimation* baseWidgetsAnimation = new QPropertyAnimation(_searchViewBaseWidget, "size");
-    baseWidgetsAnimation->setDuration(300);
-    baseWidgetsAnimation->setEasingCurve(QEasingCurve::InOutSine);
-    baseWidgetsAnimation->setStartValue(_searchViewBaseWidget->size());
-    baseWidgetsAnimation->setEndValue(QSize(_searchViewBaseWidget->width(), 0));
-    baseWidgetsAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-    QPropertyAnimation* closeAnimation = new QPropertyAnimation(_searchView, "pos");
-    connect(closeAnimation, &QPropertyAnimation::finished, this, [=]() {
-        _isCloseAnimationFinished = true;
-        _searchModel->clearSearchNode();
+    _startSizeAnimation(_searchViewBaseWidget->size(), QSize(_searchViewBaseWidget->width(), 0));
+    connect(_sizeAnimation, &QPropertyAnimation::finished, this, [this]() {
         _searchViewBaseWidget->hide();
     });
-    closeAnimation->setDuration(300);
-    closeAnimation->setEasingCurve(QEasingCurve::InOutSine);
-    closeAnimation->setStartValue(_searchView->pos());
-    closeAnimation->setEndValue(QPoint(_searchView->pos().x(), -_searchView->height()));
-    closeAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-    _lastSize = baseWidgetsAnimation->endValue().toSize();
 }

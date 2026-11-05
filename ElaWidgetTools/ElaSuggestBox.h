@@ -43,8 +43,27 @@ public:
     void removeSuggestion(const QString& suggestKey);
     void removeSuggestion(int index);
     void clearSuggestion();
+
+    void setSearchText(const QString& text);
+    QString getSearchText() const;
+    void setAsyncSearchEnabled(bool enabled);
+    bool getAsyncSearchEnabled() const;
+    void setSearchDebounceInterval(int milliseconds);
+    int getSearchDebounceInterval() const;
+    bool getIsSearchPending() const;
+    bool setSearchResults(quint64 requestId, const QList<SuggestData>& results);
+    void cancelSearch();
 Q_SIGNALS:
+    Q_SIGNAL void searchRequested(quint64 requestId, const QString& text);
+    Q_SIGNAL void searchCancelled(quint64 requestId);
+    Q_SIGNAL void searchPendingChanged(bool pending);
     Q_SIGNAL void suggestionClicked(const ElaSuggestBox::SuggestData& suggestData);
+
+protected:
+    bool eventFilter(QObject* watched, QEvent* event) override;
+    void hideEvent(QHideEvent* event) override;
 };
+
+Q_DECLARE_METATYPE(ElaSuggestBox::SuggestData)
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_ELASUGGESTBOX_H_

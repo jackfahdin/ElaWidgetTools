@@ -3,43 +3,44 @@
 ElaSuggestModel::ElaSuggestModel(QObject* parent) : QAbstractListModel{parent}
 {
 }
-
-ElaSuggestModel::~ElaSuggestModel()
-{
-}
+ElaSuggestModel::~ElaSuggestModel() = default;
 
 int ElaSuggestModel::rowCount(const QModelIndex& parent) const
 {
-    Q_UNUSED(parent)
-    return _suggestionVector.count();
+    return parent.isValid() ? 0 : _suggestions.count();
 }
 
 QVariant ElaSuggestModel::data(const QModelIndex& index, int role) const
 {
-    return QVariant();
+    const auto* suggestion = index.isValid() ? getSearchSuggestion(index.row()) : nullptr;
+    if (!suggestion)
+    {
+        return {};
+    }
+    if (role == Qt::DisplayRole)
+    {
+        return suggestion->getSuggestText();
+    }
+    if (role == Qt::UserRole)
+    {
+        return QVariant::fromValue(*suggestion);
+    }
+    return {};
 }
 
-void ElaSuggestModel::setSearchSuggestion(const QVector<ElaSuggestion*>& suggestionVector)
+void ElaSuggestModel::setSearchSuggestion(const QList<ElaSuggestBox::SuggestData>& suggestions)
 {
-    if (suggestionVector.count() == 0)
-    {
-        return;
-    }
     beginResetModel();
-    _suggestionVector = suggestionVector;
+    _suggestions = suggestions;
     endResetModel();
 }
 
 void ElaSuggestModel::clearSearchNode()
 {
-    this->_suggestionVector.clear();
+    setSearchSuggestion({});
 }
 
-ElaSuggestion* ElaSuggestModel::getSearchSuggestion(int row)
+const ElaSuggestBox::SuggestData* ElaSuggestModel::getSearchSuggestion(int row) const
 {
-    if (row >= _suggestionVector.count())
-    {
-        return nullptr;
-    }
-    return _suggestionVector[row];
+    return row < 0 || row >= _suggestions.count() ? nullptr : &_suggestions[row];
 }
