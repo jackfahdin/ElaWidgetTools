@@ -11,7 +11,7 @@
 | 构建工具 | Ninja |
 | 编译器 | 支持 C++17，且与所用 Qt 工具链兼容 |
 
-仓库提供 **Linux、Windows、macOS** 的 Ninja 预设。已验证环境为 Ubuntu 26.04.1 x86_64、Qt 6.12.0、GCC 15.2.0、CMake 4.3.3、Ninja 1.12.1。Windows 和 macOS 的验证入口已接入 CI，实际结果以推送后的工作流为准。
+仓库提供 **Linux、Windows、macOS** 的 Ninja 预设。已验证环境为 Ubuntu 26.04.1 x86_64、Qt 6.12.0、GCC 15.2.0、CMake 4.3.3、Ninja 1.12.1；Windows MSVC 和 macOS Apple Silicon 已通过 CI 基线验证。后续改动仍以对应平台的 CI 结果为准。
 
 CMake 中的 `find_package(Qt6 6.12.0 ...)` 表示最低版本要求，未使用 `EXACT`，也未设置 Qt 6 版本上限。后续 Qt 6.13、6.14 等版本同样属于维护范围；下方的 6.12.0 路径只是本机安装示例，可以换成更新版本的工具链目录。
 

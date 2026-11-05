@@ -37,6 +37,27 @@ private Q_SLOTS:
         QCOMPARE(bar.getCustomWidget(static_cast<ElaAppBarType::CustomArea>(3)), nullptr);
     }
 
+    void standaloneAppBarIsSafe()
+    {
+        ElaAppBar bar;
+        QVERIFY(bar.parentWidget() == nullptr);
+        QCOMPARE(bar.getAppBarHeight(), 45);
+    }
+
+    void ribbonHeightEmitsRibbonSignal()
+    {
+        QWidget window;
+        ElaAppBar bar(&window);
+        QSignalSpy appBarChanged(&bar, &ElaAppBar::pAppBarHeightChanged);
+        QSignalSpy ribbonChanged(&bar, &ElaAppBar::pRibbonHeightChanged);
+
+        bar.setRibbonHeight(24);
+
+        QCOMPARE(bar.getRibbonHeight(), 24);
+        QCOMPARE(appBarChanged.count(), 0);
+        QCOMPARE(ribbonChanged.count(), 1);
+    }
+
     void replacingAndRejectingCustomWidgets()
     {
         QWidget window;

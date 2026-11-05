@@ -16,6 +16,8 @@ GitHub Actions 工作流位于 [ci.yml](../.github/workflows/ci.yml)。推送到
 
 CI 固定 Qt **6.12.0** 作为当前验证基线，构建工具统一为 Ninja。SDK 从官方源通过 `jurplel/install-qt-action` 安装并缓存，安装 `qtbase` 和 `qttools`，Linux 额外安装官方 SDK 的 `icu` 包；Qt Test 和私有头文件随匹配版本的 SDK 提供。组件库静态构建不表示 Qt 本身静态链接。
 
+最近一次基线运行是提交 [`64c0a3c`](https://github.com/jackfahdin/ElaWidgetTools/commit/64c0a3c) 的[构建与测试工作流](https://github.com/jackfahdin/ElaWidgetTools/actions/runs/41036009314)，格式检查、Linux 三种构建、Windows MSVC、macOS Apple Silicon、QtTest、安装消费和 macOS 部署启动检查均已通过。
+
 Linux 的 Qt 工具依赖 ICU 73，Ubuntu 24.04 自带的 ICU 版本不能替代，因此构建和静态分析任务都保留 `icu` 下载包。Windows 的 Qt 6.11 及以上版本使用带 MSVC 架构后缀的仓库子目录，`aqtinstall 3.3.0` 尚未支持；Windows 任务暂时固定使用包含[上游修复](https://github.com/miurahr/aqtinstall/commit/7e5a5c3d95cf962cfc2f36c86ffa0d2c07f1a0d4)的安装器提交，待正式版本包含修复并验证后再切回发布版。
 
 固定 CI 的版本是为了复现结果，项目仍接受 Qt 6.12.0 及以上。引入后续版本时，新增具体版本的矩阵任务并确认私有接口兼容，再更新验证范围。
@@ -38,4 +40,4 @@ python tools/check-format.py
 
 跨平台改动在本地只做静态检查，各平台的实际编译、测试和部署启动验证交给对应的 CI runner。
 
-本地 actionlint 检查只能验证工作流结构与部分命令问题。Windows、macOS 的实际构建与运行状态以提交推送后的 Actions 结果为准；工作流写好不表示云端任务已经通过。
+本地 actionlint 检查只能验证工作流结构与部分命令问题。后续提交的 Windows、macOS 实际构建与运行状态仍以对应的 Actions 结果为准；工作流写好不表示云端任务已经通过。

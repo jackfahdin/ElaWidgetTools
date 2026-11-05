@@ -124,16 +124,16 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
     // 图标
     d->_iconLabel = new QLabel(this);
     d->_iconLabelLayout = d->_createVLayout(d->_iconLabel);
-    if (parent->windowIcon().isNull())
+    if (window()->windowIcon().isNull())
     {
         d->_iconLabel->setVisible(false);
     }
     else
     {
-        d->_iconLabel->setPixmap(parent->windowIcon().pixmap(18, 18));
+        d->_iconLabel->setPixmap(window()->windowIcon().pixmap(18, 18));
         d->_iconLabelLayout->setContentsMargins(10, 0, 0, 0);
     }
-    connect(parent, &QWidget::windowIconChanged, this, [=](const QIcon& icon) {
+    connect(window(), &QWidget::windowIconChanged, this, [=](const QIcon& icon) {
         d->_iconLabel->setPixmap(icon.pixmap(18, 18));
         d->_iconLabel->setVisible(!icon.isNull());
         d->_iconLabelLayout->setContentsMargins(icon.isNull() ? 0 : 10, 0, 0, 0);
@@ -148,17 +148,17 @@ ElaAppBar::ElaAppBar(QWidget* parent) : QWidget{parent}, d_ptr(new ElaAppBarPriv
     d->_titleLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
     d->_titleLabel->setMinimumWidth(0);
     d->_titleLabelLayout = d->_createVLayout(d->_titleLabel);
-    if (parent->windowTitle().isEmpty())
+    if (window()->windowTitle().isEmpty())
     {
         d->_titleLabel->setVisible(false);
     }
     else
     {
-        d->_titleLabel->setText(parent->windowTitle());
-        d->_titleLabel->setToolTip(parent->windowTitle());
+        d->_titleLabel->setText(window()->windowTitle());
+        d->_titleLabel->setToolTip(window()->windowTitle());
         d->_titleLabelLayout->setContentsMargins(10, 0, 10, 0);
     }
-    connect(parent, &QWidget::windowTitleChanged, this, [=](const QString& title) {
+    connect(window(), &QWidget::windowTitleChanged, this, [=](const QString& title) {
         d->_titleLabel->setText(title);
         d->_titleLabel->setToolTip(title);
         d->_titleLabel->setVisible(!title.isEmpty());
@@ -306,7 +306,7 @@ void ElaAppBar::setRibbonHeight(int height)
     Q_D(ElaAppBar);
     d->_pRibbonHeight = height;
     window()->setContentsMargins(0, d->_pAppBarHeight + d->_pRibbonHeight, 0, 0);
-    Q_EMIT pAppBarHeightChanged();
+    Q_EMIT pRibbonHeightChanged();
 }
 
 int ElaAppBar::getRibbonHeight() const

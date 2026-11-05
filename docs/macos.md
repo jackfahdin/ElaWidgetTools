@@ -2,7 +2,7 @@
 
 [返回首页](../README.md) · [编译指南](build.md) · [CI](ci.md)
 
-本分支已准备 macOS 的 Ninja 预设、窗口状态同步、标题栏菜单处理和 `.app` 部署。开发主机为 Linux，没有本地 Mac 设备；当前状态是**实验性适配，等待 macOS CI 实际验证**，不声明完整桌面兼容性。
+本分支已准备 macOS 的 Ninja 预设、窗口状态同步、标题栏菜单处理和 `.app` 部署。开发主机为 Linux，没有本地 Mac 设备；当前状态是**实验性适配，Apple Silicon CI 基线已通过**，不声明完整桌面兼容性。
 
 ## 构建
 
@@ -16,7 +16,7 @@ ctest --preset macos-release
 cmake --install build/macos-release
 ```
 
-`QT_ROOT` 指向包含 `bin`、`lib` 的实际目录；不同安装器的目录名称可能不同。调试构建换用 `macos-debug`。现有 CI 使用 `macos-15` Apple Silicon runner，尚未安排 Intel 或 Universal 应用验证。
+`QT_ROOT` 指向包含 `bin`、`lib` 的实际目录；不同安装器的目录名称可能不同。调试构建换用 `macos-debug`。现有 CI 使用 `macos-15` Apple Silicon runner，Intel 或 Universal 应用尚未验证。
 
 ## 窗口与菜单
 
@@ -45,4 +45,4 @@ CI 运行 `tools/check-macos-bundle.py`，检查 Mach-O 文件不再链接 SDK �
 | 显示 | Retina、多显示器切换、缩放、主题和字体回退 |
 | 部署 | Finder 启动、移动应用目录、目标系统版本、签名与公证 |
 
-获得 CI 或设备验证证据后再更新支持状态；静态检查和 Linux 测试不计为 macOS 运行验证。
+CI 已提供 Apple Silicon 的构建、测试、安装消费和部署启动证据；真实设备上的窗口交互、显示适配、签名与公证仍需单独验证。静态检查和 Linux 测试不计为这些设备验证。

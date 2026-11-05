@@ -46,12 +46,12 @@ T_Home::T_Home(QWidget* parent) : T_BasePage(parent)
     urlCard1->setTitlePixelSize(17);
     urlCard1->setTitleSpacing(25);
     urlCard1->setSubTitleSpacing(13);
-    urlCard1->setUrl("https://github.com/Liniyous/ElaWidgetTools");
+    urlCard1->setUrl("https://github.com/jackfahdin/ElaWidgetTools");
     urlCard1->setCardPixmap(QPixmap(":/Resource/Image/github.png"));
     urlCard1->setTitle("ElaTool Github");
     urlCard1->setSubTitle("Use ElaWidgetTools To Create A Cool Project");
     ElaToolTip* urlCard1ToolTip = new ElaToolTip(urlCard1);
-    urlCard1ToolTip->setToolTip("https://github.com/Liniyous/ElaWidgetTools");
+    urlCard1ToolTip->setToolTip("https://github.com/jackfahdin/ElaWidgetTools");
     ElaAcrylicUrlCard* urlCard2 = new ElaAcrylicUrlCard(this);
     urlCard2->setCardPixmapSize(QSize(62, 62));
     urlCard2->setFixedSize(195, 225);
@@ -97,7 +97,7 @@ T_Home::T_Home(QWidget* parent) : T_BasePage(parent)
     // ElaFlowLayout
     ElaPopularCard* homeCard = new ElaPopularCard(this);
     connect(homeCard, &ElaPopularCard::popularCardButtonClicked, this, [=]() {
-        QDesktopServices::openUrl(QUrl("https://github.com/Liniyous/ElaWidgetTools"));
+        QDesktopServices::openUrl(QUrl("https://github.com/jackfahdin/ElaWidgetTools"));
     });
     homeCard->setCardPixmap(QPixmap(":/Resource/Image/Cirno.jpg"));
     homeCard->setTitle("ElaWidgetTool");

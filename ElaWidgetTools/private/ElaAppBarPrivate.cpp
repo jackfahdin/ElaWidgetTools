@@ -69,14 +69,18 @@ void ElaAppBarPrivate::onStayTopButtonClicked()
     ::SetWindowPos(hwnd, _pIsStayTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 #else
     Q_Q(ElaAppBar);
-    if (q->window()->isVisible())
+    auto window = q->window();
+    if (window->isVisible())
     {
-        q->window()->windowHandle()->setFlag(Qt::WindowStaysOnTopHint, _pIsStayTop);
-        q->window()->update();
+        if (const auto windowHandle = window->windowHandle())
+        {
+            windowHandle->setFlag(Qt::WindowStaysOnTopHint, _pIsStayTop);
+        }
+        window->update();
     }
     else
     {
-        q->window()->setWindowFlag(Qt::WindowStaysOnTopHint, _pIsStayTop);
+        window->setWindowFlag(Qt::WindowStaysOnTopHint, _pIsStayTop);
     }
 #endif
     _stayTopButton->setIsSelected(_pIsStayTop);
