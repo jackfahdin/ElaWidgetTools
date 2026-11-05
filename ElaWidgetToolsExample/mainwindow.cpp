@@ -22,6 +22,7 @@
 #include "T_Card.h"
 #include "T_ListView.h"
 #include "T_Setting.h"
+#include "T_PageLifecycle.h"
 #include "T_TableView.h"
 #include "T_TreeView.h"
 #include <QDebug>
@@ -455,6 +456,17 @@ void MainWindow::initContent()
     QString customKey;
     addCategoryNode("Custom", customKey);
     addPageNode("ElaNavigation", _navigationPage, ElaIconType::LocationArrow);
+    QString lazyEditorKey;
+    addLazyPageNode(
+        "懒加载编辑器", lazyEditorKey,
+        [](QWidget* parent) {
+            return new T_PageLifecycle(parent);
+        },
+        ElaIconType::Pen);
+    setNavigationGuard([this](const QString& from, const QString&) {
+        auto* editor = qobject_cast<T_PageLifecycle*>(getNavigationPage(from));
+        return !editor || editor->confirmLeave(this);
+    });
     addPageNode("ElaPopup", _popupPage, ElaIconType::Envelope);
     addPageNode("ElaIcon", _iconPage, 99, ElaIconType::FontCase);
     addExpanderNode("工作空间", testKey_1, ElaIconType::Acorn);

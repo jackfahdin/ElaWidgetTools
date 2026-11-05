@@ -3,6 +3,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QTimer>
 
 #include "ElaBreadcrumbBar.h"
 #include "ElaPivot.h"
@@ -10,6 +11,7 @@
 #include "ElaScrollPageArea.h"
 #include "ElaTabWidget.h"
 #include "ElaText.h"
+#include "ElaSuggestBox.h"
 T_Navigation::T_Navigation(QWidget* parent) : T_BasePage(parent)
 {
     // 预览窗口标题
@@ -86,10 +88,51 @@ T_Navigation::T_Navigation(QWidget* parent) : T_BasePage(parent)
         page->setAlignment(Qt::AlignCenter);
         _tabWidget->addTab(page, QString("新标签页%1").arg(i));
     }
+    // 模拟外部查询：不同文本返回速度不同，旧请求即使返回也不会覆盖新结果。
+    auto* searchArea = new ElaScrollPageArea(this);
+    auto* searchLayout = new QVBoxLayout(searchArea);
+    auto* searchTitle = new ElaText("异步搜索与过期结果取消", 18, this);
+    auto* search = new ElaSuggestBox(searchArea);
+    search->setPlaceholderText("输入页面名称，例如：主题、导航");
+    search->setAsyncSearchEnabled(true);
+    search->setSearchDebounceInterval(200);
+    auto* status = new ElaText("等待输入", 14, searchArea);
+    auto* hint = new ElaText("连续修改查询可体验过期结果处理；使用上下键选择，Enter 确认，Esc 取消。", 13, searchArea);
+    searchLayout->addWidget(search);
+    searchLayout->addWidget(status);
+    searchLayout->addWidget(hint);
+    connect(search, &ElaSuggestBox::searchPendingChanged, status, [=](bool pending) {
+        if (pending)
+            status->setText("正在查询…");
+    });
+    connect(search, &ElaSuggestBox::searchCancelled, status, [=](quint64) {
+        status->setText("上一条查询已取消");
+    });
+    connect(search, &ElaSuggestBox::searchRequested, this, [=](quint64 requestId, const QString& text) {
+        const QStringList pages{"主题设置", "导航组件", "异步搜索", "懒加载编辑器", "页面管理", "表格视图"};
+        const int latency = text.size() % 2 ? 900 : 300;
+        QTimer::singleShot(latency, search, [=]() {
+            QList<ElaSuggestBox::SuggestData> results;
+            for (const auto& page : pages)
+            {
+                if (page.contains(text, Qt::CaseInsensitive))
+                    results.append(ElaSuggestBox::SuggestData(ElaIconType::MagnifyingGlass, page));
+            }
+            if (search->setSearchResults(requestId, results))
+                status->setText(results.isEmpty() ? "没有匹配结果" : QString("找到 %1 条结果").arg(results.size()));
+        });
+    });
+    connect(search, &ElaSuggestBox::suggestionClicked, status, [=](const ElaSuggestBox::SuggestData& data) {
+        status->setText("已选择：" + data.getSuggestText());
+    });
+
     QWidget* centralWidget = new QWidget(this);
     centralWidget->setWindowTitle("ElaNavigation");
     QVBoxLayout* centerVLayout = new QVBoxLayout(centralWidget);
     centerVLayout->setContentsMargins(0, 0, 0, 0);
+    centerVLayout->addWidget(searchTitle);
+    centerVLayout->addWidget(searchArea);
+    centerVLayout->addSpacing(15);
     centerVLayout->addLayout(breadcrumbBarTextLayout);
     centerVLayout->addSpacing(10);
     centerVLayout->addWidget(breadcrumbBarArea);

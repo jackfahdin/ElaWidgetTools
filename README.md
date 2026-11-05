@@ -64,6 +64,8 @@ Qt 5 和 Qt 6.12.0 以下版本不纳入后续维护范围。使用 CMake Preset
 | 文档 | 内容 |
 | --- | --- |
 | [编译指南](docs/build.md) | CMake Presets、环境配置、静态库与安装集成 |
+| [页面管理](docs/navigation.md) | 延迟创建页面、离开确认与导航历史 |
+| [搜索指南](docs/search.md) | 本地建议、异步查询、防抖与取消 |
 | [主题与配色](docs/theme.md) | 系统跟随、强调色、配色刷新与局部覆盖 |
 | [组件目录](docs/components.md) | 按功能分类浏览当前组件，直达头文件 |
 | [维护与路线图](docs/roadmap.md) | 分支定位、Qt 版本策略、平台计划与构建迁移事项 |
