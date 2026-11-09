@@ -2,6 +2,7 @@
 #include "ElaSuggestBox.h"
 #include "ElaLineEdit.h"
 #include <QListView>
+#include <QVBoxLayout>
 #include <QSignalSpy>
 #include <QPointer>
 #include <QtTest>
@@ -58,12 +59,20 @@ private Q_SLOTS:
     }
     void keyboardSelectsLocalResults()
     {
-        ElaSuggestBox box;
+        // 搜索框按实际用法嵌入窗口，给弹层预留空间。
+        QWidget window;
+        auto* layout = new QVBoxLayout(&window);
+        auto* search = new ElaSuggestBox(&window);
+        layout->addWidget(search);
+        layout->addStretch();
+        window.resize(420, 320);
+        auto& box = *search;
         box.addSuggestion("alpha");
         const auto betaKey = box.addSuggestion("beta");
-        box.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&box));
-        box.activateWindow();
+        window.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&window));
+        // 直接测试 Qt 键盘路由，不依赖 macOS CI 是否允许进程抢占系统前台。
+        QApplication::setActiveWindow(&window);
         auto* edit = box.findChild<ElaLineEdit*>();
         QVERIFY(edit);
         edit->setFocus();
