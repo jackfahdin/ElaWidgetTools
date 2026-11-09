@@ -1,4 +1,12 @@
-foreach(test_name IN ITEMS appbar controls navigation resources theme suggest)
+foreach(
+    test_name IN
+    ITEMS appbar
+          controls
+          navigation
+          resources
+          theme
+          suggest
+          statewidget)
     add_executable(tst_${test_name} tst_${test_name}.cpp)
     target_link_libraries(tst_${test_name} PRIVATE Ela::WidgetTools Qt6::Test)
     if(MSVC)
