@@ -21,6 +21,7 @@
 #include "T_BaseComponents.h"
 #include "T_Card.h"
 #include "T_ListView.h"
+#include "T_DataView.h"
 #include "T_Setting.h"
 #include "T_PageLifecycle.h"
 #include "T_TableView.h"
@@ -451,6 +452,7 @@ void MainWindow::initContent()
     addPageNode("ElaListView", _listViewPage, _viewKey, 9, ElaIconType::List);
     addPageNode("ElaTableView", _tableViewPage, _viewKey, ElaIconType::Table);
     addPageNode("ElaTreeView", _treeViewPage, _viewKey, ElaIconType::ListTree);
+    addPageNode("数据加载与筛选", new T_DataView(this), _viewKey, ElaIconType::Table);
     expandNavigationNode(_viewKey);
     addPageNode("ElaCard", _cardPage, ElaIconType::Cards);
     QString customKey;

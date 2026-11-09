@@ -6,7 +6,8 @@ foreach(
           resources
           theme
           suggest
-          statewidget)
+          statewidget
+          dataview)
     add_executable(tst_${test_name} tst_${test_name}.cpp)
     target_link_libraries(tst_${test_name} PRIVATE Ela::WidgetTools Qt6::Test)
     if(MSVC)
@@ -22,3 +23,8 @@ foreach(
     add_test(NAME ${test_name} COMMAND tst_${test_name})
     set_tests_properties(${test_name} PROPERTIES TIMEOUT 90 LABELS "qt;widgets")
 endforeach()
+
+# 示例组合也参与回归，防止异步请求、筛选与提示状态相互覆盖。
+target_sources(tst_dataview PRIVATE ../ElaWidgetToolsExample/ExamplePage/T_DataView.cpp
+                                    ../ElaWidgetToolsExample/ExamplePage/T_BasePage.cpp)
+target_include_directories(tst_dataview PRIVATE ../ElaWidgetToolsExample/ExamplePage)
