@@ -49,6 +49,7 @@
 | [ElaPivot](../ElaWidgetTools/ElaPivot.h) | 页面切换导航 |
 | [ElaTabBar](../ElaWidgetTools/ElaTabBar.h) | 选项卡栏 |
 | [ElaTabWidget](../ElaWidgetTools/ElaTabWidget.h) | 选项卡页面容器 |
+| [ElaStateWidget](../ElaWidgetTools/ElaStateWidget.h) | 内容、加载、空内容和失败状态容器 |
 | [ElaScrollPage](../ElaWidgetTools/ElaScrollPage.h) | 带页面管理的滚动页面 |
 | [ElaScrollPageArea](../ElaWidgetTools/ElaScrollPageArea.h) | 滚动页面区域 |
 | [ElaScrollArea](../ElaWidgetTools/ElaScrollArea.h) | 滚动区域 |
@@ -119,6 +120,7 @@
 | [导航](../ElaWidgetToolsExample/ExamplePage/T_Navigation.cpp) | 页面导航与切换 |
 | [卡片](../ElaWidgetToolsExample/ExamplePage/T_Card.cpp) | 卡片展示与交互 |
 | [弹出交互](../ElaWidgetToolsExample/ExamplePage/T_Popup.cpp) | 菜单、对话框与消息提示 |
+| [数据加载与筛选](../ElaWidgetToolsExample/ExamplePage/T_DataView.cpp) | 页面状态、筛选、排序和失败重试 |
 | [表格视图](../ElaWidgetToolsExample/ExamplePage/T_TableView.cpp) | 表格与数据展示 |
 
 示例构建与运行方式见[编译指南](build.md)。
