@@ -28,14 +28,20 @@ T_BaseComponents::T_BaseComponents(QWidget* parent) : T_BasePage(parent)
     createCustomWidget("一些常用的基础组件被放置于此，可在此界面体验其效果并按需添加进项目中");
 
     _toggleSwitch = new ElaToggleSwitch(this);
+    _toggleSwitch->setAccessibleName("示例开关");
+    _toggleSwitch->setAccessibleDescription("使用空格切换，支持 Tab 焦点导航。");
     ElaScrollPageArea* toggleSwitchArea = new ElaScrollPageArea(this);
     QHBoxLayout* toggleSwitchLayout = new QHBoxLayout(toggleSwitchArea);
-    ElaText* toggleSwitchText = new ElaText("ElaToggleSwitch", this);
+    ElaText* toggleSwitchText = new ElaText("ElaToggleSwitch（关闭）", this);
+    connect(_toggleSwitch, &ElaToggleSwitch::toggled, toggleSwitchText, [toggleSwitchText](bool enabled) {
+        toggleSwitchText->setText(enabled ? "ElaToggleSwitch（开启）" : "ElaToggleSwitch（关闭）");
+    });
     toggleSwitchText->setTextPixelSize(15);
     toggleSwitchLayout->addWidget(toggleSwitchText);
     toggleSwitchLayout->addWidget(_toggleSwitch);
     toggleSwitchLayout->addStretch();
     ElaToggleSwitch* toggleSwitchDisableSwitch = new ElaToggleSwitch(this);
+    toggleSwitchDisableSwitch->setAccessibleName("禁用示例开关");
     ElaText* toggleSwitchDisableText = new ElaText("禁用", this);
     toggleSwitchDisableText->setTextPixelSize(15);
     connect(toggleSwitchDisableSwitch, &ElaToggleSwitch::toggled, this, [=](bool checked) {
@@ -45,16 +51,20 @@ T_BaseComponents::T_BaseComponents(QWidget* parent) : T_BasePage(parent)
     toggleSwitchLayout->addWidget(toggleSwitchDisableText);
     toggleSwitchLayout->addSpacing(10);
 
-    _toggleButton = new ElaToggleButton("ToggleButton", this);
+    _toggleButton = new ElaToggleButton("切换示例", this);
     _toggleButton->setFixedWidth(120);
     ElaScrollPageArea* toggleButtonArea = new ElaScrollPageArea(this);
     QHBoxLayout* toggleButtonLayout = new QHBoxLayout(toggleButtonArea);
-    ElaText* toggleButtonText = new ElaText("ElaToggleButton", this);
+    ElaText* toggleButtonText = new ElaText("ElaToggleButton（未选中）", this);
+    connect(_toggleButton, &ElaToggleButton::toggled, toggleButtonText, [toggleButtonText](bool checked) {
+        toggleButtonText->setText(checked ? "ElaToggleButton（已选中）" : "ElaToggleButton（未选中）");
+    });
     toggleButtonText->setTextPixelSize(15);
     toggleButtonLayout->addWidget(toggleButtonText);
     toggleButtonLayout->addWidget(_toggleButton);
     toggleButtonLayout->addStretch();
     ElaToggleSwitch* toggleButtonDisableSwitch = new ElaToggleSwitch(this);
+    toggleButtonDisableSwitch->setAccessibleName("禁用切换按钮");
     ElaText* toggleButtonDisableText = new ElaText("禁用", this);
     toggleButtonDisableText->setTextPixelSize(15);
     connect(toggleButtonDisableSwitch, &ElaToggleSwitch::toggled, this, [=](bool checked) {
@@ -76,6 +86,7 @@ T_BaseComponents::T_BaseComponents(QWidget* parent) : T_BasePage(parent)
     comboBoxLayout->addWidget(_comboBox);
     comboBoxLayout->addStretch();
     ElaToggleSwitch* comboBoxDisableSwitch = new ElaToggleSwitch(this);
+    comboBoxDisableSwitch->setAccessibleName("禁用单选下拉框");
     ElaText* comboBoxDisableText = new ElaText("禁用", this);
     comboBoxDisableText->setTextPixelSize(15);
     connect(comboBoxDisableSwitch, &ElaToggleSwitch::toggled, this, [=](bool checked) {
@@ -99,6 +110,7 @@ T_BaseComponents::T_BaseComponents(QWidget* parent) : T_BasePage(parent)
     multiSelectComboBoxLayout->addWidget(_multiSelectComboBox);
     multiSelectComboBoxLayout->addStretch();
     ElaToggleSwitch* multiSelectComboBoxDisableSwitch = new ElaToggleSwitch(this);
+    multiSelectComboBoxDisableSwitch->setAccessibleName("禁用多选下拉框");
     ElaText* multiSelectComboBoxDisableText = new ElaText("禁用", this);
     multiSelectComboBoxDisableText->setTextPixelSize(15);
     connect(multiSelectComboBoxDisableSwitch, &ElaToggleSwitch::toggled, this, [=](bool checked) {
@@ -141,6 +153,7 @@ T_BaseComponents::T_BaseComponents(QWidget* parent) : T_BasePage(parent)
     messageButtonLayout->addWidget(_errorMessageButton);
     messageButtonLayout->addStretch();
     ElaToggleSwitch* messageButtonDisableSwitch = new ElaToggleSwitch(this);
+    messageButtonDisableSwitch->setAccessibleName("禁用消息按钮");
     ElaText* messageButtonDisableText = new ElaText("禁用", this);
     messageButtonDisableText->setTextPixelSize(15);
     connect(messageButtonDisableSwitch, &ElaToggleSwitch::toggled, this, [=](bool checked) {
@@ -162,6 +175,7 @@ T_BaseComponents::T_BaseComponents(QWidget* parent) : T_BasePage(parent)
     checkBoxLayout->addWidget(_checkBox);
     checkBoxLayout->addStretch();
     ElaToggleSwitch* checkBoxDisableSwitch = new ElaToggleSwitch(this);
+    checkBoxDisableSwitch->setAccessibleName("禁用复选框");
     ElaText* checkBoxDisableText = new ElaText("禁用", this);
     checkBoxDisableText->setTextPixelSize(15);
     connect(checkBoxDisableSwitch, &ElaToggleSwitch::toggled, this, [=](bool checked) {

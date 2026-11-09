@@ -199,6 +199,7 @@ T_Setting::T_Setting(QWidget* parent) : T_BasePage(parent)
 #endif
 
     _logSwitchButton = new ElaToggleSwitch(this);
+    _logSwitchButton->setAccessibleName("启用日志功能");
     ElaScrollPageArea* logSwitchArea = new ElaScrollPageArea(this);
     QHBoxLayout* logSwitchLayout = new QHBoxLayout(logSwitchArea);
     ElaText* logSwitchText = new ElaText("启用日志功能", this);
@@ -220,6 +221,7 @@ T_Setting::T_Setting(QWidget* parent) : T_BasePage(parent)
     });
 
     _userCardSwitchButton = new ElaToggleSwitch(this);
+    _userCardSwitchButton->setAccessibleName("隐藏用户卡片");
     ElaScrollPageArea* userCardSwitchArea = new ElaScrollPageArea(this);
     QHBoxLayout* userCardSwitchLayout = new QHBoxLayout(userCardSwitchArea);
     ElaText* userCardSwitchText = new ElaText("隐藏用户卡片", this);
