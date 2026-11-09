@@ -1,3 +1,6 @@
+# 显式保存 QtTest 原始日志，避免 Windows 未捕获标准输出时丢失失败断言。
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/Testing/QtTest")
+
 foreach(
     test_name IN
     ITEMS appbar
@@ -21,7 +24,8 @@ foreach(
                     $<TARGET_FILE_DIR:tst_${test_name}>
             COMMAND_EXPAND_LISTS)
     endif()
-    add_test(NAME ${test_name} COMMAND tst_${test_name})
+    add_test(NAME ${test_name} COMMAND tst_${test_name} -o -,txt -o
+                                       "${CMAKE_BINARY_DIR}/Testing/QtTest/${test_name}.txt,txt")
     set_tests_properties(${test_name} PROPERTIES TIMEOUT 90 LABELS "qt;widgets")
 endforeach()
 
