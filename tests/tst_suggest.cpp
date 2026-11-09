@@ -56,15 +56,19 @@ private Q_SLOTS:
         box.cancelSearch();
         QVERIFY(!box.getIsSearchPending());
     }
-    void keyboardSelectsLocalResultsAndEscapeCancels()
+    void keyboardSelectsLocalResults()
     {
         ElaSuggestBox box;
         box.addSuggestion("alpha");
         const auto betaKey = box.addSuggestion("beta");
         box.show();
-        box.setSearchText("a");
+        QVERIFY(QTest::qWaitForWindowExposed(&box));
+        box.activateWindow();
         auto* edit = box.findChild<ElaLineEdit*>();
         QVERIFY(edit);
+        edit->setFocus();
+        QTRY_VERIFY(edit->hasFocus());
+        box.setSearchText("a");
         QSignalSpy clicked(&box, &ElaSuggestBox::suggestionClicked);
         QTest::keyClick(edit, Qt::Key_Down);
         QTest::keyClick(edit, Qt::Key_Down);
@@ -74,6 +78,14 @@ private Q_SLOTS:
         QCOMPARE(clicked.count(), 1);
         QCOMPARE(box.getSearchText(), QString("beta"));
         QCOMPARE(qvariant_cast<ElaSuggestBox::SuggestData>(clicked.first().first()).getSuggestKey(), betaKey);
+    }
+
+    void escapeInvalidatesAsyncRequest()
+    {
+        // 请求取消与本地弹层选择分开验证，避免原生窗口焦点事件干扰防抖计时器。
+        ElaSuggestBox box;
+        auto* edit = box.findChild<ElaLineEdit*>();
+        QVERIFY(edit);
         box.setAsyncSearchEnabled(true);
         box.setSearchDebounceInterval(0);
         QSignalSpy requests(&box, &ElaSuggestBox::searchRequested);
