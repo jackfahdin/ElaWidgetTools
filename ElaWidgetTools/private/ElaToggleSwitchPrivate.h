@@ -28,6 +28,7 @@ private:
     void _startPosAnimation(qreal startX, qreal endX, bool isToggle);
     void _startRadiusAnimation(qreal startRadius, qreal endRadius);
     void _adjustCircleCenterX();
+    void _cancelPress();
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_PRIVATE_ELATOGGLESWITCHPRIVATE_H_

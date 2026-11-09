@@ -7,7 +7,8 @@ foreach(
           theme
           suggest
           statewidget
-          dataview)
+          dataview
+          accessibility)
     add_executable(tst_${test_name} tst_${test_name}.cpp)
     target_link_libraries(tst_${test_name} PRIVATE Ela::WidgetTools Qt6::Test)
     if(MSVC)

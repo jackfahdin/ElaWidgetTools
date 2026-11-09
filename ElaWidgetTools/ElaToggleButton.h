@@ -1,7 +1,7 @@
 #ifndef ELAWORKSPACE_ELAWIDGETTOOLS_ELATOGGLEBUTTON_H_
 #define ELAWORKSPACE_ELAWIDGETTOOLS_ELATOGGLEBUTTON_H_
 
-#include <QPushButton>
+#include <QWidget>
 
 #include "ElaWidgetToolsExport.h"
 #include "ElaPropertyMacro.h"
@@ -26,6 +26,9 @@ protected:
     virtual bool event(QEvent* event) override;
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void keyReleaseEvent(QKeyEvent* event) override;
     virtual void paintEvent(QPaintEvent* event) override;
 };
 

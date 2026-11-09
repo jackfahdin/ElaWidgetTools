@@ -8,10 +8,12 @@
 
 #include "ElaTheme.h"
 #include "private/ElaToggleSwitchPrivate.h"
+#include "private/ElaToggleAccessible.h"
 ElaToggleSwitch::ElaToggleSwitch(QWidget* parent) : QWidget{parent}, d_ptr(new ElaToggleSwitchPrivate())
 {
     Q_D(ElaToggleSwitch);
     d->q_ptr = this;
+    elaEnsureToggleAccessibility();
     setObjectName("ElaToggleSwitch");
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
@@ -62,17 +64,10 @@ bool ElaToggleSwitch::event(QEvent* event)
         break;
     }
     case QEvent::FocusOut:
+    case QEvent::Hide:
+    case QEvent::WindowDeactivate:
     case QEvent::EnabledChange: {
-        d->_isSpacePressed = false;
-        if (d->_isLeftButtonPress)
-        {
-            d->_isLeftButtonPress = false;
-            d->_isMousePressMove = false;
-            d->_startPosAnimation(d->_circleCenterX,
-                                  d->_isToggled ? width() - height() / 2 - d->_margin * 2 : height() / 2,
-                                  d->_isToggled);
-        }
-        update();
+        d->_cancelPress();
         break;
     }
     case QEvent::Enter: {
@@ -134,6 +129,7 @@ void ElaToggleSwitch::mouseReleaseEvent(QMouseEvent* event)
         d->_startRadiusAnimation(d->_circleRadius, height() * 0.3);
         return;
     }
+    d->_startRadiusAnimation(height() * 0.25, height() * 0.35);
     if (d->_isMousePressMove)
     {
         d->_isMousePressMove = false;
@@ -157,7 +153,6 @@ void ElaToggleSwitch::mouseReleaseEvent(QMouseEvent* event)
             d->_startPosAnimation(d->_circleCenterX, width() - height() / 2 - d->_margin * 2, true);
         }
     }
-    d->_startRadiusAnimation(height() * 0.25, height() * 0.35);
 }
 
 void ElaToggleSwitch::mouseMoveEvent(QMouseEvent* event)
@@ -177,6 +172,12 @@ void ElaToggleSwitch::mouseMoveEvent(QMouseEvent* event)
 void ElaToggleSwitch::keyPressEvent(QKeyEvent* event)
 {
     Q_D(ElaToggleSwitch);
+    if (event->key() == Qt::Key_Escape && (d->_isSpacePressed || d->_isLeftButtonPress))
+    {
+        d->_cancelPress();
+        event->accept();
+        return;
+    }
     if (event->key() == Qt::Key_Space && isEnabled())
     {
         if (!event->isAutoRepeat() && !d->_isLeftButtonPress)
@@ -194,12 +195,12 @@ void ElaToggleSwitch::keyReleaseEvent(QKeyEvent* event)
     Q_D(ElaToggleSwitch);
     if (event->key() == Qt::Key_Space && isEnabled())
     {
+        event->accept();
         if (!event->isAutoRepeat() && d->_isSpacePressed)
         {
             d->_isSpacePressed = false;
             setIsToggled(!d->_isToggled);
         }
-        event->accept();
         return;
     }
     QWidget::keyReleaseEvent(event);
