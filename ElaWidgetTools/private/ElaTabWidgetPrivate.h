@@ -27,6 +27,7 @@ public:
     ElaTabBar* getTabBar(int index) const;
     int getBarIndex(int index) const;
     void updateTabRows();
+    void syncRemovedPages();
     void startTabDrag(int index);
 
 protected:
@@ -41,6 +42,7 @@ private:
     ElaTabBar* _tabBar{nullptr};                  // 普通标签行
     ElaTabBar* _pinnedTabBar{nullptr};            // 固定标签行
     QStackedWidget* _pageStackedWidget{nullptr};  // 两行标签共用的页面堆栈
+    QPointer<QWidget> _currentPage;               // 堆栈外部移除页面前的选中页
     QPointer<QObject> _dragScope;                 // 可互相转移页面的容器范围
     QPointer<ElaTabWidget> _returnTabWidget;      // 浮窗关闭时归还页面的容器
     bool _isTransferManaged{false};               // 由外层处理跨组转移和复制

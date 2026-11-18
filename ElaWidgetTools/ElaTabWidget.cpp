@@ -33,6 +33,7 @@ ElaTabWidget::ElaTabWidget(QWidget* parent) : QWidget(parent), d_ptr(new ElaTabW
     d->_pinnedTabBar->setIsPinned(true);
     d->_pinnedTabBar->hide();
     d->_pageStackedWidget = new QStackedWidget(this);
+    connect(d->_pageStackedWidget, &QStackedWidget::widgetRemoved, d, &ElaTabWidgetPrivate::syncRemovedPages);
     auto* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
@@ -165,6 +166,10 @@ void ElaTabWidget::removeTab(int index)
             const QSignalBlocker currentBlocker(this);
             setCurrentIndex(qMin(index, count() - 1));
         }
+        else
+        {
+            d->_currentPage.clear();
+        }
         Q_EMIT currentChanged(currentIndex());
         Q_EMIT currentWidgetChanged(currentWidget());
     }
@@ -217,6 +222,7 @@ void ElaTabWidget::setCurrentWidget(QWidget* page)
     }
     auto* previous = currentWidget();
     d->_pageStackedWidget->setCurrentWidget(page);
+    d->_currentPage = page;
     auto* bar = d->getTabBar(index);
     {
         const QSignalBlocker blocker(bar);

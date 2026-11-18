@@ -30,6 +30,9 @@ private Q_SLOTS:
         QVERIFY(QFile::exists(":/include/Font/ElaAwesome.ttf"));
         QVERIFY(QFontDatabase::families().contains("ElaAwesome"));
         QVERIFY(!QImage(":/include/Image/Cirno.jpg").isNull());
+        QVERIFY(QFile::exists(":/include/Image/Fluent/caret_up_filled.svg"));
+        QVERIFY(QFile::exists(":/include/Image/Fluent/caret_down_filled.svg"));
+        QVERIFY(QFile::exists(":/include/Image/Fluent/LICENSE.txt"));
     }
 
     void iconCanBeRendered()

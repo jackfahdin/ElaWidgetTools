@@ -14,6 +14,7 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QPixmap>
+#include <QSignalBlocker>
 #include <QStackedWidget>
 #include <QTimer>
 #include <QtMath>
@@ -44,6 +45,61 @@ void ElaTabWidgetPrivate::updateTabRows()
     const bool pinned = q->getIsTabPinned(q->currentIndex());
     _pinnedTabBar->setIsActive(pinned);
     _tabBar->setIsActive(!pinned);
+}
+
+void ElaTabWidgetPrivate::syncRemovedPages()
+{
+    Q_Q(ElaTabWidget);
+    const QPointer<QWidget> previous = _currentPage;
+    const int previousIndex = _pages.indexOf(previous.data());
+    int removedCurrentIndex = -1;
+    bool removed = false;
+    for (int index = _pages.size() - 1; index >= 0; --index)
+    {
+        // 固定和移动标签会改变显示顺序；用指针身份匹配堆栈，不解引用已析构的页面。
+        QWidget* page = _pages.at(index);
+        if (_pageStackedWidget->indexOf(page) >= 0)
+        {
+            continue;
+        }
+        if (!previous || previous == page)
+        {
+            removedCurrentIndex = index;
+        }
+        auto* bar = getTabBar(index);
+        const QSignalBlocker blocker(bar);
+        bar->removeTab(getBarIndex(index));
+        _pages.removeAt(index);
+        removed = true;
+    }
+    // removeTab 在操作堆栈前已移除自己的记录，普通移除和转移不再重复处理。
+    if (!removed)
+    {
+        return;
+    }
+    {
+        const QSignalBlocker blocker(q);
+        if (_pages.isEmpty())
+        {
+            _currentPage.clear();
+        }
+        else
+        {
+            q->setCurrentWidget(removedCurrentIndex >= 0 ? _pages.at(qMin(removedCurrentIndex, _pages.size() - 1))
+                                                         : previous.data());
+        }
+        updateTabRows();
+    }
+    const bool pageChanged = removedCurrentIndex >= 0;
+    const QPointer<ElaTabWidget> alive(q);
+    if (pageChanged || previousIndex != q->currentIndex())
+    {
+        Q_EMIT q->currentChanged(q->currentIndex());
+    }
+    if (alive && pageChanged)
+    {
+        Q_EMIT q->currentWidgetChanged(q->currentWidget());
+    }
 }
 
 void ElaTabWidgetPrivate::startTabDrag(int index)
@@ -79,17 +135,26 @@ void ElaTabWidgetPrivate::startTabDrag(int index)
     {
         return;
     }
-    bool isReleased = !QApplication::mouseButtons().testFlag(Qt::LeftButton);
 #ifdef Q_OS_WIN
     // OLE 拖放期间 Qt 缓存的鼠标状态不能区分释放和取消
-    isReleased = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0;
+    if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0)
+    {
+        return;
+    }
 #endif
-    if (!_isDragCanceled && isReleased)
+    if (!_isDragCanceled)
     {
         const auto position = QCursor::pos() - QPoint(100, 16);
         // 原生拖放返回后先处理 Qt 排队的鼠标释放事件
         QTimer::singleShot(0, q, [q, draggedPage, position]() {
-            if (draggedPage && q->indexOf(draggedPage) >= 0)
+#ifndef Q_OS_WIN
+            // Cocoa 在拖放结束时排队补发释放事件，此时才读取 Qt 缓存的鼠标状态。
+            if (QApplication::mouseButtons().testFlag(Qt::LeftButton))
+            {
+                return;
+            }
+#endif
+            if (!q->d_func()->_isDragCanceled && draggedPage && q->indexOf(draggedPage) >= 0)
             {
                 q->detachTab(q->indexOf(draggedPage), position);
             }

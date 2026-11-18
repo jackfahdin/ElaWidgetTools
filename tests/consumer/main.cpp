@@ -2,6 +2,8 @@
 #include <ElaIcon.h>
 #include <ElaTabBar.h>
 #include <ElaTheme.h>
+#include <ElaSplitter.h>
+#include <ElaTeachingTip.h>
 
 #include <QApplication>
 #include <QFontDatabase>
@@ -19,6 +21,13 @@ int main(int argc, char* argv[])
         return 1;
     }
     ElaTabBar tabs;
+    ElaSplitter splitter;
+    ElaTeachingTip tip;
+    tip.setTitle("安装后的教学提示");
+    if (splitter.orientation() != Qt::Horizontal || tip.getTitle() != QString("安装后的教学提示"))
+    {
+        return 3;
+    }
     tabs.addTab("首页");
     tabs.addTab("设置");
     tabs.resize(400, 50);
