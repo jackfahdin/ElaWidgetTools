@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 #endif
     QApplication a(argc, argv);
     eApp->init();
-    // ElaLog::getInstance()->initMessageLog(true);
+    ElaLog::getInstance()->initMessageLog(false);
     MainWindow w;
     w.show();
     // 用于 CI 的启动检查：进入真实事件循环并正常退出。

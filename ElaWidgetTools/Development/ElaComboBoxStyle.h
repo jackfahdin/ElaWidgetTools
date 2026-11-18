@@ -5,15 +5,18 @@
 #include <QProxyStyle>
 
 #include "ElaWidgetToolsDef.h"
+class ElaComboBoxPopup;
+class ElaControlAnimation;
 class ElaComboBoxStyle : public QProxyStyle
 {
     Q_OBJECT
-    ELA_PROPERTY(qreal, ExpandIconRotate)
-    ELA_PROPERTY(qreal, ExpandMarkWidth)
 public:
     explicit ElaComboBoxStyle(QStyle* style = nullptr);
     ~ElaComboBoxStyle() override;
-    int getShadowBorderWidth() const;
+    void setControlAnimation(ElaControlAnimation* animation);
+    void setPopup(const ElaComboBoxPopup* popup);
+    int styleHint(StyleHint hint, const QStyleOption* option = nullptr, const QWidget* widget = nullptr,
+                  QStyleHintReturn* returnData = nullptr) const override;
     void drawPrimitive(PrimitiveElement element, const QStyleOption* option, QPainter* painter,
                        const QWidget* widget = nullptr) const override;
     void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
@@ -28,7 +31,8 @@ public:
 
 private:
     ElaThemeType::ThemeMode _themeMode;
-    int _shadowBorderWidth{6};
+    ElaControlAnimation* _controlAnimation{nullptr};
+    const ElaComboBoxPopup* _popup{nullptr};
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_DEVELOPERCOMPONENTS_ELACOMBOBOXSTYLE_H_

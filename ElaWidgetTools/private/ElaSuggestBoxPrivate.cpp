@@ -4,6 +4,8 @@
 #include "ElaLineEdit.h"
 #include "ElaSuggestBoxSearchViewContainer.h"
 #include "ElaSuggestModel.h"
+#include "ElaTheme.h"
+
 #include <QLayout>
 #include <QPropertyAnimation>
 #include <QSignalBlocker>
@@ -104,10 +106,25 @@ void ElaSuggestBoxPrivate::_showSuggestions(const QList<ElaSuggestBox::SuggestDa
         return;
     }
     const int rows = qMin(4, suggestions.count());
-    const QSize target(q->width() + 12, 40 * rows + 16);
+    const QMargins margins = eTheme->getShadowMargins();
+    const QSize target(q->width() + margins.left() + margins.right(),
+                       40 * rows + 10 + margins.top() + margins.bottom());
     const bool visible = _searchViewBaseWidget->isVisible();
-    _searchViewBaseWidget->move(q->mapTo(q->window(), QPoint(-5, q->height())));
-    _shadowLayout->setContentsMargins(8, 8, 8, 8);
+    const QRect available = _searchViewBaseWidget->parentWidget()->rect();
+    QPoint position =
+        q->mapTo(_searchViewBaseWidget->parentWidget(), QPoint(-margins.left(), q->height() - margins.top()));
+    if (position.y() + target.height() > available.bottom() + 1)
+    {
+        position.setY(q->mapTo(_searchViewBaseWidget->parentWidget(), QPoint()).y() - target.height() +
+                      margins.bottom());
+    }
+    position.setX(
+        qBound(available.left(), position.x(), qMax(available.left(), available.right() - target.width() + 1)));
+    position.setY(
+        qBound(available.top(), position.y(), qMax(available.top(), available.bottom() - target.height() + 1)));
+    _searchViewBaseWidget->move(position);
+    // 容器自身已包含主题阴影边距，不再叠加旧版布局边距。
+    _shadowLayout->setContentsMargins(0, 0, 0, 0);
     _searchViewBaseWidget->show();
     _searchViewBaseWidget->raise();
     _startSizeAnimation(visible ? _searchViewBaseWidget->size() : QSize(target.width(), 0), target);

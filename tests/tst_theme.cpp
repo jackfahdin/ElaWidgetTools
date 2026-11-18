@@ -9,7 +9,7 @@
 #include "ElaDockWidget.h"
 #include "ElaScrollPageArea.h"
 #include <QSignalSpy>
-#include <QPropertyAnimation>
+#include <QAbstractAnimation>
 #include <QStyleHints>
 #include <QtTest>
 
@@ -116,8 +116,40 @@ private Q_SLOTS:
         eTheme->setThemeMode(static_cast<ElaThemeType::ThemeMode>(-1));
         QCOMPARE(colors.count(), 0);
         QCOMPARE(modes.count(), 0);
-        QVERIFY(!eTheme->getThemeColor(ElaThemeType::Light, static_cast<ElaThemeType::ThemeColor>(43)).isValid());
+        QVERIFY(!eTheme
+                     ->getThemeColor(ElaThemeType::Light,
+                                     static_cast<ElaThemeType::ThemeColor>(ElaThemeType::ThemeColorCount))
+                     .isValid());
         QVERIFY(!eTheme->getAccentColor(static_cast<ElaThemeType::ThemeMode>(99)).isValid());
+    }
+    void existingThemeRoleValuesRemainCompatible()
+    {
+        QCOMPARE(static_cast<int>(ElaThemeType::ScrollBarHandle), 0);
+        QCOMPARE(static_cast<int>(ElaThemeType::PrimaryNormal), 4);
+        QCOMPARE(static_cast<int>(ElaThemeType::BasicText), 13);
+        QCOMPARE(static_cast<int>(ElaThemeType::Win10BorderInactive), 42);
+        QVERIFY(static_cast<int>(ElaThemeType::InputActive) > 42);
+        for (int role = 0; role < ElaThemeType::ThemeColorCount; ++role)
+        {
+            for (auto mode : {ElaThemeType::Light, ElaThemeType::Dark})
+            {
+                QVERIFY(eTheme->getThemeColor(mode, static_cast<ElaThemeType::ThemeColor>(role)).isValid());
+            }
+        }
+    }
+    void accentButtonsRetainLocalOverrides()
+    {
+        ElaPushButton button;
+        button.setIsAccent(true);
+        button.setLightDefaultColor(Qt::red);
+        button.setLightTextColor(Qt::green);
+        eTheme->setAccentColor(QColor("#904080"));
+        QCOMPARE(button.getLightDefaultColor(), QColor(Qt::red));
+        QCOMPARE(button.getLightTextColor(), QColor(Qt::green));
+        button.setLightDefaultColor(QColor());
+        button.setLightTextColor(QColor());
+        QCOMPARE(button.getLightDefaultColor(), QColor("#904080"));
+        QCOMPARE(button.getLightTextColor(), eTheme->getThemeColor(ElaThemeType::Light, ElaThemeType::BasicTextInvert));
     }
     void localButtonColorsRemainOverrides()
     {
@@ -152,9 +184,13 @@ private Q_SLOTS:
         QTRY_COMPARE(label.palette().color(QPalette::WindowText), QColor("#e01020"));
         QTRY_VERIFY(paints.count > 0);
         // 精确检查背景色，避免展开动画自然移动造成假阳性。
-        const auto menuImage = menu.grab().toImage();
-        const auto ratio = menuImage.devicePixelRatio();
-        QCOMPARE(menuImage.pixelColor(qRound((menu.width() / 2.0) * ratio), qRound(8 * ratio)), QColor("#204060"));
+        const auto backgroundColor = [&]() {
+            const auto menuImage = menu.grab().toImage();
+            const auto ratio = menuImage.devicePixelRatio();
+            const auto margins = menu.contentsMargins();
+            return menuImage.pixelColor(qRound((menu.width() / 2.0) * ratio), qRound((margins.top() + 8) * ratio));
+        };
+        QTRY_COMPARE(backgroundColor(), QColor("#204060"));
         QCOMPARE(modes.count(), 0);
     }
     void iconHoverUsesThemeAlphaAfterClearingOverride()
@@ -171,15 +207,18 @@ private Q_SLOTS:
             icon.render(&image, QPoint(), QRegion(), QWidget::DrawChildren);
             return image.pixelColor(2, 2).alpha();
         };
+        icon.show();
+        QTRY_VERIFY(icon.isVisible());
+        QEvent leave(QEvent::Leave);
+        QApplication::sendEvent(&icon, &leave);
         backgroundAlpha();
         QEnterEvent enter(QPointF(2, 2), QPointF(2, 2), QPointF(2, 2));
         QApplication::sendEvent(&icon, &enter);
-        // 固定动画进度检查实际绘制，避免依赖 CI 的计时精度。
-        auto* animation = icon.findChild<QPropertyAnimation*>();
+        // 颜色动画统一为 QAbstractAnimation；验证实际输出最终使用主题透明度。
+        backgroundAlpha();
+        auto* animation = icon.findChild<QAbstractAnimation*>();
         QVERIFY(animation);
-        animation->setCurrentTime(animation->duration() / 2);
-        QVERIFY(backgroundAlpha() > 0);
-        QVERIFY(backgroundAlpha() <= 10);
+        QTRY_COMPARE(backgroundAlpha(), 10);
     }
     void compositeButtonsRefreshTheirThemeRoles()
     {

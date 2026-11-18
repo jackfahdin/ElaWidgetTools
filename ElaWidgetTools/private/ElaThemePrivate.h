@@ -2,13 +2,16 @@
 #define ELAWORKSPACE_ELAWIDGETTOOLS_PRIVATE_ELATHEMEPRIVATE_H_
 
 #include "ElaPropertyMacro.h"
+#include "ElaWidgetToolsDef.h"
+
+#include <QCache>
 #include <QColor>
 #include <array>
-#include <QMap>
 #include <QObject>
+#include <QPixmap>
 
-#include "ElaWidgetToolsDef.h"
 class ElaTheme;
+class QPainterPath;
 class ElaThemePrivate : public QObject
 {
     Q_OBJECT
@@ -21,11 +24,15 @@ private:
     ElaThemeType::ThemeMode _themeMode{ElaThemeType::Light};
     bool _followSystemTheme{false};
     QMetaObject::Connection _systemThemeConnection;
-    std::array<QColor, ElaThemeType::Win10BorderInactive + 1> _lightThemeColorList;
-    std::array<QColor, ElaThemeType::Win10BorderInactive + 1> _darkThemeColorList;
+    std::array<QColor, ElaThemeType::ThemeColorCount> _lightThemeColorList;
+    std::array<QColor, ElaThemeType::ThemeColorCount> _darkThemeColorList;
     void _applyThemeMode(ElaThemeType::ThemeMode mode);
     bool _setAccentColor(ElaThemeType::ThemeMode mode, const QColor& color);
     void _initThemeColor();
+    QCache<QByteArray, QPixmap> _shadowCache{8192}; // 阴影缓存上限为 8 MiB 成本单位为 KiB
+
+    QPixmap _getShadowPixmap(const QPainterPath& path, const QSize& size, qreal devicePixelRatio, int shadowBorderWidth,
+                             qreal alphaRatio, const QColor& shadowColor);
 };
 
 #endif // ELAWORKSPACE_ELAWIDGETTOOLS_PRIVATE_ELATHEMEPRIVATE_H_

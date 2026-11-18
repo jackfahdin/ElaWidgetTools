@@ -1,10 +1,11 @@
 #include "ElaToggleSwitchPrivate.h"
 
-#include <QPropertyAnimation>
-#include <QPointer>
 #include "ElaToggleAccessible.h"
-
 #include "ElaToggleSwitch.h"
+
+#include <QPointer>
+#include <QPropertyAnimation>
+
 ElaToggleSwitchPrivate::ElaToggleSwitchPrivate(QObject* parent) : QObject{parent}
 {
 }
@@ -16,15 +17,19 @@ ElaToggleSwitchPrivate::~ElaToggleSwitchPrivate()
 void ElaToggleSwitchPrivate::_startPosAnimation(qreal startX, qreal endX, bool isToggle)
 {
     Q_Q(ElaToggleSwitch);
-    QPropertyAnimation* circleAnimation = new QPropertyAnimation(q, "circleCenterX", q);
-    connect(circleAnimation, &QPropertyAnimation::valueChanged, q, [=](const QVariant& value) {
-        this->_circleCenterX = value.toReal();
-        q->update();
-    });
-    circleAnimation->setStartValue(startX);
-    circleAnimation->setEndValue(endX);
-    circleAnimation->setEasingCurve(QEasingCurve::InOutSine);
-    circleAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+    if (!_positionAnimation)
+    {
+        _positionAnimation = new QPropertyAnimation(q, "circleCenterX", this);
+        _positionAnimation->setEasingCurve(QEasingCurve::InOutSine);
+        connect(_positionAnimation, &QPropertyAnimation::valueChanged, q, [this, q](const QVariant& value) {
+            _circleCenterX = value.toReal();
+            q->update();
+        });
+    }
+    _positionAnimation->stop();
+    _positionAnimation->setStartValue(startX);
+    _positionAnimation->setEndValue(endX);
+    _positionAnimation->start();
     if (_isToggled != isToggle)
     {
         _isToggled = isToggle;
@@ -69,7 +74,7 @@ void ElaToggleSwitchPrivate::_cancelPress()
     if (_isLeftButtonPress)
     {
         _isLeftButtonPress = false;
-        _isMousePressMove = false;
+        _isDragging = false;
         _startPosAnimation(_circleCenterX, _isToggled ? q->width() - q->height() / 2 - _margin * 2 : q->height() / 2,
                            _isToggled);
     }

@@ -1,17 +1,19 @@
 #include "ElaToggleButton.h"
 
 #include "ElaApplication.h"
-#include <QEvent>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QPointer>
-#include "private/ElaToggleAccessible.h"
-#include <QPainter>
-#include <QPainterPath>
-#include <QPropertyAnimation>
-
+#include "ElaColorAnimation.h"
+#include "ElaControlStyle.h"
 #include "ElaTheme.h"
+#include "private/ElaToggleAccessible.h"
 #include "private/ElaToggleButtonPrivate.h"
+
+#include <QEvent>
+#include <QKeyEvent>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPointer>
+#include <QStyleOption>
+
 ELA_PROPERTY_Q_CPP(ElaToggleButton, int, BorderRadius)
 
 ElaToggleButton::ElaToggleButton(QWidget* parent) : QWidget(parent), d_ptr(new ElaToggleButtonPrivate())
@@ -22,17 +24,6 @@ ElaToggleButton::ElaToggleButton(QWidget* parent) : QWidget(parent), d_ptr(new E
     setFocusPolicy(Qt::StrongFocus);
     d->_pBorderRadius = 3;
     d->_themeMode = eTheme->getThemeMode();
-    d->_pToggleAlpha = 0;
-    d->_toggleAnimation = new QPropertyAnimation(d, "pToggleAlpha", d);
-    d->_toggleAnimation->setDuration(250);
-    connect(d->_toggleAnimation, &QPropertyAnimation::valueChanged, this, [this] {
-        update();
-    });
-    connect(d->_toggleAnimation, &QPropertyAnimation::finished, this, [this] {
-        Q_D(ElaToggleButton);
-        d->_isAlphaAnimationFinished = true;
-        update();
-    });
     setMouseTracking(true);
     setFixedSize(80, 32);
     QFont font = this->font();
@@ -81,7 +72,7 @@ const QString& ElaToggleButton::getText() const
 void ElaToggleButton::setIsToggled(bool isToggled)
 {
     Q_D(ElaToggleButton);
-    d->_setToggled(isToggled, false);
+    d->_setToggled(isToggled);
 }
 
 bool ElaToggleButton::getIsToggled() const
@@ -140,7 +131,7 @@ void ElaToggleButton::mouseReleaseEvent(QMouseEvent* event)
     event->accept();
     if (activate)
     {
-        d->_setToggled(!d->_isToggled, true);
+        d->_setToggled(!d->_isToggled);
     }
 }
 
@@ -189,7 +180,7 @@ void ElaToggleButton::keyReleaseEvent(QKeyEvent* event)
         if (!event->isAutoRepeat() && d->_isSpacePressed)
         {
             d->_cancelPress();
-            d->_setToggled(!d->_isToggled, true);
+            d->_setToggled(!d->_isToggled);
         }
         return;
     }
@@ -204,41 +195,14 @@ void ElaToggleButton::paintEvent(QPaintEvent* event)
 
     painter.save();
     QRect foregroundRect(1, 1, width() - 2, height() - 2);
-    if (d->_isAlphaAnimationFinished)
-    {
-        if (d->_isToggled)
-        {
-            painter.setPen(ElaThemeColor(d->_themeMode, BasicBorder));
-            painter.setBrush(isEnabled() ? d->_isPressed ? ElaThemeColor(d->_themeMode, PrimaryPress)
-                                                         : (underMouse() ? ElaThemeColor(d->_themeMode, PrimaryHover)
-                                                                         : ElaThemeColor(d->_themeMode, PrimaryNormal))
-                                         : ElaThemeColor(d->_themeMode, BasicDisable));
-        }
-        else
-        {
-            painter.setPen(ElaThemeColor(d->_themeMode, BasicBorder));
-            painter.setBrush(isEnabled() ? d->_isPressed ? ElaThemeColor(d->_themeMode, BasicPress)
-                                                         : (underMouse() ? ElaThemeColor(d->_themeMode, BasicHover)
-                                                                         : ElaThemeColor(d->_themeMode, BasicBase))
-                                         : ElaThemeColor(d->_themeMode, BasicDisable));
-        }
-    }
-    else
-    {
-        painter.setPen(Qt::NoPen);
-        QColor toggleColor = ElaThemeColor(d->_themeMode, PrimaryNormal);
-        toggleColor.setAlpha(d->_pToggleAlpha);
-        painter.setBrush(toggleColor);
-    }
+    QStyleOption option;
+    option.initFrom(this);
+    option.state.setFlag(QStyle::State_Sunken, d->_isPressed);
+    const QColor background = ElaControlStyle::getControlBackgroundColor(d->_themeMode, option.state, d->_isToggled);
+    painter.setPen(
+        QPen(ElaControlStyle::getControlBorder(foregroundRect, d->_themeMode, isEnabled() && !d->_isPressed), 1));
+    painter.setBrush(ElaColorAnimation::getColor(this, background));
     painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
-    // 底边线绘制
-    if (!d->_isPressed && !d->_isToggled)
-    {
-        painter.setPen(ElaThemeColor(d->_themeMode, BasicBaseLine));
-        painter.drawLine(foregroundRect.x() + d->_pBorderRadius, height() - 1,
-                         foregroundRect.x() + foregroundRect.width() - d->_pBorderRadius, height() - 1);
-    }
-
     // 文字绘制
     painter.setPen(isEnabled() ? d->_isToggled ? ElaThemeColor(d->_themeMode, BasicTextInvert)
                                                : ElaThemeColor(d->_themeMode, BasicText)
@@ -262,24 +226,12 @@ void ElaToggleButtonPrivate::_cancelPress()
     q->update();
 }
 
-void ElaToggleButtonPrivate::_setToggled(bool toggled, bool animated)
+void ElaToggleButtonPrivate::_setToggled(bool toggled)
 {
     Q_Q(ElaToggleButton);
     if (_isToggled == toggled)
         return;
     _isToggled = toggled;
-    _toggleAnimation->stop();
-    _isAlphaAnimationFinished = !animated;
-    if (animated)
-    {
-        _toggleAnimation->setStartValue(_pToggleAlpha);
-        _toggleAnimation->setEndValue(toggled ? 255 : 0);
-        _toggleAnimation->start();
-    }
-    else
-    {
-        _pToggleAlpha = toggled ? 255 : 0;
-    }
     q->update();
     const QPointer<ElaToggleButton> alive(q);
     Q_EMIT q->toggled(toggled);

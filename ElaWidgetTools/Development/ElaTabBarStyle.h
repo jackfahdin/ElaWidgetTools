@@ -9,6 +9,9 @@ class ElaTabBarStyle : public QProxyStyle
 {
     Q_OBJECT
     ELA_VARIABLE(QSize, TabSize)
+    ELA_VARIABLE(bool, IsActive)
+    ELA_VARIABLE(bool, IsPinned)
+    ELA_VARIABLE(bool, IsTabWidthAdaptive)
 public:
     explicit ElaTabBarStyle(QStyle* style = nullptr);
     ~ElaTabBarStyle() override;

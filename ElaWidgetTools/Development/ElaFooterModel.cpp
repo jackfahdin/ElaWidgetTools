@@ -1,8 +1,9 @@
 #include "ElaFooterModel.h"
 
+#include "ElaNavigationNode.h"
+
 #include <QUuid>
 
-#include "ElaNavigationNode.h"
 ElaFooterModel::ElaFooterModel(QObject* parent) : QAbstractListModel{parent}
 {
     _pSelectedNode = nullptr;
@@ -15,12 +16,12 @@ ElaFooterModel::~ElaFooterModel()
 
 int ElaFooterModel::rowCount(const QModelIndex& parent) const
 {
-    return _footerNodeList.count();
+    return parent.isValid() ? 0 : _footerNodeList.count();
 }
 
 QVariant ElaFooterModel::data(const QModelIndex& index, int role) const
 {
-    if (role == Qt::UserRole)
+    if (index.isValid() && index.row() >= 0 && role == Qt::UserRole)
     {
         if (index.row() < _footerNodeList.count())
         {
@@ -44,9 +45,10 @@ ElaNavigationType::NodeResult ElaFooterModel::addFooterNode(const QString& foote
     node->setIsHasFooterPage(isHasFooterPage);
     node->setAwesome(awesome);
     footerKey = node->getNodeKey();
-    beginResetModel();
+    const int row = _footerNodeList.count();
+    beginInsertRows(QModelIndex(), row, row);
     _footerNodeList.append(node);
-    endResetModel();
+    endInsertRows();
     node->setModelIndex(this->index(_footerNodeList.count() - 1));
     return ElaNavigationType::Success;
 }
@@ -70,12 +72,25 @@ ElaNavigationNode* ElaFooterModel::getNavigationNode(const QString& footerKey)
 
 void ElaFooterModel::removeNavigationNode(const QString& footerKey)
 {
-    for (auto node : _footerNodeList)
+    for (int row = 0; row < _footerNodeList.count(); row++)
     {
-        if (node->getNodeKey() == footerKey)
+        ElaNavigationNode* node = _footerNodeList[row];
+        if (node->getNodeKey() != footerKey)
         {
-            _footerNodeList.removeOne(node);
-            break;
+            continue;
         }
+        beginRemoveRows(QModelIndex(), row, row);
+        _footerNodeList.removeAt(row);
+        if (_pSelectedNode == node)
+        {
+            _pSelectedNode = nullptr;
+        }
+        endRemoveRows();
+        for (int i = row; i < _footerNodeList.count(); i++)
+        {
+            _footerNodeList[i]->setModelIndex(index(i, 0));
+        }
+        node->deleteLater();
+        break;
     }
 }

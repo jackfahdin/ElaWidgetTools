@@ -148,12 +148,32 @@ private Q_SLOTS:
         toggle.show();
         QSignalSpy changed(&toggle, &ElaToggleSwitch::toggled);
         QTest::mousePress(&toggle, Qt::LeftButton, Qt::NoModifier, QPoint(11, 11));
-        QMouseEvent move(QEvent::MouseMove, QPointF(12, 11), QPointF(toggle.mapToGlobal(QPoint(12, 11))), Qt::NoButton,
-                         Qt::LeftButton, Qt::NoModifier);
-        QApplication::sendEvent(&toggle, &move);
-        QTest::mouseRelease(&toggle, Qt::LeftButton, Qt::NoModifier, QPoint(12, 11));
+        const int dragDistance = qMax(1, QApplication::startDragDistance());
+        for (const QPoint& position : {QPoint(11 + dragDistance, 11), QPoint(11, 11)})
+        {
+            QMouseEvent move(QEvent::MouseMove, QPointF(position), QPointF(toggle.mapToGlobal(position)), Qt::NoButton,
+                             Qt::LeftButton, Qt::NoModifier);
+            QApplication::sendEvent(&toggle, &move);
+        }
+        QTest::mouseRelease(&toggle, Qt::LeftButton, Qt::NoModifier, QPoint(11, 11));
         QVERIFY(!toggle.getIsToggled());
         QCOMPARE(changed.count(), 0);
+    }
+
+    void switchSmallMouseMovementStillActivates()
+    {
+        ElaToggleSwitch toggle;
+        toggle.show();
+        QSignalSpy changed(&toggle, &ElaToggleSwitch::toggled);
+        const int jitter = qMin(1, qMax(0, QApplication::startDragDistance() - 1));
+        const QPoint position(11 + jitter, 11);
+        QTest::mousePress(&toggle, Qt::LeftButton, Qt::NoModifier, QPoint(11, 11));
+        QMouseEvent move(QEvent::MouseMove, QPointF(position), QPointF(toggle.mapToGlobal(position)), Qt::NoButton,
+                         Qt::LeftButton, Qt::NoModifier);
+        QApplication::sendEvent(&toggle, &move);
+        QTest::mouseRelease(&toggle, Qt::LeftButton, Qt::NoModifier, position);
+        QVERIFY(toggle.getIsToggled());
+        QCOMPARE(changed.count(), 1);
     }
 
     void switchCancelsMouseReleaseOutside()

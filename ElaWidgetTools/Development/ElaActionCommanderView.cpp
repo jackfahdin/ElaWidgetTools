@@ -8,6 +8,7 @@
 
 #include <QPainter>
 #include <QPropertyAnimation>
+
 ElaActionCommanderView::ElaActionCommanderView(QWidget* parent) : QTreeView(parent)
 {
     setObjectName("ElaActionCommanderView");
@@ -36,6 +37,7 @@ ElaActionCommanderView::ElaActionCommanderView(QWidget* parent) : QTreeView(pare
             &ElaActionCommanderView::onCustomContextMenuRequested);
 
     _style = new ElaActionCommanderViewStyle(style());
+    _style->setParent(this);
     setStyle(_style);
 }
 

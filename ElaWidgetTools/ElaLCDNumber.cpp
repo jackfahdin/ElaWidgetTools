@@ -1,10 +1,13 @@
 #include "ElaLCDNumber.h"
+
 #include "ElaLCDNumberPrivate.h"
 #include "ElaLCDNumberStyle.h"
 #include "ElaTheme.h"
+
 #include <QDateTime>
 #include <QDebug>
 #include <QTimer>
+
 ElaLCDNumber::ElaLCDNumber(QWidget* parent) : QLCDNumber(parent), d_ptr(new ElaLCDNumberPrivate)
 {
     Q_D(ElaLCDNumber);
@@ -16,6 +19,7 @@ ElaLCDNumber::ElaLCDNumber(QWidget* parent) : QLCDNumber(parent), d_ptr(new ElaL
     setObjectName("ElaLCDNumber");
     setStyleSheet("#ElaLCDNumber{background-color:transparent;}");
     d->_lcdNumberStyle = new ElaLCDNumberStyle();
+    d->_lcdNumberStyle->setParent(this);
     setStyle(d->_lcdNumberStyle);
     d->_clockTimer = new QTimer(this);
     connect(d->_clockTimer, &QTimer::timeout, this, [=]() {
@@ -37,11 +41,7 @@ ElaLCDNumber::ElaLCDNumber(uint numDigits, QWidget* parent) : ElaLCDNumber(paren
     setDigitCount(numDigits);
 }
 
-ElaLCDNumber::~ElaLCDNumber()
-{
-    Q_D(ElaLCDNumber);
-    delete d->_lcdNumberStyle;
-}
+ElaLCDNumber::~ElaLCDNumber() = default;
 
 void ElaLCDNumber::setIsUseAutoClock(bool isUseAutoClock)
 {

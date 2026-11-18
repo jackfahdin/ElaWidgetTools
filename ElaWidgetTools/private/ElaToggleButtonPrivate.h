@@ -6,26 +6,22 @@
 
 #include "ElaWidgetToolsDef.h"
 class ElaToggleButton;
-class QPropertyAnimation;
 class ElaToggleButtonPrivate : public QObject
 {
     Q_OBJECT
     ELA_PIMPL_D(ElaToggleButton)
     ELA_PROPERTY_D(int, BorderRadius)
     ELA_PROPERTY_D(QString, Text)
-    ELA_PROPERTY(int, ToggleAlpha)
 public:
     explicit ElaToggleButtonPrivate(QObject* parent = nullptr);
     ~ElaToggleButtonPrivate() override;
 
 private:
-    bool _isAlphaAnimationFinished{true};
     bool _isToggled{false};
     bool _isPressed{false};
     bool _isMousePressed{false};
     bool _isSpacePressed{false};
-    QPropertyAnimation* _toggleAnimation{nullptr};
-    void _setToggled(bool toggled, bool animated);
+    void _setToggled(bool toggled);
     void _cancelPress();
     ElaThemeType::ThemeMode _themeMode;
 };

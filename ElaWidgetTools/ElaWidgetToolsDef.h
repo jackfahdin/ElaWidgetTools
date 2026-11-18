@@ -54,6 +54,7 @@ Q_ENUM_CREATE(ThemeMode)
 
 enum ThemeColor
 {
+    // 保留既有公开角色的顺序与数值；新增角色仅追加。
     ScrollBarHandle,
     ToggleSwitchNoToggledCenter,
     WindowBase,
@@ -96,7 +97,20 @@ enum ThemeColor
     BasicSelectedHoverAlpha,
     StatusDanger,
     Win10BorderActive,
-    Win10BorderInactive
+    Win10BorderInactive,
+
+    InputActive,
+    StatusSuccess,
+    StatusSuccessBackground,
+    StatusWarning,
+    StatusWarningBackground,
+    StatusDangerBackground,
+    PrimaryDisabled,
+    BasicAltBase,
+    BasicAltHover,
+    BasicAltPress,
+    BasicSolid,
+    ThemeColorCount
 };
 Q_ENUM_CREATE(ThemeColor)
 Q_END_ENUM_CREATE(ElaThemeType)
@@ -139,6 +153,19 @@ Q_END_ENUM_CREATE(ElaAppBarType)
 Q_DECLARE_OPERATORS_FOR_FLAGS(ElaAppBarType::ButtonFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(ElaAppBarType::WMMouseActionTypes)
 
+Q_BEGIN_ENUM_CREATE(ElaTabWidgetType)
+enum DropArea
+{
+    NoArea = 0x0000,
+    Center = 0x0001,
+    Left = 0x0002,
+    Right = 0x0003,
+    Top = 0x0004,
+    Bottom = 0x0005,
+};
+Q_ENUM_CREATE(DropArea)
+Q_END_ENUM_CREATE(ElaTabWidgetType)
+
 Q_BEGIN_ENUM_CREATE(ElaTextType)
 enum TextStyle
 {
@@ -153,6 +180,27 @@ enum TextStyle
 };
 Q_ENUM_CREATE(TextStyle)
 Q_END_ENUM_CREATE(ElaTextType)
+
+Q_BEGIN_ENUM_CREATE(ElaTeachingTipType)
+enum PlacementMode
+{
+    Auto = 0x0000,
+    Top = 0x0001,
+    Bottom = 0x0002,
+    Left = 0x0003,
+    Right = 0x0004,
+    TopLeft = 0x0005,
+    TopRight = 0x0006,
+    BottomLeft = 0x0007,
+    BottomRight = 0x0008,
+    LeftTop = 0x0009,
+    LeftBottom = 0x000A,
+    RightTop = 0x000B,
+    RightBottom = 0x000C,
+    Center = 0x000D,
+};
+Q_ENUM_CREATE(PlacementMode)
+Q_END_ENUM_CREATE(ElaTeachingTipType)
 
 Q_BEGIN_ENUM_CREATE(ElaNavigationType)
 enum NodeResult

@@ -22,7 +22,7 @@ public:
 
 private:
     ElaThemeType::ThemeMode _themeMode;
-    QLinearGradient* _baseGradient{nullptr};
+    mutable QLinearGradient _baseGradient{0, 0, 100, 100}; // 颜色滑槽的明度渐变
     mutable QStyle::State _lastState{QStyle::State_None};
     mutable qreal _circleRadius{0};
     void _startRadiusAnimation(qreal startRadius, qreal endRadius, QWidget* widget) const;

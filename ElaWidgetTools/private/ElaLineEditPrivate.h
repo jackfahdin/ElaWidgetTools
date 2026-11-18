@@ -13,7 +13,6 @@ class ElaLineEditPrivate : public QObject
     ELA_PIMPL_D(ElaLineEdit)
     ELA_PROPERTY_D(int, BorderRadius)
     ELA_PROPERTY_D(bool, IsClearButtonEnable)
-    ELA_PROPERTY(qreal, ExpandMarkWidth)
 public:
     explicit ElaLineEditPrivate(QObject* parent = nullptr);
     ~ElaLineEditPrivate() override;

@@ -81,6 +81,9 @@ install(
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ElaWidgetTools)
 
 include(CMakePackageConfigHelpers)
+# 上游新增的下拉箭头来自 Fluent System Icons，随安装包保留来源与许可证。
+install(FILES Image/Fluent/LICENSE.txt Image/Fluent/SOURCE.txt
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/ElaWidgetTools/FluentSystemIcons)
 write_basic_package_version_file(
     ${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
     VERSION ${PROJECT_VERSION}

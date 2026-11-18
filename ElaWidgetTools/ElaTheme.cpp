@@ -3,10 +3,14 @@
 #include <QApplication>
 #include <QStyleHints>
 #include <QWidget>
+#include "ElaColorAnimation.h"
+#include "ElaThemePrivate.h"
+
 #include <QPainter>
 #include <QPainterPath>
+#include <QtMath>
+#include <qdrawutil.h>
 
-#include "ElaThemePrivate.h"
 namespace
 {
 bool isValidMode(ElaThemeType::ThemeMode mode)
@@ -15,7 +19,7 @@ bool isValidMode(ElaThemeType::ThemeMode mode)
 }
 bool isValidRole(ElaThemeType::ThemeColor role)
 {
-    return role >= ElaThemeType::ScrollBarHandle && role <= ElaThemeType::Win10BorderInactive;
+    return role >= 0 && role < ElaThemeType::ThemeColorCount;
 }
 ElaThemeType::ThemeMode systemMode(Qt::ColorScheme scheme)
 {
@@ -35,8 +39,13 @@ ElaTheme::ElaTheme(QObject* parent) : QObject{parent}, d_ptr(new ElaThemePrivate
 {
     Q_D(ElaTheme);
     d->q_ptr = this;
-    d->_initThemeColor();
-    connect(this, &ElaTheme::themeColorsChanged, this, &refreshWidgets);
+    connect(this, &ElaTheme::themeColorsChanged, this, [this](ElaThemeType::ThemeMode mode) {
+        if (mode == getThemeMode())
+        {
+            ElaColorAnimation::beginThemeTransition();
+        }
+        refreshWidgets();
+    });
     connect(this, &ElaTheme::themeModeChanged, this, &refreshWidgets);
 }
 
@@ -154,28 +163,73 @@ void ElaTheme::resetThemeColors()
     }
 }
 
+QMargins ElaTheme::getShadowMargins(int shadowBorderWidth) const
+{
+    const int width = qMax(0, shadowBorderWidth);
+    return QMargins(qCeil(width * 0.75), qCeil(width * 0.5), qCeil(width * 0.75), width);
+}
+
 void ElaTheme::drawEffectShadow(QPainter* painter, QRect widgetRect, int shadowBorderWidth, int borderRadius,
                                 qreal alphaRatio, const QColor& shadowColor)
 {
+    drawEffectShadow(painter, widgetRect,
+                     QMargins(shadowBorderWidth, shadowBorderWidth, shadowBorderWidth, shadowBorderWidth), borderRadius,
+                     alphaRatio, shadowColor);
+}
+
+void ElaTheme::drawEffectShadow(QPainter* painter, QRect widgetRect, const QMargins& shadowMargins, int borderRadius,
+                                qreal alphaRatio, const QColor& shadowColor)
+{
     Q_D(ElaTheme);
-    painter->save();
-    painter->setRenderHints(QPainter::Antialiasing);
-    painter->setBrush(Qt::NoBrush);
-    QPainterPath path;
-    path.setFillRule(Qt::WindingFill);
-    QColor color = shadowColor.isValid()                  ? shadowColor
-                   : d->_themeMode == ElaThemeType::Light ? QColor(0x70, 0x70, 0x70)
-                                                          : QColor(0x9C, 0x9B, 0x9E);
-    for (int i = 0; i < shadowBorderWidth; i++)
+    const QRect body = widgetRect.marginsRemoved(shadowMargins);
+    const int shadowBorderWidth =
+        qMax(qMax(shadowMargins.left(), shadowMargins.right()), qMax(shadowMargins.top(), shadowMargins.bottom()));
+    if (!painter || !painter->isActive() || shadowBorderWidth <= 0 || body.isEmpty() || alphaRatio <= 0)
     {
-        path.addRoundedRect(widgetRect.x() + shadowBorderWidth - i, widgetRect.y() + shadowBorderWidth - i,
-                            widgetRect.width() - (shadowBorderWidth - i) * 2,
-                            widgetRect.height() - (shadowBorderWidth - i) * 2, borderRadius + i, borderRadius + i);
-        qreal alpha = alphaRatio * (shadowBorderWidth - i + 1);
-        color.setAlpha(alpha > 255 ? 255 : static_cast<int>(alpha));
-        painter->setPen(color);
-        painter->drawPath(path);
+        return;
     }
+    const qreal ratio = painter->device()->devicePixelRatioF();
+    const int radius = qBound(0, borderRadius, qMin(body.width(), body.height()) / 2);
+    // 圆角和模糊过渡保持原尺寸 仅拉伸直边 避免窗口缩放或卡片动画反复生成阴影
+    const int edge = radius + shadowBorderWidth;
+    const QSize bodySize(qMin(body.width(), 2 * edge + 1), qMin(body.height(), 2 * edge + 1));
+    const QSize size =
+        bodySize + QSize(shadowMargins.left() + shadowMargins.right(), shadowMargins.top() + shadowMargins.bottom());
+    QPainterPath path;
+    path.addRoundedRect(QRectF(QPointF(shadowMargins.left(), shadowMargins.top()), bodySize), radius, radius);
+    const QPixmap shadow =
+        d->_getShadowPixmap(path, size, ratio, shadowBorderWidth, qMax(qreal(1), alphaRatio), shadowColor);
+    const int horizontalEdge = qMin(edge, bodySize.width() / 2);
+    const int verticalEdge = qMin(edge, bodySize.height() / 2);
+    const QMargins edges = shadowMargins + QMargins(horizontalEdge, verticalEdge, horizontalEdge, verticalEdge);
+    painter->save();
+    painter->setRenderHint(QPainter::SmoothPixmapTransform);
+    painter->setOpacity(painter->opacity() * qMin(qreal(1), alphaRatio));
+    // 中心完全透明 裁去这部分避免九宫格拉伸时仍遍历面板内部像素
+    const QRect center = widgetRect.marginsRemoved(edges);
+    painter->setClipRegion(QRegion(widgetRect).subtracted(QRegion(center)), Qt::IntersectClip);
+    qDrawBorderPixmap(painter, widgetRect, edges, shadow, QRect(QPoint(), size * ratio),
+                      QMargins(qRound(edges.left() * ratio), qRound(edges.top() * ratio), qRound(edges.right() * ratio),
+                               qRound(edges.bottom() * ratio)));
+    painter->restore();
+}
+
+void ElaTheme::drawEffectShadow(QPainter* painter, const QPainterPath& contentPath, int shadowBorderWidth,
+                                qreal alphaRatio, const QColor& shadowColor)
+{
+    Q_D(ElaTheme);
+    if (!painter || !painter->isActive() || contentPath.isEmpty() || shadowBorderWidth <= 0 || alphaRatio <= 0)
+    {
+        return;
+    }
+    const QRect rect =
+        contentPath.boundingRect().marginsAdded(QMarginsF(getShadowMargins(shadowBorderWidth))).toAlignedRect();
+    const QPainterPath path = contentPath.translated(-rect.topLeft());
+    const QPixmap shadow = d->_getShadowPixmap(path, rect.size(), painter->device()->devicePixelRatioF(),
+                                               shadowBorderWidth, qMax(qreal(1), alphaRatio), shadowColor);
+    painter->save();
+    painter->setOpacity(painter->opacity() * qMin(qreal(1), alphaRatio));
+    painter->drawPixmap(rect.topLeft(), shadow);
     painter->restore();
 }
 

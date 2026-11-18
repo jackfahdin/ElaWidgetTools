@@ -1,18 +1,17 @@
 #include "ElaLineEdit.h"
 
-#include <QClipboard>
-#include <QContextMenuEvent>
-#include <QDebug>
-#include <QGuiApplication>
-#include <QPainter>
-#include <QPainterPath>
-#include <QPropertyAnimation>
-
 #include "ElaEventBus.h"
+#include "ElaInputFocusAnimation.h"
 #include "ElaLineEditStyle.h"
 #include "ElaMenu.h"
 #include "ElaTheme.h"
 #include "private/ElaLineEditPrivate.h"
+
+#include <QClipboard>
+#include <QContextMenuEvent>
+#include <QDebug>
+#include <QGuiApplication>
+
 ELA_PROPERTY_Q_CPP(ElaLineEdit, int, BorderRadius)
 
 ElaLineEdit::ElaLineEdit(QWidget* parent) : QLineEdit(parent), d_ptr(new ElaLineEditPrivate())
@@ -23,7 +22,6 @@ ElaLineEdit::ElaLineEdit(QWidget* parent) : QLineEdit(parent), d_ptr(new ElaLine
     setFixedHeight(35);
     d->_themeMode = eTheme->getThemeMode();
     d->_pBorderRadius = 6;
-    d->_pExpandMarkWidth = 0;
     d->_pIsClearButtonEnable = true;
     setFocusPolicy(Qt::StrongFocus);
     // 事件总线
@@ -33,7 +31,10 @@ ElaLineEdit::ElaLineEdit(QWidget* parent) : QLineEdit(parent), d_ptr(new ElaLine
     QFont textFont = font();
     textFont.setLetterSpacing(QFont::AbsoluteSpacing, d->_textSpacing);
     setFont(textFont);
-    setStyle(new ElaLineEditStyle(style()));
+    auto* lineEditStyle = new ElaLineEditStyle(style());
+    lineEditStyle->setParent(this);
+    setStyle(lineEditStyle);
+    new ElaInputFocusAnimation(lineEditStyle, this);
     setStyleSheet("#ElaLineEdit{background-color:transparent;padding-left: 10px;}");
     d->onThemeChanged(eTheme->getThemeMode());
     connect(eTheme, &ElaTheme::themeModeChanged, d, &ElaLineEditPrivate::onThemeChanged);
@@ -43,13 +44,13 @@ ElaLineEdit::ElaLineEdit(QWidget* parent) : QLineEdit(parent), d_ptr(new ElaLine
             d->onThemeChanged(mode);
         }
     });
+    connect(this, &ElaLineEdit::pBorderRadiusChanged, this, [this]() {
+        update();
+    });
     QWidget::setVisible(true);
 }
 
-ElaLineEdit::~ElaLineEdit()
-{
-    delete this->style();
-}
+ElaLineEdit::~ElaLineEdit() = default;
 
 void ElaLineEdit::setIsClearButtonEnable(bool isClearButtonEnable)
 {
@@ -75,17 +76,9 @@ void ElaLineEdit::focusInEvent(QFocusEvent* event)
         {
             setClearButtonEnabled(true);
         }
-        QPropertyAnimation* markAnimation = new QPropertyAnimation(d, "pExpandMarkWidth");
-        connect(markAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
-            update();
-        });
-        markAnimation->setDuration(300);
-        markAnimation->setEasingCurve(QEasingCurve::InOutSine);
-        markAnimation->setStartValue(d->_pExpandMarkWidth);
-        markAnimation->setEndValue(width() / 2 - d->_pBorderRadius / 2);
-        markAnimation->start(QAbstractAnimation::DeleteWhenStopped);
     }
     QLineEdit::focusInEvent(event);
+    update();
 }
 
 void ElaLineEdit::focusOutEvent(QFocusEvent* event)
@@ -98,36 +91,20 @@ void ElaLineEdit::focusOutEvent(QFocusEvent* event)
         {
             setClearButtonEnabled(false);
         }
-        QPropertyAnimation* markAnimation = new QPropertyAnimation(d, "pExpandMarkWidth");
-        connect(markAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
-            update();
-        });
-        markAnimation->setDuration(300);
-        markAnimation->setEasingCurve(QEasingCurve::InOutSine);
-        markAnimation->setStartValue(d->_pExpandMarkWidth);
-        markAnimation->setEndValue(0);
-        markAnimation->start(QAbstractAnimation::DeleteWhenStopped);
         Q_EMIT wmFocusOut(text());
     }
     QLineEdit::focusOutEvent(event);
+    update();
 }
 
 void ElaLineEdit::paintEvent(QPaintEvent* event)
 {
     Q_D(ElaLineEdit);
-    if (palette().color(QPalette::Text) != ElaThemeColor(d->_themeMode, BasicText))
+    if (palette().color(QPalette::Active, QPalette::Text) != ElaThemeColor(d->_themeMode, BasicText))
     {
         d->onThemeChanged(d->_themeMode);
     }
     QLineEdit::paintEvent(event);
-    QPainter painter(this);
-    painter.save();
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(ElaThemeColor(d->_themeMode, PrimaryNormal));
-    painter.drawRoundedRect(QRectF(width() / 2 - d->_pExpandMarkWidth, height() - 2.5, d->_pExpandMarkWidth * 2, 2.5),
-                            2, 2);
-    painter.restore();
 }
 
 void ElaLineEdit::contextMenuEvent(QContextMenuEvent* event)

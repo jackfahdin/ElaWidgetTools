@@ -1,16 +1,18 @@
 #include "ElaPopularCardFloater.h"
 
 #include "ElaApplication.h"
+#include "ElaColorAnimation.h"
+#include "ElaPopularCard.h"
+#include "ElaPopularCardPrivate.h"
+#include "ElaPushButton.h"
+#include "ElaTheme.h"
+
 #include <QEvent>
 #include <QGraphicsOpacityEffect>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPropertyAnimation>
 
-#include "ElaPopularCard.h"
-#include "ElaPopularCardPrivate.h"
-#include "ElaPushButton.h"
-#include "ElaTheme.h"
 ElaPopularCardFloater::ElaPopularCardFloater(ElaPopularCard* card, ElaPopularCardPrivate* cardPrivate, QWidget* parent)
     : QWidget{parent}
 {
@@ -27,18 +29,7 @@ ElaPopularCardFloater::ElaPopularCardFloater(ElaPopularCard* card, ElaPopularCar
     _opacityEffect->setOpacity(1);
     _overButton->setGraphicsEffect(_opacityEffect);
     _overButton->move(0, 0);
-    auto refreshAccent = [=]() {
-        _overButton->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
-        _overButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
-        _overButton->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
-        _overButton->setDarkDefaultColor(ElaThemeColor(ElaThemeType::Dark, PrimaryNormal));
-        _overButton->setDarkHoverColor(ElaThemeColor(ElaThemeType::Dark, PrimaryHover));
-        _overButton->setDarkPressColor(ElaThemeColor(ElaThemeType::Dark, PrimaryPress));
-    };
-    refreshAccent();
-    connect(eTheme, &ElaTheme::themeColorsChanged, this, refreshAccent);
-    _overButton->setLightTextColor(Qt::white);
-    _overButton->setDarkTextColor(Qt::white);
+    _overButton->setIsAccent(true);
     _overButton->setMinimumSize(0, 0);
     _overButton->setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
     connect(_overButton, &ElaPushButton::clicked, _card, &ElaPopularCard::popularCardButtonClicked);
@@ -182,8 +173,8 @@ void ElaPopularCardFloater::paintEvent(QPaintEvent* event)
 
     // 背景绘制
     painter.setOpacity(1);
-    painter.setPen(ElaThemeColor(_themeMode, PopupBorderHover));
-    painter.setBrush(ElaThemeColor(_themeMode, DialogBase));
+    painter.setPen(ElaThemeColor(_themeMode, BasicBorder));
+    painter.setBrush(ElaColorAnimation::getColor(this, ElaThemeColor(_themeMode, PopupBase), "Background"));
     painter.drawRoundedRect(foregroundRect, _cardPrivate->_pBorderRadius, _cardPrivate->_pBorderRadius);
     painter.setClipRect(foregroundRect);
     // 图片绘制
@@ -229,7 +220,7 @@ void ElaPopularCardFloater::paintEvent(QPaintEvent* event)
     painter.drawText(subTitleRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, subTitleText);
 
     // DetailedText
-    painter.setPen(ElaThemeColor(_themeMode, BasicDetailsText));
+    painter.setPen(ElaThemeColor(_themeMode, BasicTextNoFocus));
     int detailedTextHeight = painter.fontMetrics().height() * 2 + 2;
     QRectF detailedTextRect(pixRect.x(), pixRect.bottom() + cardForegroundRect.height() * 0.15,
                             cardForegroundRect.width() + 2 * _floatGeometryOffset - _cardPrivate->_textHSpacing -

@@ -1,13 +1,15 @@
 #include "ElaMessageButton.h"
 
 #include "ElaApplication.h"
+#include "ElaColorAnimation.h"
+#include "ElaMessageBar.h"
+#include "ElaTheme.h"
+#include "private/ElaMessageButtonPrivate.h"
+
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
 
-#include "ElaMessageBar.h"
-#include "ElaTheme.h"
-#include "private/ElaMessageButtonPrivate.h"
 ELA_PROPERTY_Q_CPP(ElaMessageButton, int, BorderRadius)
 ELA_PROPERTY_Q_CPP(ElaMessageButton, QString, BarTitle);
 ELA_PROPERTY_Q_CPP(ElaMessageButton, QString, BarText);
@@ -26,7 +28,7 @@ ElaMessageButton::ElaMessageButton(QWidget* parent) : QPushButton(parent), d_ptr
     QFont font = this->font();
     font.setPixelSize(eApp->getFontPixelSize() + 2);
     setFont(font);
-    setText("Message");
+    setText("消息");
     setObjectName("ElaMessageButton");
     setStyleSheet("#ElaMessageButton{background-color:transparent;}");
     d->_pDisplayMsec = 2000;
@@ -104,13 +106,15 @@ void ElaMessageButton::paintEvent(QPaintEvent* event)
                          width() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth),
                          height() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth));
     painter.setPen(QPen(ElaThemeColor(d->_themeMode, BasicBorder), d->_penBorderWidth));
-    painter.setBrush(isEnabled() ? underMouse() ? ElaThemeColor(d->_themeMode, BasicHover)
-                                                : ElaThemeColor(d->_themeMode, BasicBase)
-                                 : ElaThemeColor(d->_themeMode, BasicDisable));
+    painter.setBrush(ElaColorAnimation::getColor(this,
+                                                 isEnabled() ? underMouse() ? ElaThemeColor(d->_themeMode, BasicHover)
+                                                                            : ElaThemeColor(d->_themeMode, BasicBase)
+                                                             : ElaThemeColor(d->_themeMode, BasicDisable),
+                                                 "Background"));
     painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
 
     // 文字绘制
-    painter.setPen(isEnabled() ? d->_isLeftButtonPress ? ElaThemeColor(d->_themeMode, BasicTextPress)
+    painter.setPen(isEnabled() ? d->_isLeftButtonPress ? ElaThemeColor(d->_themeMode, BasicTextNoFocus)
                                                        : ElaThemeColor(d->_themeMode, BasicText)
                                : ElaThemeColor(d->_themeMode, BasicTextDisable));
     painter.drawText(rect(), Qt::AlignCenter, text());

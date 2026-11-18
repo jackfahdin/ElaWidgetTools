@@ -43,6 +43,10 @@ const QImage& ElaImageCard::getCardImage() const
 void ElaImageCard::paintEvent(QPaintEvent* event)
 {
     Q_D(ElaImageCard);
+    if (d->_pCardImage.isNull() || rect().isEmpty())
+    {
+        return;
+    }
     QPainter painter(this);
     painter.save();
     painter.setPen(Qt::NoPen);
@@ -53,8 +57,8 @@ void ElaImageCard::paintEvent(QPaintEvent* event)
     // 图片绘制
     if (d->_pIsPreserveAspectCrop)
     {
-        qreal windowAspectRatio = (qreal)rect().width() / rect().height();
-        qreal pixAspectRatio = (qreal)d->_pCardImage.width() / d->_pCardImage.height();
+        qreal windowAspectRatio = static_cast<qreal>(rect().width()) / rect().height();
+        qreal pixAspectRatio = static_cast<qreal>(d->_pCardImage.width()) / d->_pCardImage.height();
         int targetPixWidth, targetPixHeight;
         if (windowAspectRatio < pixAspectRatio)
         {

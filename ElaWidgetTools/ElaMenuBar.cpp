@@ -1,19 +1,22 @@
 #include "ElaMenuBar.h"
 
+#include "ElaIcon.h"
+#include "ElaMenu.h"
+#include "ElaMenuBarStyle.h"
+
 #include <QEvent>
 #include <QPainter>
 #include <QToolButton>
 
-#include "ElaIcon.h"
-#include "ElaMenu.h"
-#include "ElaMenuBarStyle.h"
 ElaMenuBar::ElaMenuBar(QWidget* parent) : QMenuBar(parent)
 {
     setMouseTracking(true);
     // QMenuBar 默认 MinimumExpanding 不允许布局收缩，无法触发溢出菜单。
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
     setObjectName("ElaMenuBar");
-    setStyle(new ElaMenuBarStyle(style()));
+    auto* menuBarStyle = new ElaMenuBarStyle(style());
+    menuBarStyle->setParent(this);
+    setStyle(menuBarStyle);
     QToolButton* tool = this->findChild<QToolButton*>();
     if (tool && tool->objectName() == "qt_menubar_ext_button")
     {
@@ -29,10 +32,7 @@ ElaMenuBar::ElaMenuBar(QWidget* parent) : QMenuBar(parent)
     }
 }
 
-ElaMenuBar::~ElaMenuBar()
-{
-    delete this->style();
-}
+ElaMenuBar::~ElaMenuBar() = default;
 
 QAction* ElaMenuBar::addMenu(QMenu* menu)
 {

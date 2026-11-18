@@ -1,14 +1,20 @@
 #include "ElaToggleSwitch.h"
 
+#include "ElaColorAnimation.h"
+#include "ElaControlStyle.h"
+#include "ElaTheme.h"
+#include "private/ElaToggleAccessible.h"
+#include "private/ElaToggleSwitchPrivate.h"
+
+#include <QApplication>
 #include <QEvent>
-#include <QMouseEvent>
 #include <QKeyEvent>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPropertyAnimation>
+#include <QStyleOption>
 
-#include "ElaTheme.h"
-#include "private/ElaToggleSwitchPrivate.h"
-#include "private/ElaToggleAccessible.h"
 ElaToggleSwitch::ElaToggleSwitch(QWidget* parent) : QWidget{parent}, d_ptr(new ElaToggleSwitchPrivate())
 {
     Q_D(ElaToggleSwitch);
@@ -25,6 +31,10 @@ ElaToggleSwitch::ElaToggleSwitch(QWidget* parent) : QWidget{parent}, d_ptr(new E
     setProperty("circleRadius", 0.01);
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
         d->_themeMode = themeMode;
+        update();
+    });
+    connect(eTheme, &ElaTheme::themeColorsChanged, this, [this] {
+        update();
     });
 }
 
@@ -98,15 +108,22 @@ bool ElaToggleSwitch::event(QEvent* event)
 void ElaToggleSwitch::mousePressEvent(QMouseEvent* event)
 {
     Q_D(ElaToggleSwitch);
-    if (event->button() != Qt::LeftButton || !isEnabled() || d->_isSpacePressed)
+    if (event->button() != Qt::LeftButton || !isEnabled() || d->_isSpacePressed ||
+        !rect().contains(event->position().toPoint()))
     {
         event->ignore();
         return;
     }
+    if (d->_positionAnimation)
+    {
+        d->_positionAnimation->stop();
+    }
     d->_adjustCircleCenterX();
-    d->_isMousePressMove = false;
+    setProperty("circleCenterX", d->_circleCenterX);
     d->_isLeftButtonPress = true;
-    d->_lastMouseX = event->pos().x();
+    d->_isDragging = false;
+    d->_mousePressPos = event->position().toPoint();
+    d->_lastMouseX = event->position().toPoint().x();
     d->_startRadiusAnimation(d->_circleRadius, height() * 0.25);
     event->accept();
 }
@@ -120,53 +137,39 @@ void ElaToggleSwitch::mouseReleaseEvent(QMouseEvent* event)
         return;
     }
     d->_isLeftButtonPress = false;
+    const bool releasedInside = rect().contains(event->position().toPoint());
+    bool isToggled = d->_isToggled;
+    if (releasedInside)
+    {
+        isToggled = d->_isDragging ? d->_circleCenterX > width() / 2 : !isToggled;
+    }
+    d->_isDragging = false;
+    d->_startRadiusAnimation(d->_circleRadius, height() * (releasedInside ? 0.35 : 0.3));
     event->accept();
-    if (!rect().contains(event->position().toPoint()))
-    {
-        d->_isMousePressMove = false;
-        d->_startPosAnimation(d->_circleCenterX, d->_isToggled ? width() - height() / 2 - d->_margin * 2 : height() / 2,
-                              d->_isToggled);
-        d->_startRadiusAnimation(d->_circleRadius, height() * 0.3);
-        return;
-    }
-    d->_startRadiusAnimation(height() * 0.25, height() * 0.35);
-    if (d->_isMousePressMove)
-    {
-        d->_isMousePressMove = false;
-        if (d->_circleCenterX > width() / 2)
-        {
-            d->_startPosAnimation(d->_circleCenterX, width() - height() / 2 - d->_margin * 2, true);
-        }
-        else
-        {
-            d->_startPosAnimation(d->_circleCenterX, height() / 2, false);
-        }
-    }
-    else
-    {
-        if (d->_isToggled)
-        {
-            d->_startPosAnimation(d->_circleCenterX, height() / 2, false);
-        }
-        else
-        {
-            d->_startPosAnimation(d->_circleCenterX, width() - height() / 2 - d->_margin * 2, true);
-        }
-    }
+    // 状态通知可能删除控件，所有按压清理必须先完成。
+    d->_startPosAnimation(d->_circleCenterX, isToggled ? width() - height() / 2 - d->_margin * 2 : height() / 2,
+                          isToggled);
 }
 
 void ElaToggleSwitch::mouseMoveEvent(QMouseEvent* event)
 {
     Q_D(ElaToggleSwitch);
-    if (d->_isLeftButtonPress)
+    if (!d->_isLeftButtonPress)
     {
-        d->_isMousePressMove = true;
-        int moveX = event->pos().x() - d->_lastMouseX;
-        d->_lastMouseX = event->pos().x();
-        d->_circleCenterX += moveX;
-        d->_adjustCircleCenterX();
+        QWidget::mouseMoveEvent(event);
+        return;
     }
-    QWidget::mouseMoveEvent(event);
+    // 滑块立即跟手，距离阈值仅用于松开时区分点击与拖动
+    if ((event->pos() - d->_mousePressPos).manhattanLength() >= qMax(1, QApplication::startDragDistance()))
+    {
+        d->_isDragging = true;
+    }
+    d->_circleCenterX += event->pos().x() - d->_lastMouseX;
+    d->_lastMouseX = event->pos().x();
+    d->_adjustCircleCenterX();
+    setProperty("circleCenterX", d->_circleCenterX);
+    update();
+    event->accept();
 }
 
 void ElaToggleSwitch::keyPressEvent(QKeyEvent* event)
@@ -215,10 +218,11 @@ void ElaToggleSwitch::paintEvent(QPaintEvent* event)
     // 背景绘制
     painter.setPen(d->_isToggled ? QPen(ElaThemeColor(d->_themeMode, BasicBorder), 1.5)
                                  : QPen(ElaThemeColor(d->_themeMode, BasicBorderDeep), 1.5));
-    painter.setBrush(isEnabled() ? d->_isToggled ? ElaThemeColor(d->_themeMode, PrimaryNormal)
-                                                 : (underMouse() ? ElaThemeColor(d->_themeMode, BasicHover)
-                                                                 : ElaThemeColor(d->_themeMode, BasicBase))
-                                 : ElaThemeColor(d->_themeMode, BasicDisable));
+    QStyleOption option;
+    option.initFrom(this);
+    option.state.setFlag(QStyle::State_Sunken, d->_isLeftButtonPress);
+    painter.setBrush(ElaColorAnimation::getColor(
+        this, ElaControlStyle::getIndicatorBackgroundColor(d->_themeMode, option.state, d->_isToggled)));
     QPainterPath path;
     path.moveTo(width() - height() - d->_margin, height() - d->_margin);
     path.arcTo(QRectF(QPointF(width() - height() - d->_margin, d->_margin),
@@ -233,9 +237,12 @@ void ElaToggleSwitch::paintEvent(QPaintEvent* event)
 
     // 圆心绘制
     painter.setPen(Qt::NoPen);
-    painter.setBrush(isEnabled() ? d->_isToggled ? ElaThemeColor(d->_themeMode, BasicTextInvert)
-                                                 : ElaThemeColor(d->_themeMode, ToggleSwitchNoToggledCenter)
-                                 : ElaThemeColor(d->_themeMode, BasicTextDisable));
+    painter.setBrush(ElaColorAnimation::getColor(this,
+                                                 isEnabled() ? d->_isToggled
+                                                                   ? ElaThemeColor(d->_themeMode, BasicTextInvert)
+                                                                   : ElaThemeColor(d->_themeMode, BasicIndicator)
+                                                             : ElaThemeColor(d->_themeMode, BasicTextDisable),
+                                                 "Thumb"));
     if (d->_circleRadius == 0)
     {
         d->_circleRadius = this->isEnabled() ? (underMouse() ? height() * 0.35 : height() * 0.3) : height() * 0.3;

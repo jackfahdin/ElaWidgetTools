@@ -7,10 +7,13 @@ class T_LogModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
+    static constexpr int MaximumLogCount = 10000;
+
     explicit T_LogModel(QObject* parent = nullptr);
     ~T_LogModel();
     void setLogList(QStringList list);
     void appendLogList(QString log);
+    void appendLogs(const QStringList& logs);
     QStringList getLogList() const;
 
 protected:

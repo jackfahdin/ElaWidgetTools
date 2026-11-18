@@ -1,11 +1,7 @@
 #include "ElaColorDialog.h"
 
-#include <QHBoxLayout>
-#include <QPainter>
-#include <QVBoxLayout>
-#include <utility>
-
 #include "ElaBaseListView.h"
+#include "ElaColorAnimation.h"
 #include "ElaColorDialogPrivate.h"
 #include "ElaColorDisplayDelegate.h"
 #include "ElaColorDisplayModel.h"
@@ -19,6 +15,12 @@
 #include "ElaText.h"
 #include "ElaTheme.h"
 #include "ElaToolButton.h"
+
+#include <QHBoxLayout>
+#include <QPainter>
+#include <QVBoxLayout>
+#include <utility>
+
 Q_TAKEOVER_NATIVEEVENT_CPP(ElaColorDialog, d_func()->_appBar);
 ElaColorDialog::ElaColorDialog(QWidget* parent) : QDialog{parent}, d_ptr(new ElaColorDialogPrivate())
 {
@@ -26,7 +28,7 @@ ElaColorDialog::ElaColorDialog(QWidget* parent) : QDialog{parent}, d_ptr(new Ela
     d->q_ptr = this;
     setFixedSize(600, 600); // 默认宽高
     setObjectName("ElaColorDialog");
-    setWindowTitle("ElaColorDialog");
+    setWindowTitle("选择颜色");
     setWindowModality(Qt::ApplicationModal);
 
     // 自定义AppBar
@@ -69,6 +71,7 @@ ElaColorDialog::ElaColorDialog(QWidget* parent) : QDialog{parent}, d_ptr(new Ela
     d->_colorValueSlider->setRange(0, 255);
     d->_colorValueSlider->setValue(255);
     d->_colorValueSliderStyle = new ElaColorValueSliderStyle();
+    d->_colorValueSliderStyle->setParent(d->_colorValueSlider);
     d->_colorValueSlider->setStyle(d->_colorValueSliderStyle);
     connect(d->_colorValueSlider, &QSlider::valueChanged, d, &ElaColorDialogPrivate::onColorValueSliderChanged);
     QVBoxLayout* colorValueSliderLayout = new QVBoxLayout();
@@ -251,18 +254,7 @@ ElaColorDialog::ElaColorDialog(QWidget* parent) : QDialog{parent}, d_ptr(new Ela
     // 确定取消按钮
     d->_overButton = new ElaPushButton("确定", this);
     d->_overButton->setBorderRadius(6);
-    auto refreshAccent = [=]() {
-        d->_overButton->setLightDefaultColor(ElaThemeColor(ElaThemeType::Light, PrimaryNormal));
-        d->_overButton->setLightHoverColor(ElaThemeColor(ElaThemeType::Light, PrimaryHover));
-        d->_overButton->setLightPressColor(ElaThemeColor(ElaThemeType::Light, PrimaryPress));
-        d->_overButton->setDarkDefaultColor(ElaThemeColor(ElaThemeType::Dark, PrimaryNormal));
-        d->_overButton->setDarkHoverColor(ElaThemeColor(ElaThemeType::Dark, PrimaryHover));
-        d->_overButton->setDarkPressColor(ElaThemeColor(ElaThemeType::Dark, PrimaryPress));
-    };
-    refreshAccent();
-    connect(eTheme, &ElaTheme::themeColorsChanged, this, refreshAccent);
-    d->_overButton->setLightTextColor(Qt::white);
-    d->_overButton->setDarkTextColor(Qt::white);
+    d->_overButton->setIsAccent(true);
     connect(d->_overButton, &ElaPushButton::clicked, this, [=]() {
         Q_EMIT colorSelected(d->_pCurrentColor);
         close();
@@ -290,15 +282,13 @@ ElaColorDialog::ElaColorDialog(QWidget* parent) : QDialog{parent}, d_ptr(new Ela
     d->_themeMode = eTheme->getThemeMode();
     connect(eTheme, &ElaTheme::themeModeChanged, this, [=](ElaThemeType::ThemeMode themeMode) {
         d->_themeMode = themeMode;
+        d->_basicColorView->viewport()->update();
+        d->_customColorView->viewport()->update();
     });
     setCurrentColor(QColor(0x80, 0xFF, 0xEF));
 }
 
-ElaColorDialog::~ElaColorDialog()
-{
-    Q_D(ElaColorDialog);
-    delete d->_colorValueSlider->style();
-}
+ElaColorDialog::~ElaColorDialog() = default;
 
 void ElaColorDialog::setCurrentColor(const QColor& currentColor)
 {
@@ -344,11 +334,11 @@ void ElaColorDialog::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(Qt::NoPen);
     // 背景绘制
-    painter.setBrush(ElaThemeColor(d->_themeMode, DialogBase));
+    painter.setBrush(ElaColorAnimation::getColor(this, ElaThemeColor(d->_themeMode, PopupBase), "Background"));
     painter.drawRect(rect());
 
     // 按钮背景绘制
-    painter.setBrush(ElaThemeColor(d->_themeMode, DialogLayoutArea));
+    painter.setBrush(ElaColorAnimation::getColor(this, ElaThemeColor(d->_themeMode, WindowBase), "LayoutArea"));
     painter.drawRect(QRect(0, height() - 78, width(), 78));
     painter.restore();
     QDialog::paintEvent(event);

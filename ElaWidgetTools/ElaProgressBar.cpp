@@ -1,10 +1,11 @@
 #include "ElaProgressBar.h"
 
+#include "ElaProgressBarPrivate.h"
+#include "ElaProgressBarStyle.h"
+
 #include <QPropertyAnimation>
 #include <QStyleOption>
 
-#include "ElaProgressBarPrivate.h"
-#include "ElaProgressBarStyle.h"
 ElaProgressBar::ElaProgressBar(QWidget* parent) : QProgressBar(parent), d_ptr(new ElaProgressBarPrivate())
 {
     Q_D(ElaProgressBar);
@@ -12,8 +13,9 @@ ElaProgressBar::ElaProgressBar(QWidget* parent) : QProgressBar(parent), d_ptr(ne
     setStyleSheet("#ElaProgressBar{background-color:transparent;}");
     d->q_ptr = this;
     d->_style = new ElaProgressBarStyle(style());
+    d->_style->setParent(this);
     setStyle(d->_style);
-    d->_busyAnimation = new QPropertyAnimation(d->_style, "busyStartValue");
+    d->_busyAnimation = new QPropertyAnimation(d->_style, "busyStartValue", this);
     connect(d->_busyAnimation, &QPropertyAnimation::valueChanged, this, [=](const QVariant& value) {
         d->_style->setProperty("busyEndValue", value.toInt() + 75);
         update();
@@ -22,11 +24,7 @@ ElaProgressBar::ElaProgressBar(QWidget* parent) : QProgressBar(parent), d_ptr(ne
     d->_busyAnimation->setLoopCount(-1);
 }
 
-ElaProgressBar::~ElaProgressBar()
-{
-    Q_D(ElaProgressBar);
-    delete d->_style;
-}
+ElaProgressBar::~ElaProgressBar() = default;
 
 void ElaProgressBar::setMinimum(int minimum)
 {

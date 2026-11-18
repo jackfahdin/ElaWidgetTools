@@ -1,10 +1,12 @@
 #include "ElaSliderStyle.h"
 
+#include "ElaColorAnimation.h"
+#include "ElaTheme.h"
+
 #include <QPainter>
 #include <QPropertyAnimation>
 #include <QStyleOptionSlider>
 
-#include "ElaTheme.h"
 ElaSliderStyle::ElaSliderStyle(QStyle* style)
 {
     setProperty("circleRadius", 0.01);
@@ -37,7 +39,7 @@ void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOpti
         sliderHandleRect.adjust(1, 1, -1, -1);
         // 滑槽
         painter->setPen(Qt::NoPen);
-        painter->setBrush(ElaThemeColor(_themeMode, BasicChute));
+        painter->setBrush(ElaColorAnimation::getColor(widget, ElaThemeColor(_themeMode, BasicIndicator), "Track"));
         if (sopt->orientation == Qt::Horizontal)
         {
             // 未滑过
@@ -46,7 +48,8 @@ void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOpti
                                            sliderRect.width() - sliderRect.height() / 4, sliderRect.height() / 4),
                                      sliderRect.height() / 8, sliderRect.height() / 8);
             // 已滑过
-            painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
+            painter->setBrush(
+                ElaColorAnimation::getColor(widget, ElaThemeColor(_themeMode, PrimaryNormal), "Progress"));
             painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.height() / 8,
                                            sliderRect.y() + sliderRect.height() * 0.375, sliderHandleRect.x(),
                                            sliderRect.height() / 4),
@@ -60,7 +63,8 @@ void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOpti
                                            sliderRect.height() - sliderRect.width() / 4),
                                      sliderRect.width() / 8, sliderRect.width() / 8);
             // 已滑过
-            painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
+            painter->setBrush(
+                ElaColorAnimation::getColor(widget, ElaThemeColor(_themeMode, PrimaryNormal), "Progress"));
             painter->drawRoundedRect(QRect(sliderRect.x() + sliderRect.width() * 0.375, sliderHandleRect.y(),
                                            sliderRect.width() / 4,
                                            sliderRect.height() - sliderRect.width() / 8 - sliderHandleRect.y()),
@@ -69,12 +73,12 @@ void ElaSliderStyle::drawComplexControl(ComplexControl control, const QStyleOpti
         // 滑块
         // 外圆形
         painter->setPen(ElaThemeColor(_themeMode, BasicBorder));
-        painter->setBrush(ElaThemeColor(_themeMode, BasicBase));
+        painter->setBrush(ElaColorAnimation::getColor(widget, ElaThemeColor(_themeMode, BasicSolid), "Thumb"));
         painter->drawEllipse(QPointF(sliderHandleRect.center().x() + 1, sliderHandleRect.center().y() + 1),
                              sliderHandleRect.width() / 2, sliderHandleRect.width() / 2);
         // 内圆形
         painter->setPen(Qt::NoPen);
-        painter->setBrush(ElaThemeColor(_themeMode, PrimaryNormal));
+        painter->setBrush(ElaColorAnimation::getColor(widget, ElaThemeColor(_themeMode, PrimaryNormal), "ThumbCenter"));
         if (_lastState == 0)
         {
             _lastState = sopt->state;
@@ -171,7 +175,7 @@ int ElaSliderStyle::styleHint(StyleHint hint, const QStyleOption* option, const 
 void ElaSliderStyle::_startRadiusAnimation(qreal startRadius, qreal endRadius, QWidget* widget) const
 {
     ElaSliderStyle* style = const_cast<ElaSliderStyle*>(this);
-    QPropertyAnimation* circleRadiusAnimation = new QPropertyAnimation(style, "circleRadius");
+    QPropertyAnimation* circleRadiusAnimation = new QPropertyAnimation(style, "circleRadius", style);
     connect(circleRadiusAnimation, &QPropertyAnimation::valueChanged, style, [=](const QVariant& value) {
         this->_circleRadius = value.toReal();
         widget->update();

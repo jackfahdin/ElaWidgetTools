@@ -36,7 +36,7 @@ ElaDxgiManager::ElaDxgiManager(QObject* parent) : QObject{parent}, d_ptr(new Ela
     if (!ret)
     {
         d->_dxgi->initialize(0, 0);
-        qCritical() << "No available screenshot devices";
+        qCritical() << "没有可用的屏幕采集设备";
     }
     d->_dxgi->moveToThread(d->_dxgiThread);
     d->_dxgiThread->start();
