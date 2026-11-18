@@ -15,7 +15,7 @@
 
 ## 下载哪个文件
 
-文件名中的 `<标签>` 是稳定版号（如 `2.0.0`）或 `Continuous-Build`。所有平台首版发布 **Release 动态库**，不发布 Debug、静态库、安装器或候选版。
+文件名中的 `<标签>` 是稳定版号（如 `2.1.0`）或 `Continuous-Build`。所有平台首版发布 **Release 动态库**，不发布 Debug、静态库、安装器或候选版。
 
 | 文件名 | 系统 / 架构 | 包内内容 |
 | --- | --- | --- |
@@ -93,16 +93,16 @@ gh workflow run release.yml --repo jackfahdin/ElaWidgetTools --ref main
 ### 发布稳定版
 
 1. 修改 `ElaWidgetTools/CMakeLists.txt` 中 `project(ElaWidgetTools VERSION X.Y.Z)` 的版本，提交并让常规 CI 通过。
-2. 在该提交上创建带注释的标签并推送。例如发布 `2.0.0`：
+2. 在该提交上创建带注释的标签并推送。例如发布 `2.1.0`：
 
 ```bash
-git tag -a v2.0.0 -m "发布 ElaWidgetTools 2.0.0"
-git push origin v2.0.0
+git tag -a v2.1.0 -m "发布 ElaWidgetTools 2.1.0"
+git push origin v2.1.0
 ```
 
 3. 发布工作流再次检查格式、发布脚本测试、三个平台 Release 构建、QtTest、归档后的安装消费和 Example 启动。全部通过后公开 Release。
 
-顶层工程和 Example 自身的 `0.1` 是原有工程元数据，**发布版本以组件库的 `2.0.0` 为准**。自动化不会猜测下一个版本，也不会创建稳定标签。现阶段只接受 `vX.Y.Z`，不接受 `vX.Y` 或 `-rc` 标签。
+顶层工程和 Example 自身的 `0.1` 是原有工程元数据，**发布版本以组件库的 `2.1.0` 为准**。自动化不会猜测下一个版本，也不会创建稳定标签。现阶段只接受 `vX.Y.Z`，不接受 `vX.Y` 或 `-rc` 标签。
 
 ### 文件职责
 
