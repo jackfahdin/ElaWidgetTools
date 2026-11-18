@@ -81,6 +81,14 @@
       }
     },
     {
+      "name": "windows-static",
+      "displayName": "Windows 静态库及示例",
+      "inherits": "windows-release",
+      "cacheVariables": {
+        "ELAWIDGETTOOLS_BUILD_STATIC_LIB": true
+      }
+    },
+    {
       "name": "macos-base",
       "hidden": true,
       "inherits": "common",
@@ -107,6 +115,14 @@
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_OSX_DEPLOYMENT_TARGET": "14.4"
       }
+    },
+    {
+      "name": "macos-static",
+      "displayName": "macOS 静态库及示例",
+      "inherits": "macos-release",
+      "cacheVariables": {
+        "ELAWIDGETTOOLS_BUILD_STATIC_LIB": true
+      }
     }
   ],
   "buildPresets": [
@@ -131,12 +147,20 @@
       "configurePreset": "windows-release"
     },
     {
+      "name": "windows-static",
+      "configurePreset": "windows-static"
+    },
+    {
       "name": "macos-debug",
       "configurePreset": "macos-debug"
     },
     {
       "name": "macos-release",
       "configurePreset": "macos-release"
+    },
+    {
+      "name": "macos-static",
+      "configurePreset": "macos-static"
     }
   ],
   "testPresets": [
@@ -196,6 +220,17 @@
       }
     },
     {
+      "name": "windows-static",
+      "configurePreset": "windows-static",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "timeout": 90
+      }
+    },
+    {
       "name": "macos-debug",
       "configurePreset": "macos-debug",
       "output": {
@@ -209,6 +244,17 @@
     {
       "name": "macos-release",
       "configurePreset": "macos-release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "timeout": 90
+      }
+    },
+    {
+      "name": "macos-static",
+      "configurePreset": "macos-static",
       "output": {
         "outputOnFailure": true
       },

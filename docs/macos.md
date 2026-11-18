@@ -16,7 +16,7 @@ ctest --preset macos-release
 cmake --install build/macos-release
 ```
 
-`QT_ROOT` 指向包含 `bin`、`lib` 的实际目录；不同安装器的目录名称可能不同。调试构建换用 `macos-debug`。现有 CI 使用 `macos-15` Apple Silicon runner，Intel 或 Universal 应用尚未验证。
+`QT_ROOT` 指向包含 `bin`、`lib` 的实际目录；不同安装器的目录名称可能不同。调试构建换用 `macos-debug`，Release 静态组件库换用 `macos-static`，相应安装目录也按预设名替换。现有 CI 使用 `macos-15` Apple Silicon runner，Intel 或 Universal 应用尚未验证。
 
 ## 窗口与菜单
 

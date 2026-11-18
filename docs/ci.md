@@ -8,11 +8,17 @@ GitHub Actions 工作流位于 [ci.yml](../.github/workflows/ci.yml)。推送到
 
 | 环境 | 预设 | 内容 |
 | --- | --- | --- |
-| Ubuntu 24.04 x86_64 | `linux-debug` | 动态库、Example、QtTest、安装消费 |
-| Ubuntu 24.04 x86_64 | `linux-release` | 动态库、Example、QtTest、安装消费 |
-| Ubuntu 24.04 x86_64 | `linux-static` | 静态组件库、Example、QtTest、安装消费 |
-| Windows Server 2022 / MSVC 2022 x64 | `windows-release` | 动态库、Example、QtTest、安装部署、安装消费 |
-| macOS 15 / Apple Silicon | `macos-release` | 动态库、Example、QtTest、安装消费、部署后 `.app` 启动检查 |
+| Ubuntu 24.04 x86_64 | `linux-debug` | Debug 动态库、Example、QtTest、安装消费 |
+| Ubuntu 24.04 x86_64 | `linux-release` | Release 动态库、Example、QtTest、安装消费 |
+| Ubuntu 24.04 x86_64 | `linux-static` | Release 静态组件库、Example、QtTest、安装消费 |
+| Windows Server 2022 / MSVC 2022 x64 | `windows-debug` | Debug 动态库、Example、QtTest、安装部署、安装消费 |
+| Windows Server 2022 / MSVC 2022 x64 | `windows-release` | Release 动态库、Example、QtTest、安装部署、安装消费 |
+| Windows Server 2022 / MSVC 2022 x64 | `windows-static` | Release 静态组件库、Example、QtTest、安装部署、安装消费 |
+| macOS 15 / Apple Silicon | `macos-debug` | Debug 动态库、Example、QtTest、安装消费、部署启动 |
+| macOS 15 / Apple Silicon | `macos-release` | Release 动态库、Example、QtTest、安装消费、部署启动 |
+| macOS 15 / Apple Silicon | `macos-static` | Release 静态组件库、Example、QtTest、安装消费、部署启动 |
+
+安装消费工程使用与对应组件库一致的 Debug / Release 配置，避免 Windows 上混用 Qt 调试与发布库。三个平台各运行三种构建；新增任务的实际结果以对应 CI 运行为准。
 
 CI 固定 Qt **6.12.0** 作为当前验证基线，构建工具统一为 Ninja。SDK 从官方源通过 `jurplel/install-qt-action` 安装并缓存，安装 `qtbase` 和 `qttools`，Linux 额外安装官方 SDK 的 `icu` 包；Qt Test 和私有头文件随匹配版本的 SDK 提供。组件库静态构建不表示 Qt 本身静态链接。
 
@@ -35,7 +41,7 @@ python tools/check-format.py
 ## 结果与产物
 
 - 构建失败时先查看失败步骤日志；下载的 `logs-<preset>` 包含 CMake 配置诊断、CTest 日志和可用的 JUnit 结果。QtTest 的原始断言与代码行号保存在 `build/<preset>/Testing/QtTest/<测试组>.txt`，Windows 标准输出为空时可直接查看该文件。
-- macOS 任务另外保留启动日志，成功时上传 `.app` 压缩包。应用未经开发者签名和公证，不作为正式发行包。
+- macOS 任务另外保留启动日志，成功时分别上传 `macos-debug-app`、`macos-release-app`、`macos-static-app`，其中压缩包以预设名区分。应用未经开发者签名和公证，不作为正式发行包。
 - 同一分支重复触发时取消旧任务；矩阵中一个平台失败不会取消其他平台，便于同时定位差异。
 
 跨平台改动在本地只做静态检查，各平台的实际编译、测试和部署启动验证交给对应的 CI runner。

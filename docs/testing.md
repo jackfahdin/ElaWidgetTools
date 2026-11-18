@@ -17,7 +17,7 @@ xvfb-run -a ctest --preset linux-debug
 
 已有桌面会话时可以直接运行 `ctest --preset linux-debug`。无显示服务器时需安装 Xvfb，不将 `offscreen` 的结果当作桌面窗口行为验证。
 
-Release 或静态库分别换用 `linux-release`、`linux-static`。Windows 在 MSVC 开发者终端执行 `windows-release` 预设；macOS 使用 `macos-release`，两者直接运行对应的 `ctest --preset ...`。
+Linux 可换用 `linux-release` 或 `linux-static`。Windows 在 MSVC 开发者终端选择 `windows-debug`、`windows-release`、`windows-static`；macOS 选择 `macos-debug`、`macos-release`、`macos-static`，两者直接运行对应的 `ctest --preset ...`。所有静态预设均采用 Release 配置，覆盖静态组件库与动态 Qt 的组合。
 
 本机用户预设也可开启测试：
 

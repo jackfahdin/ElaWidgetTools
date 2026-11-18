@@ -41,29 +41,59 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # 消费工程复用 build_type，确保与组件库使用相同的 Qt 调试／发布依赖。
         include:
           - os: ubuntu-24.04
             preset: linux-debug
+            build_type: Debug
             host: linux
             arch: linux_gcc_64
             archives: qtbase qttools icu
           - os: ubuntu-24.04
             preset: linux-release
+            build_type: Release
             host: linux
             arch: linux_gcc_64
             archives: qtbase qttools icu
           - os: ubuntu-24.04
             preset: linux-static
+            build_type: Release
             host: linux
             arch: linux_gcc_64
             archives: qtbase qttools icu
           - os: windows-2022
+            preset: windows-debug
+            build_type: Debug
+            host: windows
+            arch: win64_msvc2022_64
+            archives: qtbase qttools
+          - os: windows-2022
             preset: windows-release
+            build_type: Release
+            host: windows
+            arch: win64_msvc2022_64
+            archives: qtbase qttools
+          - os: windows-2022
+            preset: windows-static
+            build_type: Release
             host: windows
             arch: win64_msvc2022_64
             archives: qtbase qttools
           - os: macos-15
+            preset: macos-debug
+            build_type: Debug
+            host: mac
+            arch: clang_64
+            archives: qtbase qttools
+          - os: macos-15
             preset: macos-release
+            build_type: Release
+            host: mac
+            arch: clang_64
+            archives: qtbase qttools
+          - os: macos-15
+            preset: macos-static
+            build_type: Release
             host: mac
             arch: clang_64
             archives: qtbase qttools
@@ -115,7 +145,7 @@ jobs:
         env:
           QT_ROOT: ${{ steps.qt.outputs.qt-root-dir }}
         run: |
-          cmake -S tests/consumer -B build/consumer -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/install/${{ matrix.preset }};$QT_ROOT"
+          cmake -S tests/consumer -B build/consumer -G Ninja -DCMAKE_BUILD_TYPE='${{ matrix.build_type }}' -DCMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/install/${{ matrix.preset }};$QT_ROOT"
           cmake --build build/consumer
           if [[ "$RUNNER_OS" == "Linux" ]]; then
             xvfb-run -a ctest --test-dir build/consumer --output-on-failure --no-tests=error
@@ -139,10 +169,11 @@ jobs:
             macos-smoke.log
       - name: 保存 macOS 应用
         if: success() && runner.os == 'macOS'
-        run: ditto -c -k --sequesterRsrc --keepParent 'install/${{ matrix.preset }}/ElaWidgetToolsExample.app' ElaWidgetToolsExample-macos.zip
+        run: ditto -c -k --sequesterRsrc --keepParent 'install/${{ matrix.preset }}/ElaWidgetToolsExample.app' ElaWidgetToolsExample-${{ matrix.preset }}.zip
       - name: 上传 macOS 应用
         if: success() && runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
-          name: macos-app
-          path: ElaWidgetToolsExample-macos.zip
+          # Debug、Release、Static 分别上传，避免同一次运行中的产物重名。
+          name: ${{ matrix.preset }}-app
+          path: ElaWidgetToolsExample-${{ matrix.preset }}.zip

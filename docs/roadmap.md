@@ -50,7 +50,7 @@
 
 ### 第三阶段：建立 CI 与自动化回归（已实现，基线运行通过）
 
-- GitHub Actions 覆盖 Linux Debug / Release、Linux 静态库、Windows MSVC 和 macOS Apple Silicon。
+- GitHub Actions 为 Linux、Windows MSVC 和 macOS Apple Silicon 分别配置 Debug 动态库、Release 动态库与 Release 静态库，共九项构建；新增配置的验证结果以对应运行记录为准。
 - QtTest 默认可选，首批覆盖标题栏、菜单、控件信号、导航、命令历史及资源；另有安装消费验证。
 - 格式检查使用固定工具版本；clang-tidy 作为独立手动工作流。
 - 最近一次基线运行已通过格式检查、全部平台构建、QtTest、安装消费和 macOS 部署启动检查；入口、运行方式和结果范围见 [CI](ci.md) 与[测试指南](testing.md)。

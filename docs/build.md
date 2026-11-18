@@ -40,11 +40,13 @@ cmake --build --preset linux-release --parallel 6
 
 两个预设默认构建动态组件库和完整示例。可根据机器内存调整并行数。构建和安装目录按预设隔离，编译数据库位于对应目录的 `compile_commands.json`。
 
-| 平台 | 调试 | 发布 | 其他 |
+| 平台 | Debug 动态库 | Release 动态库 | Release 静态库 |
 | --- | --- | --- | --- |
-| Linux | `linux-debug` | `linux-release` | `linux-static`：静态组件库及 Example |
-| Windows | `windows-debug` | `windows-release` | 在 MSVC 开发者终端使用 Ninja |
-| macOS | `macos-debug` | `macos-release` | 详见 [macOS 适配说明](macos.md) |
+| Linux | `linux-debug` | `linux-release` | `linux-static` |
+| Windows | `windows-debug` | `windows-release` | `windows-static` |
+| macOS | `macos-debug` | `macos-release` | `macos-static` |
+
+所有预设默认包含 Example。Windows 需在 MSVC 开发者终端运行；macOS 环境见[适配说明](macos.md)。`*-static` 仅静态链接 ElaWidgetTools，Qt 仍使用 SDK 中的动态库。
 
 其他平台同样通过 `QT_ROOT` 指定 SDK 后，执行对应的配置与构建预设。无需使用 Visual Studio 或 Xcode 项目生成器。
 
@@ -107,18 +109,15 @@ cmake --build --preset local-linux-debug
 | `ELAWIDGETTOOLS_BUILD_STATIC_LIB` | `OFF` | 是否构建静态组件库 |
 | `ELAWIDGETTOOLS_BUILD_TESTS` | `OFF` | 是否查找 Qt Test 并构建独立回归测试 |
 
-例如，以仓库 Release 预设为基础，在单独目录构建静态库：
+例如，使用仓库静态库预设，仅构建和安装组件库：
 
 ```bash
-cmake --preset linux-release -B build/linux-static \
-  -DELAWIDGETTOOLS_BUILD_STATIC_LIB=ON \
-  -DELAWIDGETTOOLS_BUILD_EXAMPLE=OFF \
-  -DCMAKE_INSTALL_PREFIX="$PWD/install/linux-static"
-cmake --build build/linux-static --parallel 6
+cmake --preset linux-static -DELAWIDGETTOOLS_BUILD_EXAMPLE=OFF
+cmake --build --preset linux-static --parallel 6
 cmake --install build/linux-static
 ```
 
-重复使用的静态配置也可以继承 `linux-release` 写入用户预设。静态库目标会自动向消费者传递 `ELAWIDGETTOOLS_STATIC`，不需要手动设置导入导出宏。
+Windows 和 macOS 分别换用 `windows-static`、`macos-static`；本机配置可继承对应预设写入用户预设。静态库目标会自动向消费者传递 `ELAWIDGETTOOLS_STATIC`，不需要手动设置导入导出宏。
 
 ## 安装与引用
 
