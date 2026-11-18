@@ -4,7 +4,7 @@
 
 ## 分支定位
 
-本仓库以 [Liniyous/ElaWidgetTools](https://github.com/Liniyous/ElaWidgetTools) 的代码为基础，开展独立开发与维护。现有代码基线对应上游提交 `aae58f5`（ElaWidgetTools V3.0 重构初步版本）。
+本仓库以 [Liniyous/ElaWidgetTools](https://github.com/Liniyous/ElaWidgetTools) 的代码为基础，开展独立开发与维护。初始代码基线为 `aae58f5`，2026-11-18 已同步至上游 `18a9bdad`，具体内容与接口迁移见[上游同步记录](upstream-sync.md)。
 
 [RainbowCandyX/ElaWidgetTools](https://github.com/RainbowCandyX/ElaWidgetTools) 是文档组织方式的参考。本仓库与其代码基线和后续演进不同，不沿用其组件数量、平台验证结论或附加功能声明。
 

@@ -21,6 +21,8 @@ ElaWidgetTools 是基于 **C++ / Qt Widgets** 的桌面界面组件库，提供 
 
 本仓库基于 [Liniyous/ElaWidgetTools](https://github.com/Liniyous/ElaWidgetTools) 开始独立维护，后续功能、版本策略与发布节奏由本仓库单独推进。
 
+已同步上游 2026-11-18 的更新；标签容器存在接口变化，升级前请阅读[同步与迁移说明](docs/upstream-sync.md)。
+
 > **维护方向**：后续仅维护 **Qt 6.12.0 及以上版本**。已完成本机 Linux 的构建与基础运行验证，Windows 和 macOS Apple Silicon 已通过 CI 基线构建、QtTest 与安装消费验证；macOS 仍属于实验性适配，真实设备交互以实际设备验证为准。详见[编译指南](docs/build.md)与[维护路线图](docs/roadmap.md)。
 
 ## 能力一览

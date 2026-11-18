@@ -55,6 +55,7 @@
 | [ElaScrollArea](../ElaWidgetTools/ElaScrollArea.h) | 滚动区域 |
 | [ElaScrollBar](../ElaWidgetTools/ElaScrollBar.h) | 滚动条 |
 | [ElaFlowLayout](../ElaWidgetTools/ElaFlowLayout.h) | 流式布局 |
+| [ElaSplitter](../ElaWidgetTools/ElaSplitter.h) | 使用主题分隔线的可调节布局 |
 | [ElaDrawerArea](../ElaWidgetTools/ElaDrawerArea.h) | 抽屉区域 |
 
 ## 数据展示与视图
@@ -94,6 +95,7 @@
 | [ElaMessageBar](../ElaWidgetTools/ElaMessageBar.h) | 消息提示栏 |
 | [ElaMessageButton](../ElaWidgetTools/ElaMessageButton.h) | 消息提示按钮 |
 | [ElaToolTip](../ElaWidgetTools/ElaToolTip.h) | 工具提示 |
+| [ElaTeachingTip](../ElaWidgetTools/ElaTeachingTip.h) | 指向目标控件的教学提示，支持自定义内容与操作按钮 |
 | [ElaColorDialog](../ElaWidgetTools/ElaColorDialog.h) | 颜色选择对话框 |
 | [ElaCalendar](../ElaWidgetTools/ElaCalendar.h) | 日历视图 |
 | [ElaCalendarPicker](../ElaWidgetTools/ElaCalendarPicker.h) | 日期选择器 |
