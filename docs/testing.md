@@ -29,6 +29,8 @@ xvfb-run -a ctest --test-dir build/local-linux-debug --output-on-failure --no-te
 
 Test presets 设置了失败输出、超时和“没有测试时报错”。单独运行 `ctest` 时也应使用 `--no-tests=error`，避免配置错误却显示成功。测试开关保存在 CMake 缓存中；恢复普通构建可显式传入 `-DELAWIDGETTOOLS_BUILD_TESTS=OFF`。
 
+所有 GUI 测试组使用同一个 CTest `RESOURCE_LOCK`，即使设置 `CTEST_PARALLEL_LEVEL` 或 `ctest -j`，也会在同一次 CTest 调用中互斥运行，避免多个进程抢占桌面焦点。不同平台的 CI 任务仍可并行；本地不要在同一桌面同时启动多份 CTest。焦点用例会等待窗口显示并激活，再检查 Tab 和键盘操作。
+
 ## 当前覆盖范围
 
 | 测试组 | 观察的行为 |

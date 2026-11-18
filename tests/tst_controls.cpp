@@ -105,7 +105,9 @@ private Q_SLOTS:
         layout->addWidget(toggle);
         layout->addWidget(after);
         window.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&window));
         window.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&window));
         before->setFocus();
         QTRY_VERIFY(before->hasFocus());
         QTest::keyClick(before, Qt::Key_Tab);
@@ -231,7 +233,9 @@ private Q_SLOTS:
         layout->addWidget(button);
         layout->addWidget(after);
         window.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&window));
         window.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&window));
         before->setFocus();
         QTRY_VERIFY(before->hasFocus());
         QTest::keyClick(before, Qt::Key_Tab);

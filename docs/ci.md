@@ -34,7 +34,7 @@ python tools/check-format.py
 
 ## 结果与产物
 
-- 构建失败时先查看失败步骤日志；下载的 `logs-<preset>` 包含 CMake 配置诊断、CTest 日志和可用的 JUnit 结果。
+- 构建失败时先查看失败步骤日志；下载的 `logs-<preset>` 包含 CMake 配置诊断、CTest 日志和可用的 JUnit 结果。QtTest 的原始断言与代码行号保存在 `build/<preset>/Testing/QtTest/<测试组>.txt`，Windows 标准输出为空时可直接查看该文件。
 - macOS 任务另外保留启动日志，成功时上传 `.app` 压缩包。应用未经开发者签名和公证，不作为正式发行包。
 - 同一分支重复触发时取消旧任务；矩阵中一个平台失败不会取消其他平台，便于同时定位差异。
 

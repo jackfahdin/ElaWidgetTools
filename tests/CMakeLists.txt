@@ -27,7 +27,8 @@ foreach(
     endif()
     add_test(NAME ${test_name} COMMAND tst_${test_name} -o -,txt -o
                                        "${CMAKE_BINARY_DIR}/Testing/QtTest/${test_name}.txt,txt")
-    set_tests_properties(${test_name} PROPERTIES TIMEOUT 90 LABELS "qt;widgets")
+    # GUI 测试共用桌面焦点；即使启用 ctest -j，也不能让不同进程相互抢占活动窗口。
+    set_tests_properties(${test_name} PROPERTIES TIMEOUT 90 LABELS "qt;widgets" RESOURCE_LOCK ela_gui_desktop)
 endforeach()
 
 # 示例组合也参与回归，防止异步请求、筛选与提示状态相互覆盖。
